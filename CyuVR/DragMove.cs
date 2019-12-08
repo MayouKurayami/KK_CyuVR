@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Bero.CyuVR.DragMove
-// Assembly: CyuVR, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 3E19B191-388D-44D8-A057-D416187C1E85
-// Assembly location: C:\Users\MK\Desktop\KK\CyuVR\Source Dll\CyuVR.dll
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 

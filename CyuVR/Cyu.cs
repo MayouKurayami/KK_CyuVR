@@ -1,9 +1,3 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Bero.CyuVR.Cyu
-// Assembly: CyuVR, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 3E19B191-388D-44D8-A057-D416187C1E85
-// Assembly location: C:\Users\MK\Desktop\KK\CyuVR\Source Dll\CyuVR.dll
-
 using ChaCustom;
 using Harmony;
 using System;
@@ -467,8 +461,12 @@ namespace Bero.CyuVR
 			}
 			if (this.bvs.Count<Cyu.BlendValue>() == 0)
 				this.ReloadBlendValues();
-			if ((double) Vector3.Distance(this.myMouth.transform.position, this.tang.transform.position) < (this.flags.mode == HFlag.EMode.aibu ? (double) Config.kissDistanceAibu : (double) Config.kissDistance))
+			float num1 = Vector3.Distance(this.myMouth.transform.position, this.tang.transform.position);
+			float num2 = this.flags.mode == HFlag.EMode.aibu ? Config.kissDistanceAibu : Config.kissDistance;
+			if (num1 < num2)
+			{
 				this.Kiss(true);
+			}
 			else
 				this.Kiss(false);
 			if (this.kissing || this.IsSiruActive())
@@ -497,9 +495,9 @@ namespace Bero.CyuVR
 				this.female.ChangeEyebrowOpenMax(this.eyesOpenValue);
 				this.female.eyesCtrl.OpenMin = 0.0f;
 				this.female.eyebrowCtrl.OpenMin = 0.0f;
-				float num = Vector3.Angle(this.female.objHead.transform.forward, this.kissEyeTarget.transform.position - this.female.objHead.transform.position);
+				float num3 = Vector3.Angle(this.female.objHead.transform.forward, this.kissEyeTarget.transform.position - this.female.objHead.transform.position);
 				this.eyeLookChangeTimer -= Time.deltaTime;
-				if ((double) this.eyeLookChangeTimer < 0.0 || (double) num > 45.0)
+				if ((double) this.eyeLookChangeTimer < 0.0 || (double) num3 > 45.0)
 				{
 					this.eyeLookChangeTimer = UnityEngine.Random.Range(10f, 20f);
 					this.eyeLookX = UnityEngine.Random.Range(-70f, 70f);
