@@ -294,70 +294,73 @@ namespace Bero.CyuVR
 			this.tangSpeed = UnityEngine.Random.Range(10f, 20f);
 			while (this.kissFlag)
 			{
-				this.curKissValue += (float) ((double) Time.deltaTime * (double) this.tangSpeed * 5.0);
-				this.curMouthValue += (float) ((double) Time.deltaTime * (double) this.tangSpeed * 10.0);
-				this.curEyeValue -= (float) ((double) Time.deltaTime * (double) this.tangSpeed * 3.0);
-				this.curMouthValue = Mathf.Clamp(this.curMouthValue, 0.0f, 100f);
-				this.curKissValue = Mathf.Clamp(this.curKissValue, 0.0f, 100f);
-				this.curEyeValue = Mathf.Clamp(this.curEyeValue, 0.0f, 100f);
-				if ((double) this.curKissValue < 100.0 || (double) this.curMouthValue < 100.0)
-					yield return (object) null;
-				else
-					break;
-			}
-			while (true)
-			{
-				while (!this.kissFlag)
+				this.curKissValue += Time.deltaTime * this.tangSpeed * 5f;
+				this.curMouthValue += Time.deltaTime * this.tangSpeed * 10f;
+				this.curEyeValue -= Time.deltaTime * this.tangSpeed * 3f;
+				this.curMouthValue = Mathf.Clamp(this.curMouthValue, 0f, 100f);
+				this.curKissValue = Mathf.Clamp(this.curKissValue, 0f, 100f);
+				this.curEyeValue = Mathf.Clamp(this.curEyeValue, 0f, 100f);
+				if (this.curKissValue >= 100f && this.curMouthValue >= 100f)
 				{
-					if (this.IsSiruActive())
-					{
-						this.RandomMoveFloatTest(ref this.curEyeValue, ref this.toEyeValue, ref this.eyeOpenSpeed, 0.0f, 75f, ref this.eyeOpenTime, 1f, 1.2f);
-						this.eyesOpenValue = this.curEyeValue / 100f;
-						this.curMouthValue += (float) ((double) Time.deltaTime * (double) Mathf.Abs(this.tangSpeed) * 5.0 * 0.5);
-						this.curMouthValue = Mathf.Clamp(this.curMouthValue, 0.0f, 100f);
-						yield return (object) null;
-					}
-					else
-					{
-						Traverse.Create((object) this.hand0).Field("isKiss").SetValue((object) false);
-						while (true)
-						{
-							float num = Mathf.Max(25f, Mathf.Abs(this.tangSpeed));
-							this.curMouthValue -= (float) ((double) Time.deltaTime * (double) num * 2.0 * 0.5);
-							this.curMouthValue = Mathf.Clamp(this.curMouthValue, 0.0f, 100f);
-							this.curKissValue -= (float) ((double) Time.deltaTime * (double) num * 1.0);
-							this.curKissValue = Mathf.Clamp(this.curKissValue, 0.0f, 100f);
-							this.curEyeValue += (float) ((double) Time.deltaTime * (double) num * 1.0 * 0.5);
-							this.curEyeValue = Mathf.Clamp(this.curEyeValue, 0.0f, 100f);
-							this.eyesOpenValue = this.curEyeValue / 100f;
-							if ((double) this.curMouthValue > 10.0 || (double) this.curKissValue > 10.0)
-								yield return (object) null;
-							else
-								break;
-						}
-						this.tangBonePos = Vector3.zero;
-						this.tangBoneRot = Quaternion.identity;
-						yield return (object) null;
-						this.kissing = false;
-						yield break;
-					}
+					break;
 				}
-				this.RandomMoveFloatTest(ref this.npWeight, ref this.npWeightTo, ref this.npWeightSpeed, 0.0f, 1f, ref this.npWeightTime, 0.1f, 0.5f);
-				this.RandomMoveFloatTest(ref this.npWeight2, ref this.npWeight2To, ref this.npWeightSpeed2, 0.0f, 1f, ref this.npWeightTime2, 0.1f, 0.5f);
-				this.RandomMoveFloatTest(ref this.npWeight3, ref this.npWeight3To, ref this.npWeightSpeed3, 0.0f, 1f, ref this.npWeightTime3, 0.1f, 0.5f);
-				this.RandomMoveFloat(ref this.nnKutiOpenWeight, ref this.nnKutiOpenWeightTo, 0.1f, 0.0f, 1f, ref this.nnKutiOpenWeightTime, 1f, 5f);
-				this.RandomMoveFloatTest(ref this.tangBonePos.x, ref this.tangBonePosTarget.x, ref this.tangBonePosSpeed.x, -1f / 500f, 1f / 500f, ref this.tangBoneTime.x, 0.1f, 2f);
-				this.RandomMoveFloatTest(ref this.tangBonePos.y, ref this.tangBonePosTarget.y, ref this.tangBonePosSpeed.y, -1f / 1000f, 1f / 1000f, ref this.tangBoneTime.y, 0.1f, 2f);
-				this.RandomMoveFloatTest(ref this.tangBonePos.z, ref this.tangBonePosTarget.z, ref this.tangBonePosSpeed.z, -1f / 500f, 1f / 500f, ref this.tangBoneTime.z, 0.1f, 2f);
-				this.RandomMoveFloatTest(ref this.tangBoneRot.y, ref this.tangBoneRotTarget.y, ref this.tangBoneRotSpeed.y, -5f, 5f, ref this.tangBoneTime.y, 0.1f, 2f);
-				this.RandomMoveFloatTest(ref this.tangBoneRot.x, ref this.tangBoneRotTarget.x, ref this.tangBoneRotSpeed.x, -5f, 2.5f, ref this.tangBoneTime.x, 0.1f, 2f);
-				this.RandomMoveFloatTest(ref this.tangBoneRot.z, ref this.tangBoneRotTarget.z, ref this.tangBoneRotSpeed.z, -3.5f, 3.5f, ref this.tangBoneTime.z, 0.1f, 2f);
-				this.RandomMoveFloatTest(ref this.curMouthValue, ref this.toMouthValue, ref this.mouthSpeed, 97f, 100f, ref this.mouthOpenTime, 10f, 12f);
-				this.RandomMoveFloatTest(ref this.curEyeValue, ref this.toEyeValue, ref this.eyeOpenSpeed, 0.0f, 75f, ref this.eyeOpenTime, 0.01f, 1.2f);
-				this.eyesOpenValue = this.curEyeValue / 100f;
-				this.RandomMoveFloatTest(ref this.curKissValue, ref this.toKissValue, ref this.tangSpeed, 25f, 100f, ref this.tangTime, 0.01f, 0.1f);
-				yield return (object) null;
+				yield return null;
 			}
+			for (; ; )
+			{
+				if (this.kissFlag)
+				{
+					this.RandomMoveFloatTest(ref this.npWeight, ref this.npWeightTo, ref this.npWeightSpeed, 0f, 1f, ref this.npWeightTime, 0.1f, 0.5f);
+					this.RandomMoveFloatTest(ref this.npWeight2, ref this.npWeight2To, ref this.npWeightSpeed2, 0f, 1f, ref this.npWeightTime2, 0.1f, 0.5f);
+					this.RandomMoveFloatTest(ref this.npWeight3, ref this.npWeight3To, ref this.npWeightSpeed3, 0f, 1f, ref this.npWeightTime3, 0.1f, 0.5f);
+					this.RandomMoveFloat(ref this.nnKutiOpenWeight, ref this.nnKutiOpenWeightTo, 0.1f, 0f, 1f, ref this.nnKutiOpenWeightTime, 1f, 5f);
+					this.RandomMoveFloatTest(ref this.tangBonePos.x, ref this.tangBonePosTarget.x, ref this.tangBonePosSpeed.x, -0.002f, 0.002f, ref this.tangBoneTime.x, 0.1f, 2f);
+					this.RandomMoveFloatTest(ref this.tangBonePos.y, ref this.tangBonePosTarget.y, ref this.tangBonePosSpeed.y, -0.001f, 0.001f, ref this.tangBoneTime.y, 0.1f, 2f);
+					this.RandomMoveFloatTest(ref this.tangBonePos.z, ref this.tangBonePosTarget.z, ref this.tangBonePosSpeed.z, -0.002f, 0.002f, ref this.tangBoneTime.z, 0.1f, 2f);
+					this.RandomMoveFloatTest(ref this.tangBoneRot.y, ref this.tangBoneRotTarget.y, ref this.tangBoneRotSpeed.y, -5f, 5f, ref this.tangBoneTime.y, 0.1f, 2f);
+					this.RandomMoveFloatTest(ref this.tangBoneRot.x, ref this.tangBoneRotTarget.x, ref this.tangBoneRotSpeed.x, -5f, 2.5f, ref this.tangBoneTime.x, 0.1f, 2f);
+					this.RandomMoveFloatTest(ref this.tangBoneRot.z, ref this.tangBoneRotTarget.z, ref this.tangBoneRotSpeed.z, -3.5f, 3.5f, ref this.tangBoneTime.z, 0.1f, 2f);
+					this.RandomMoveFloatTest(ref this.curMouthValue, ref this.toMouthValue, ref this.mouthSpeed, 97f, 100f, ref this.mouthOpenTime, 10f, 12f);
+					this.RandomMoveFloatTest(ref this.curEyeValue, ref this.toEyeValue, ref this.eyeOpenSpeed, 0f, 75f, ref this.eyeOpenTime, 0.01f, 1.2f);
+					this.eyesOpenValue = this.curEyeValue / 100f;
+					this.RandomMoveFloatTest(ref this.curKissValue, ref this.toKissValue, ref this.tangSpeed, 25f, 100f, ref this.tangTime, 0.01f, 0.1f);
+					yield return null;
+				}
+				else
+				{
+					if (!this.IsSiruActive())
+					{
+						break;
+					}
+					this.RandomMoveFloatTest(ref this.curEyeValue, ref this.toEyeValue, ref this.eyeOpenSpeed, 0f, 75f, ref this.eyeOpenTime, 1f, 1.2f);
+					this.eyesOpenValue = this.curEyeValue / 100f;
+					this.curMouthValue += Time.deltaTime * Mathf.Abs(this.tangSpeed) * 5f * 0.5f;
+					this.curMouthValue = Mathf.Clamp(this.curMouthValue, 0f, 100f);
+					yield return null;
+				}
+			}
+			Traverse.Create(this.hand0).Field("isKiss").SetValue(false);
+			for (; ; )
+			{
+				float num = Mathf.Max(25f, Mathf.Abs(this.tangSpeed));
+				this.curMouthValue -= Time.deltaTime * num * 2f * 0.5f;
+				this.curMouthValue = Mathf.Clamp(this.curMouthValue, 0f, 100f);
+				this.curKissValue -= Time.deltaTime * num * 1f;
+				this.curKissValue = Mathf.Clamp(this.curKissValue, 0f, 100f);
+				this.curEyeValue += Time.deltaTime * num * 1f * 0.5f;
+				this.curEyeValue = Mathf.Clamp(this.curEyeValue, 0f, 100f);
+				this.eyesOpenValue = this.curEyeValue / 100f;
+				if (this.curMouthValue <= 10f && this.curKissValue <= 10f)
+				{
+					break;
+				}
+				yield return null;
+			}
+			this.tangBonePos = Vector3.zero;
+			this.tangBoneRot = Quaternion.identity;
+			yield return null;
+			this.kissing = false;
+			yield break;
 		}
 
 		public void OnDisable()
