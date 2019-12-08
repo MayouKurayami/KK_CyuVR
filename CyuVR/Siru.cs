@@ -70,7 +70,11 @@ namespace Bero.CyuVR
 			ParticleSystem.MainModule main = this.particleSystem.main;
 			main.startSize = new ParticleSystem.MinMaxCurve(0.05f, 0.07f);
 			main.startSpeed = new ParticleSystem.MinMaxCurve(3f, 4f);
-			this.particleSystem.emission.rateOverTime = (ParticleSystem.MinMaxCurve) 2f;
+
+			//Due to Unity limitation, "rateOverTime" cannot be called directly from particleSystem.emission, so create new temporary variable "em"
+			var em = this.particleSystem.emission.rateOverTime;
+			em = (ParticleSystem.MinMaxCurve) 2f;
+
 			this.top = new GameObject("ItoTop").transform;
 			this.tail = new GameObject("Itotail").transform;
 			this.head = new GameObject("ItoHead").transform;
@@ -149,8 +153,14 @@ namespace Bero.CyuVR
 			this.ito.material = this.orgMaterial[this.itoMatIndex];
 			this.particleSystemRenderer.material = this.orgMaterial[this.siruMatIndex];
 			this.ito.textureMode = this.lineTextureMode;
-			this.particleSystem.main.startColor = (double) this.flags.gaugeFemale < 70.0 ? (ParticleSystem.MinMaxGradient) new Color(1f, 1f, 1f, 1f) : (ParticleSystem.MinMaxGradient) new Color(1f, 0.62f, 0.85f);
-			this.particleSystem.emission.rateOverTime = (ParticleSystem.MinMaxCurve) (2f * this.GetVoiceValue());
+
+			//Due to Unity limitation, "startColor" cannot be called directly from particleSystem.main, so create new temporary variable "mn"
+			var mn = this.particleSystem.main;
+			mn.startColor = (double) this.flags.gaugeFemale < 70.0 ? (ParticleSystem.MinMaxGradient) new Color(1f, 1f, 1f, 1f) : (ParticleSystem.MinMaxGradient) new Color(1f, 0.62f, 0.85f);
+			//Due to Unity limitation, "rateOverTime" cannot be called directly from particleSystem.emission, so create new temporary variable "em"
+			var em = this.particleSystem.emission;
+			em.rateOverTime = (ParticleSystem.MinMaxCurve) (2f * this.GetVoiceValue());
+
 			if ((double) Vector3.SqrMagnitude(this.tail.transform.position - this.head.transform.position) < (double) this.itoDistance && this.female.GetComponent<Cyu>().kissing)
 				this.siruAmount += Time.deltaTime * 0.05f;
 			else if (this.itoBreaking)
