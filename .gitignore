@@ -1,0 +1,9 @@
+################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/obj
+UpgradeLog.htm
+/CyuVR.pdb
+/Backup
+/.vs
