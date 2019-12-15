@@ -66,8 +66,8 @@ namespace Bero.CyuVR
 			main.startSpeed = new ParticleSystem.MinMaxCurve(3f, 4f);
 
 			//Due to Unity limitation, "rateOverTime" cannot be called directly from particleSystem.emission, so create new temporary variable "em"
-			var em = this.particleSystem.emission.rateOverTime;
-			em = (ParticleSystem.MinMaxCurve) 2f;
+			var em = this.particleSystem.emission;
+			em.rateOverTime = (ParticleSystem.MinMaxCurve) 2f;
 
 			this.top = new GameObject("ItoTop").transform;
 			this.tail = new GameObject("Itotail").transform;
