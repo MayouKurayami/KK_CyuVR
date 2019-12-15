@@ -483,8 +483,9 @@ namespace Bero.CyuVR
 				this.voiceCtrl.isPrcoStop = false;
 			if (this.kissing)
 			{
+				//change parameter for SpeedUpClickAibu to use Config.kissMotionSpeed to control animation speed during kissing in Aibu
 				if (this.flags.mode == HFlag.EMode.aibu)
-					this.flags.SpeedUpClickAibu(1f * this.flags.rateDragSpeedUp, this.flags.speedMaxAibuBody, true);
+					this.flags.SpeedUpClickAibu(1f * this.flags.rateDragSpeedUp, Config.kissMotionSpeed, true);
 				this.flags.DragStart();
 				if (!Config.faceOverride)
 					return;
