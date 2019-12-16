@@ -461,11 +461,16 @@ namespace Bero.CyuVR
 			}
 			if (this.bvs.Count<Cyu.BlendValue>() == 0)
 				this.ReloadBlendValues();
-			float num1 = Vector3.Distance(this.myMouth.transform.position, this.tang.transform.position);
-			float num2 = this.flags.mode == HFlag.EMode.aibu ? Config.kissDistanceAibu : Config.kissDistance;
-			if (num1 < num2)
+			float curDistance = Vector3.Distance(this.myMouth.transform.position, this.tang.transform.position);
+			float threshold = this.flags.mode == HFlag.EMode.aibu ? Config.kissDistanceAibu : Config.kissDistance;
+			if (curDistance < threshold)
 			{
-				this.Kiss(true);
+				if (!this.IsSiruActive() || this.flags.mode != HFlag.EMode.aibu)
+					this.Kiss(true);
+				else if (curDistance < (Config.kissDistanceAibu - 0.1f) || this.siru.siruAmount < 0.2f)
+					this.Kiss(true);
+				else
+					this.Kiss(false);
 			}
 			else
 				this.Kiss(false);
