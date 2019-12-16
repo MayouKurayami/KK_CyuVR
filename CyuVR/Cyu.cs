@@ -565,10 +565,13 @@ namespace Bero.CyuVR
 				this.tangRenderer.bones[0].transform.localPosition = new Vector3(localPosition.x, this.tangBonePos.y + this.initTangBonePos.y, localPosition.z);
 				this.tangRenderer.bones[0].transform.localRotation = this.initTangBoneRot * Quaternion.Euler(this.tangBoneRot.x, this.tangBoneRot.y, this.tangBoneRot.z);
 			}
-			this.female.ChangeLookNeckPtn(1, 1f);
-			this.female.neckLookCtrl.target = this.kissNeckTarget.transform;
-			this.female.ChangeLookEyesPtn(1);
-			this.female.eyeLookCtrl.target = this.kissEyeTarget.transform;
+			if (this.kissFlag)
+			{
+				this.female.ChangeLookNeckPtn(1, 1f);
+				this.female.neckLookCtrl.target = this.kissNeckTarget.transform;
+				this.female.ChangeLookEyesPtn(1);
+				this.female.eyeLookCtrl.target = this.kissEyeTarget.transform;
+			}
 		}
 
 		internal void ToggleClothesStateAll()
