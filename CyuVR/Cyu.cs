@@ -334,22 +334,6 @@ namespace Bero.CyuVR
 				}
 			}
 			Traverse.Create(this.hand0).Field("isKiss").SetValue(false);
-			for (; ; )
-			{
-				float num = Mathf.Max(25f, Mathf.Abs(this.tangSpeed));
-				this.curMouthValue -= Time.deltaTime * num * 2f * 0.5f;
-				this.curMouthValue = Mathf.Clamp(this.curMouthValue, 0f, 100f);
-				this.curKissValue -= Time.deltaTime * num * 1f;
-				this.curKissValue = Mathf.Clamp(this.curKissValue, 0f, 100f);
-				this.curEyeValue += Time.deltaTime * num * 1f * 0.5f;
-				this.curEyeValue = Mathf.Clamp(this.curEyeValue, 0f, 100f);
-				this.eyesOpenValue = this.curEyeValue / 100f;
-				if (this.curMouthValue <= 10f && this.curKissValue <= 10f)
-				{
-					break;
-				}
-				yield return null;
-			}
 			this.tangBonePos = Vector3.zero;
 			this.tangBoneRot = Quaternion.identity;
 			yield return null;
