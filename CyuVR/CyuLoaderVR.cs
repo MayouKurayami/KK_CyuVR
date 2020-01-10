@@ -7,10 +7,11 @@ using UnityEngine;
 
 namespace Bero.CyuVR
 {
-	[BepInPlugin("bero.cyu.cyuvr", "CyuVR", "0.0.4")]
+	[BepInPlugin("bero.cyu.cyuvr", "CyuVR", Version)]
 	[BepInProcess("KoikatuVR.exe")]
 	public class CyuLoaderVR : BaseUnityPlugin
 	{
+		public const string Version = "0.0.4";
 		public static List<ChaControl> lstFemale = new List<ChaControl>();
 		private string animationName = "";
 		private HFlag hFlag;
