@@ -33,7 +33,6 @@ namespace Bero.CyuVR
 		{
 			try
 			{
-				Console.WriteLine("iskissactionhook={0}", (object) __result);
 				__result = CyuLoaderVR.lstFemale[0].GetComponent<Cyu>().IsKiss;
 				return false;
 			}
