@@ -225,20 +225,20 @@ namespace Bero.CyuVR
 			float timeMax = 5f)
 		{
 			float num = 0.01f;
-			if ((double) cur < (double) to)
+			if (cur < to)
 			{
 				cur = Mathf.SmoothDamp(cur, to, ref speed, time);
-				if ((double) cur + (double) num < (double) to)
-					return;
-				to = UnityEngine.Random.Range(min, max);
-				time = UnityEngine.Random.Range(timeMin, timeMax);
+				if (cur + num >= to)
+				{
+					to = UnityEngine.Random.Range(min, max);
+					time = UnityEngine.Random.Range(timeMin, timeMax);
+				}
+				return;
 			}
-			else
+			speed = 0f - speed;
+			cur = Mathf.SmoothDamp(cur, to, ref speed, time);
+			if (cur - num <= to)
 			{
-				speed = -speed;
-				cur = Mathf.SmoothDamp(cur, to, ref speed, time);
-				if ((double) cur - (double) num > (double) to)
-					return;
 				to = UnityEngine.Random.Range(min, max);
 				time = UnityEngine.Random.Range(timeMin, timeMax);
 			}
@@ -255,29 +255,31 @@ namespace Bero.CyuVR
 			float timeMax = 5f)
 		{
 			float num = 0.05f;
-			if ((double) cur < (double) to)
+			if (cur < to)
 			{
 				cur = Mathf.SmoothDamp(cur, to, ref speed, time, 100f);
-				if ((double) cur + (double) num < (double) to)
-					return;
-				to = UnityEngine.Random.Range(min, max);
-				time = UnityEngine.Random.Range(timeMin, timeMax);
+				if (cur + num >= to)
+				{
+					to = UnityEngine.Random.Range(min, max);
+					time = UnityEngine.Random.Range(timeMin, timeMax);
+				}
 			}
 			else
 			{
 				cur = Mathf.SmoothDamp(cur, to, ref speed, time, 100f);
-				if ((double) cur - (double) num > (double) to)
-					return;
-				to = UnityEngine.Random.Range(min, max);
-				time = UnityEngine.Random.Range(timeMin, timeMax);
+				if (cur - num <= to)
+				{
+					to = UnityEngine.Random.Range(min, max);
+					time = UnityEngine.Random.Range(timeMin, timeMax);
+				}
 			}
 		}
 
 		private bool IsSiruActive()
 		{
-			if ((UnityEngine.Object) this.siru == (UnityEngine.Object) null)
+			if ( this.siru == null)
 				return false;
-			return (double) this.siru.siruAmount > 0.0;
+			return this.siru.siruAmount > 0f;
 		}
 
 		public IEnumerator BeroKiss()
@@ -402,10 +404,10 @@ namespace Bero.CyuVR
 			if (!this.gui)
 				return;
 			float width = 400f;
-			if ((double) this.rectWin.width < 1.0)
+			if (rectWin.width < 1f)
 				this.rectWin.Set((float) Screen.width - width, 0.0f, width, (float) Screen.height);
 			this.rectWin = GUI.Window(832, this.rectWin, new GUI.WindowFunction(this.WinFunc), "Control Face");
-			UnityEngine.Event current = UnityEngine.Event.current;
+			Event current = Event.current;
 			if (current.button == 0 && current.isMouse && current.type == EventType.MouseDrag)
 				this.cameraControl.enabled = false;
 			else
@@ -447,20 +449,27 @@ namespace Bero.CyuVR
 
 		private void Update()
 		{
-			if ((UnityEngine.Object) this.voiceCtrl == (UnityEngine.Object) null)
+			if (voiceCtrl == null)
 			{
-				this.voiceCtrl = UnityEngine.Object.FindObjectOfType<HVoiceCtrl>();
-				if ((UnityEngine.Object) this.voiceCtrl == (UnityEngine.Object) null)
+				voiceCtrl = UnityEngine.Object.FindObjectOfType<HVoiceCtrl>();
+				if (voiceCtrl == null)
+				{
 					return;
+				}
 			}
-			if ((UnityEngine.Object) this.flags == (UnityEngine.Object) null)
+			if (flags == null)
 			{
-				this.flags = UnityEngine.Object.FindObjectOfType<HFlag>();
-				if ((UnityEngine.Object) this.flags == (UnityEngine.Object) null)
+				flags = UnityEngine.Object.FindObjectOfType<HFlag>();
+				if (flags == null)
+				{
 					return;
+				}
 			}
-			if (this.bvs.Count<Cyu.BlendValue>() == 0)
-				this.ReloadBlendValues();
+			if (bvs.Count() == 0)
+			{
+				ReloadBlendValues();
+			}
+
 			float curDistance = Vector3.Distance(this.myMouth.transform.position, this.tang.transform.position);
 			float threshold = this.flags.mode == HFlag.EMode.aibu ? Config.kissDistanceAibu : Config.kissDistance;
 			if (curDistance < threshold)
@@ -503,14 +512,14 @@ namespace Bero.CyuVR
 				this.female.eyebrowCtrl.OpenMin = 0.0f;
 				float num3 = Vector3.Angle(this.female.objHead.transform.forward, this.kissEyeTarget.transform.position - this.female.objHead.transform.position);
 				this.eyeLookChangeTimer -= Time.deltaTime;
-				if ((double) this.eyeLookChangeTimer < 0.0 || (double) num3 > 45.0)
+				if (eyeLookChangeTimer < 0f || num3 > 45f)
 				{
 					this.eyeLookChangeTimer = UnityEngine.Random.Range(10f, 20f);
 					this.eyeLookX = UnityEngine.Random.Range(-70f, 70f);
 					this.eyeLookY = UnityEngine.Random.Range(-45f, 45f);
 				}
-				this.kissEyeTarget.transform.RotateAround(this.kissEyeTarget.transform.parent.position, this.female.objHead.transform.up, (float) ((double) this.eyeLookX * (double) Time.deltaTime * 0.200000002980232));
-				this.kissEyeTarget.transform.RotateAround(this.kissEyeTarget.transform.parent.position, this.female.objHead.transform.right, (float) ((double) this.eyeLookY * (double) Time.deltaTime * 0.200000002980232));
+				this.kissEyeTarget.transform.RotateAround(kissEyeTarget.transform.parent.position, female.objHead.transform.up, eyeLookX * Time.deltaTime * 0.2f);
+				this.kissEyeTarget.transform.RotateAround(kissEyeTarget.transform.parent.position, female.objHead.transform.right, eyeLookY * Time.deltaTime * 0.2f);
 			}
 			else
 				this.female.ChangeEyesBlinkFlag(true);
@@ -524,27 +533,43 @@ namespace Bero.CyuVR
 				{
 					if (bv.active)
 					{
-						float num1 = 1f;
+						float num = 1f;
 						float num2 = 1.5f;
 						if (bv.name.IndexOf("name02_") >= 0)
-							num1 = (float) ((double) num2 * (double) this.npWeight / ((double) this.npWeight + (double) this.npWeight2 + (double) this.npWeight3));
+						{
+							num = num2 * npWeight / (npWeight + npWeight2 + npWeight3);
+						}
 						else if (bv.name.IndexOf("pero_") >= 0)
-							num1 = (float) ((double) num2 * (double) this.npWeight2 / ((double) this.npWeight + (double) this.npWeight2 + (double) this.npWeight3));
+						{
+							num = num2 * npWeight2 / (npWeight + npWeight2 + npWeight3);
+						}
 						else if (bv.name.IndexOf("name_") >= 0)
-							num1 = (float) ((double) num2 * (double) this.npWeight3 / ((double) this.npWeight + (double) this.npWeight2 + (double) this.npWeight3));
-						bv.value = this.curKissValue * num1;
-						if (this.kissing && bv.name.IndexOf("kuti_face.f00_name02_op") >= 0)
-							bv.value = this.curMouthValue * (1f - this.nnKutiOpenWeight);
-						else if (this.kissing && bv.name.IndexOf("kuti_face.f00_name_op") >= 0)
-							bv.value = this.curMouthValue * this.nnKutiOpenWeight;
-						if (this.kissing && bv.name.IndexOf("kuti_ha.ha00_name02_op") >= 0)
-							bv.value = this.curMouthValue * (1f - this.nnKutiOpenWeight);
-						else if (this.kissing && bv.name.IndexOf("kuti_ha.ha00_name_op") >= 0)
-							bv.value = this.curMouthValue * this.nnKutiOpenWeight;
+						{
+							num = num2 * npWeight3 / (npWeight + npWeight2 + npWeight3);
+						}
+						bv.value = curKissValue * num;
+						if (kissing && bv.name.IndexOf("kuti_face.f00_name02_op") >= 0)
+						{
+							bv.value = curMouthValue * (1f - nnKutiOpenWeight);
+						}
+						else if (kissing && bv.name.IndexOf("kuti_face.f00_name_op") >= 0)
+						{
+							bv.value = curMouthValue * nnKutiOpenWeight;
+						}
+						if (kissing && bv.name.IndexOf("kuti_ha.ha00_name02_op") >= 0)
+						{
+							bv.value = curMouthValue * (1f - nnKutiOpenWeight);
+						}
+						else if (kissing && bv.name.IndexOf("kuti_ha.ha00_name_op") >= 0)
+						{
+							bv.value = curMouthValue * nnKutiOpenWeight;
+						}
 						bv.renderer.SetBlendShapeWeight(bv.index, bv.value);
 					}
 					else if (bv.name.IndexOf("kuti") >= 0)
-						bv.renderer.SetBlendShapeWeight(bv.index, 0.0f);
+					{
+						bv.renderer.SetBlendShapeWeight(bv.index, 0f);
+					}
 				}
 			}
 			catch (Exception ex)

@@ -109,9 +109,9 @@ namespace Bero.CyuVR
 
 		private float GetVoiceValue()
 		{
-			if ((bool) ((UnityEngine.Object) this.female.asVoice) && this.female.asVoice.isPlaying && this.female.wavInfoData != null)
+			if ((bool)female.asVoice && female.asVoice.isPlaying && female.wavInfoData != null)
 				return this.female.wavInfoData.GetValue(this.female.asVoice.time);
-			return 0.0f;
+			return 0f;
 		}
 
 		private IEnumerator ItoBreaking()
@@ -120,26 +120,28 @@ namespace Bero.CyuVR
 			this.ito.enabled = false;
 			this.itoOn = false;
 			this.itoBreaking = false;
-			yield return (object) null;
+			yield return null;
 		}
 
 		private void UpdateWidthCurve()
 		{
-			float b = Vector3.SqrMagnitude(this.head.transform.position - this.tail.transform.position);
-			float num1 = b / 2f;
+			float num = Vector3.SqrMagnitude(head.transform.position - tail.transform.position);
+			float num2 = num / 2f;
 			AnimationCurve animationCurve = new AnimationCurve();
-			float num2 = 0.0f;
+			float num3 = 0f;
 			do
 			{
-				float num3 = Mathf.Lerp(0.0f, b, num2);
-				float num4 = Mathf.Abs(num1 - num3);
-				if (this.itoBreaking && (double) num1 - (double) num3 < 0.0)
-					num4 = 0.0f;
-				animationCurve.AddKey(num2, (float) ((double) this.siruAmount * (double) num4 / ((double) b * (double) this.distanceReduction)));
-				num2 += 0.01f;
+				float num4 = Mathf.Lerp(0f, num, num3);
+				float num5 = Mathf.Abs(num2 - num4);
+				if (itoBreaking && num2 - num4 < 0f)
+				{
+					num5 = 0f;
+				}
+				animationCurve.AddKey(num3, siruAmount * num5 / (num * distanceReduction));
+				num3 += 0.01f;
 			}
-			while ((double) num2 <= 1.0);
-			this.ito.widthCurve = animationCurve;
+			while (!(num3 > 1f));
+			ito.widthCurve = animationCurve;
 		}
 
 		private void Update()
@@ -155,13 +157,13 @@ namespace Bero.CyuVR
 			var em = this.particleSystem.emission;
 			em.rateOverTime = (ParticleSystem.MinMaxCurve) (2f * this.GetVoiceValue());
 
-			if ((double) Vector3.SqrMagnitude(this.tail.transform.position - this.head.transform.position) < (double) this.itoDistance && this.female.GetComponent<Cyu>().kissing)
+			if (Vector3.SqrMagnitude(tail.transform.position - head.transform.position) < itoDistance && female.GetComponent<Cyu>().kissing)
 				this.siruAmount += Time.deltaTime * 0.05f;
 			else if (this.itoBreaking)
 				this.siruAmount -= Time.deltaTime * 0.5f;
 			else
 				this.siruAmount -= Time.deltaTime * 0.05f;
-			if ((double) this.siruAmount > 0.0 && (double) Vector3.SqrMagnitude(this.tail.transform.position - this.head.transform.position) > (double) this.itoBreakDistance)
+			if (siruAmount > 0f && Vector3.SqrMagnitude(tail.transform.position - head.transform.position) > itoBreakDistance)
 				this.BreakIto();
 			this.siruAmount = Mathf.Clamp(this.siruAmount, 0.0f, 1f);
 			ref Vector3 local = ref this.tangRenderer.sharedMesh.vertices[this.tangVertexIndex];
@@ -178,7 +180,7 @@ namespace Bero.CyuVR
 				if (index > 0)
 				{
 					this.tail.position = this.posList[index];
-					if ((double) this.itoTimer < 0.0 || (double) this.siruAmount <= 0.0)
+					if (itoTimer < 0f || siruAmount <= 0f)
 					{
 						this.itoBreaking = false;
 						this.siruAmount = 0.0f;
@@ -195,14 +197,16 @@ namespace Bero.CyuVR
 
 		public static Vector3 BezierCurve(Vector3 pt1, Vector3 pt2, Vector3 ctrlPt, float t)
 		{
-			if ((double) t > 1.0)
+			if (t > 1f)
+			{
 				t = 1f;
-			Vector3 vector3 = new Vector3();
+			}
+			Vector3 result = default(Vector3);
 			float num = 1f - t;
-			vector3.x = (float) ((double) num * (double) num * (double) pt1.x + 2.0 * (double) num * (double) t * (double) ctrlPt.x + (double) t * (double) t * (double) pt2.x);
-			vector3.y = (float) ((double) num * (double) num * (double) pt1.y + 2.0 * (double) num * (double) t * (double) ctrlPt.y + (double) t * (double) t * (double) pt2.y);
-			vector3.z = (float) ((double) num * (double) num * (double) pt1.z + 2.0 * (double) num * (double) t * (double) ctrlPt.z + (double) t * (double) t * (double) pt2.z);
-			return vector3;
+			result.x = num * num * pt1.x + 2f * num * t * ctrlPt.x + t * t * pt2.x;
+			result.y = num * num * pt1.y + 2f * num * t * ctrlPt.y + t * t * pt2.y;
+			result.z = num * num * pt1.z + 2f * num * t * ctrlPt.z + t * t * pt2.z;
+			return result;
 		}
 
 		public void OnLineDraw()

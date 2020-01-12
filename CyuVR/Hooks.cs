@@ -65,19 +65,19 @@ namespace Bero.CyuVR
 				switch (lstCondition)
 				{
 					case 0:
-						if ((double) __instance.flags.gaugeFemale < 50.0)
+						if (__instance.flags.gaugeFemale < 50f)
 						{
 							__result = false;
 							return false;
 						}
-						continue;
+						break;
 					case 1:
-						if ((double) __instance.flags.gaugeFemale >= 50.0)
+						if (__instance.flags.gaugeFemale >= 50f)
 						{
 							__result = false;
 							return false;
 						}
-						continue;
+						break;
 					case 2:
 						__result = false;
 						return false;
@@ -85,95 +85,94 @@ namespace Bero.CyuVR
 						if (__instance.flags.mode == HFlag.EMode.aibu)
 						{
 							flag = true;
-							continue;
 						}
-						continue;
+						break;
 					case 4:
 						if (__instance.flags.voice.speedMotion)
 						{
 							__result = false;
 							return false;
 						}
-						continue;
+						break;
 					case 5:
-						if (__instance.flags.mode != HFlag.EMode.aibu && !__instance.flags.voice.speedMotion)
+						if (__instance.flags.mode != 0 && !__instance.flags.voice.speedMotion)
 						{
 							__result = false;
 							return false;
 						}
-						continue;
+						break;
 					case 6:
 						if (__instance.flags.voice.speedItem)
 						{
 							__result = false;
 							return false;
 						}
-						continue;
+						break;
 					case 7:
 						if (!__instance.flags.voice.speedItem)
 						{
 							__result = false;
 							return false;
 						}
-						continue;
+						break;
 					case 8:
 						flag = true;
-						continue;
+						break;
 					case 9:
 						__result = false;
 						return false;
 					case 12:
 						if (__instance.flags.mode == HFlag.EMode.aibu)
 						{
-							if ((double) __instance.flags.speed < 0.00999999977648258)
+							if (__instance.flags.speed < 0.01f)
 							{
 								__result = false;
 								return false;
 							}
-							continue;
 						}
-						if ((double) __instance.flags.speedCalc < 0.00999999977648258)
+						else if (__instance.flags.speedCalc < 0.01f)
 						{
 							__result = false;
 							return false;
 						}
-						continue;
+						break;
 					case 13:
 						if (__instance.flags.mode == HFlag.EMode.aibu)
 						{
-							if ((double) __instance.flags.speed >= 0.00999999977648258)
+							if (__instance.flags.speed >= 0.01f)
 							{
 								__result = false;
 								return false;
 							}
-							continue;
 						}
-						if ((double) __instance.flags.speedCalc >= 0.00999999977648258)
+						else if (__instance.flags.speedCalc >= 0.01f)
 						{
 							__result = false;
 							return false;
 						}
-						continue;
+						break;
 					case 14:
 						if (__instance.flags.mode == HFlag.EMode.aibu)
+						{
 							flag = true;
-						if (!((IEnumerable<VRHandCtrl>) __instance.hands).Any<VRHandCtrl>((Func<VRHandCtrl, bool>) (h => h.IsAction())))
+						}
+						if (!__instance.hands.Any((VRHandCtrl h) => h.IsAction()))
 						{
 							__result = false;
 							return false;
 						}
-						continue;
+						break;
 					case 15:
 						if (__instance.flags.mode == HFlag.EMode.aibu)
+						{
 							flag = true;
-						if (((IEnumerable<VRHandCtrl>) __instance.hands).Any<VRHandCtrl>((Func<VRHandCtrl, bool>) (h => h.IsAction())))
+						}
+						if (__instance.hands.Any((VRHandCtrl h) => h.IsAction()))
 						{
 							__result = false;
 							return false;
 						}
-						continue;
-					default:
-						continue;
+						break;
 				}
 			}
 			if (flag)
