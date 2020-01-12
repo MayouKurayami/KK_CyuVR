@@ -489,7 +489,7 @@ namespace Bero.CyuVR
 				if (this.flags.mode == HFlag.EMode.aibu)
 					this.flags.SpeedUpClickAibu(1f * this.flags.rateDragSpeedUp, Config.kissMotionSpeed, true);
 				this.flags.DragStart();
-				if (!Config.faceOverride)
+				if (!Config.eyesMovement)
 					return;
 				this.female.ChangeEyesBlinkFlag(false);
 				this.female.eyesCtrl.ChangePtn(0, true);
@@ -571,7 +571,7 @@ namespace Bero.CyuVR
 		{
 			if (!this.kissing)
 				return;
-			if (Config.faceOverride)
+			if (Config.tongueOverride || flags.gaugeFemale > 70 || this.flags.lstHeroine[0].HExperience == SaveData.Heroine.HExperienceKind.淫乱)
 			{
 				this.SetBlendShapeWeight();
 				Vector3 localPosition = this.tangRenderer.bones[0].transform.localPosition;
