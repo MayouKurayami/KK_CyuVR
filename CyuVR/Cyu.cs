@@ -287,6 +287,7 @@ namespace Bero.CyuVR
 			this.kissing = true;
 			this.voiceCtrl = UnityEngine.Object.FindObjectOfType<HVoiceCtrl>();
 			this.curEyeValue = 100f;
+			this.curMouthValue = 0f;
 			this.tangSpeed = UnityEngine.Random.Range(10f, 20f);
 			while (this.kissFlag)
 			{
@@ -302,10 +303,9 @@ namespace Bero.CyuVR
 				}
 				yield return null;
 			}
-			for (; ; )
+			while (this.kissFlag)
 			{
-				if (this.kissFlag)
-				{
+
 					this.RandomMoveFloatTest(ref this.npWeight, ref this.npWeightTo, ref this.npWeightSpeed, 0f, 1f, ref this.npWeightTime, 0.1f, 0.5f);
 					this.RandomMoveFloatTest(ref this.npWeight2, ref this.npWeight2To, ref this.npWeightSpeed2, 0f, 1f, ref this.npWeightTime2, 0.1f, 0.5f);
 					this.RandomMoveFloatTest(ref this.npWeight3, ref this.npWeight3To, ref this.npWeightSpeed3, 0f, 1f, ref this.npWeightTime3, 0.1f, 0.5f);
@@ -321,29 +321,17 @@ namespace Bero.CyuVR
 					this.eyesOpenValue = this.curEyeValue / 100f;
 					this.RandomMoveFloatTest(ref this.curKissValue, ref this.toKissValue, ref this.tangSpeed, 25f, 100f, ref this.tangTime, 0.01f, 0.1f);
 					yield return null;
-				}
-				else
-				{
-					if (!this.IsSiruActive())
-					{
-						break;
-					}
-					this.RandomMoveFloatTest(ref this.curEyeValue, ref this.toEyeValue, ref this.eyeOpenSpeed, 0f, 75f, ref this.eyeOpenTime, 1f, 1.2f);
-					this.eyesOpenValue = this.curEyeValue / 100f;
-					this.curMouthValue += Time.deltaTime * Mathf.Abs(this.tangSpeed) * 5f * 0.5f;
-					this.curMouthValue = Mathf.Clamp(this.curMouthValue, 0f, 100f);
-					yield return null;
-				}
+
 			}
 			Traverse.Create(this.hand0).Field("isKiss").SetValue(false);
 			for (; ; )
 			{
 				float num = Mathf.Max(25f, Mathf.Abs(this.tangSpeed));
-				this.curMouthValue -= Time.deltaTime * num * 2f * 0.5f;
+				this.curMouthValue -= Time.deltaTime * num * 2f * 0.8f;
 				this.curMouthValue = Mathf.Clamp(this.curMouthValue, 0f, 100f);
 				this.curKissValue -= Time.deltaTime * num * 1f;
 				this.curKissValue = Mathf.Clamp(this.curKissValue, 0f, 100f);
-				this.curEyeValue += Time.deltaTime * num * 1f * 0.5f;
+				this.curEyeValue += Time.deltaTime * num * 1f * 0.8f;
 				this.curEyeValue = Mathf.Clamp(this.curEyeValue, 0f, 100f);
 				this.eyesOpenValue = this.curEyeValue / 100f;
 				if (this.curMouthValue <= 10f && this.curKissValue <= 10f)
