@@ -11,7 +11,7 @@ namespace Bero.CyuVR
 	[BepInProcess("KoikatuVR.exe")]
 	public class CyuLoaderVR : BaseUnityPlugin
 	{
-		public const string Version = "0.0.4";
+		public const string Version = "0.1.1";
 		public static List<ChaControl> lstFemale = new List<ChaControl>();
 		private string animationName = "";
 		private HFlag hFlag;
