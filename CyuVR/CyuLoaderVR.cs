@@ -23,13 +23,13 @@ namespace Bero.CyuVR
 
 		private void Awake()
 		{
-			Application.logMessageReceived += new Application.LogCallback(this.HandleLog);
-			UnityEngine.Object.DontDestroyOnLoad((UnityEngine.Object) new GameObject("BeroConfig").AddComponent<Config>());
+			Application.logMessageReceived += new Application.LogCallback(HandleLog);
+			DontDestroyOnLoad(new GameObject("BeroConfig").AddComponent<Config>());
 			if (!Application.dataPath.EndsWith("KoikatuVR_Data"))
 				return;
 			try
 			{
-				HarmonyInstance.Create("bero.cyuvr").PatchAll(typeof (Hooks));
+				HarmonyInstance.Create("bero.cyuvr").PatchAll(typeof(Hooks));
 			}
 			catch (Exception ex)
 			{
@@ -39,25 +39,25 @@ namespace Bero.CyuVR
 
 		private void Update()
 		{
-			if ((UnityEngine.Object) this.hFlag == (UnityEngine.Object) null)
+			if (hFlag == null)
 			{
-				this.hFlag = UnityEngine.Object.FindObjectOfType<HFlag>();
-				if ((UnityEngine.Object) this.hFlag == (UnityEngine.Object) null)
+				hFlag = FindObjectOfType<HFlag>();
+				if (hFlag == null)
 					return;
 			}
-			if (!(this.animationName != this.hFlag.nowAnimationInfo.nameAnimation))
+			if (!(animationName != hFlag.nowAnimationInfo.nameAnimation))
 				return;
-			CyuLoaderVR.lstFemale.Clear();
-			((IEnumerable<ChaControl>) UnityEngine.Object.FindObjectsOfType<ChaControl>()).ToList<ChaControl>().Where<ChaControl>((Func<ChaControl, bool>) (x => x.chaFile.parameter.sex == (byte) 1)).ToList<ChaControl>().ForEach((System.Action<ChaControl>) (x =>
-			{
-				Cyu component = x.GetComponent<Cyu>();
-				if ((UnityEngine.Object) component != (UnityEngine.Object) null)
-					UnityEngine.Object.Destroy((UnityEngine.Object) component);
-				x.gameObject.AddComponent<Cyu>();
-				CyuLoaderVR.lstFemale.Add(x);
-			}));
-			this.animationName = this.hFlag.nowAnimationInfo.nameAnimation;
-			Console.WriteLine(this.animationName);
+			lstFemale.Clear();
+			FindObjectsOfType<ChaControl>().ToList<ChaControl>().Where<ChaControl>(x => x.chaFile.parameter.sex == 1).ToList<ChaControl>().ForEach(x =>
+		  {
+			  Cyu component = x.GetComponent<Cyu>();
+			  if (component != null)
+				  Destroy(component);
+			  x.gameObject.AddComponent<Cyu>();
+			  lstFemale.Add(x);
+		  });
+			animationName = hFlag.nowAnimationInfo.nameAnimation;
+			Console.WriteLine(animationName);
 		}
 	}
 }

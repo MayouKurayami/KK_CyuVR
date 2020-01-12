@@ -23,8 +23,6 @@ namespace Bero.CyuVR
 		private List<Cyu.BlendValue> bvsShow = new List<Cyu.BlendValue>();
 		private string filterText = "";
 		public float eyesOpenValue = 100f;
-		private bool berocyuOverride = true;
-		private bool faceOverride = true;
 		private bool firstKiss = true;
 		private float mouthSpeed = 1f;
 		private float npWeight = 0.33f;
@@ -96,65 +94,64 @@ namespace Bero.CyuVR
 		{
 			get
 			{
-				return this.kissFlag;
+				return kissFlag;
 			}
 		}
 
 		private void Awake()
 		{
-			this.faceOverride = true;
-			this.cameraControl = UnityEngine.Object.FindObjectOfType<CameraControl_Ver2>();
-			this.female = this.GetComponent<ChaControl>();
-			this.male = ((IEnumerable<ChaControl>) UnityEngine.Object.FindObjectsOfType<ChaControl>()).Where<ChaControl>((Func<ChaControl, bool>) (x => x.name.IndexOf("chaM") >= 0)).FirstOrDefault<ChaControl>();
-			this.ReloadBlendValues();
-			Transform transform = ((IEnumerable<Transform>) this.female.GetComponentsInChildren<Transform>()).ToList<Transform>().Where<Transform>((Func<Transform, bool>) (x => x.name == "o_tang")).FirstOrDefault<Transform>();
-			if ((UnityEngine.Object) transform == (UnityEngine.Object) null)
+			cameraControl = FindObjectOfType<CameraControl_Ver2>();
+			female = GetComponent<ChaControl>();
+			male = FindObjectsOfType<ChaControl>().Where<ChaControl>(x => x.name.IndexOf("chaM") >= 0).FirstOrDefault<ChaControl>();
+			ReloadBlendValues();
+			Transform transform = female.GetComponentsInChildren<Transform>().ToList<Transform>().Where<Transform>(x => x.name == "o_tang").FirstOrDefault<Transform>();
+			if (transform == null)
 			{
 				Console.WriteLine("No tang founded.");
-				UnityEngine.Object.Destroy((UnityEngine.Object) this);
+				Destroy(this);
 			}
 			else
 			{
-				this.tang = transform.gameObject;
-				this.siru = this.gameObject.AddComponent<Siru>();
-				this.siru.female = this.female;
-				this.tangRenderer = this.siru.tangRenderer = this.tang.GetComponent<SkinnedMeshRenderer>();
-				this.kissEyeTarget = GameObject.CreatePrimitive(PrimitiveType.Cube);
-				this.kissEyeTarget.SetActive(false);
-				this.kissEyeTarget.AddComponent<DragMove>();
-				this.kissEyeTarget.transform.localScale = Vector3.one * 0.05f;
-				this.kissEyeTarget.transform.SetParent(this.female.objHead.transform);
-				this.kissEyeTarget.transform.localPosition = new Vector3(0.0f, 0.0f, 0.5f);
-				this.neckLookController = this.female.neckLookCtrl;
-				this.camera = ((IEnumerable<SteamVR_Camera>) Resources.FindObjectsOfTypeAll<SteamVR_Camera>()).FirstOrDefault<SteamVR_Camera>().GetComponent<Camera>().gameObject;
-				this.myMouth = new GameObject("MyMouth");
-				this.myMouth.transform.SetParent(this.camera.transform);
-				this.myMouth.transform.localPosition = new Vector3(0.0f, -Config.mouthOffset, 0.0f);
-				this.siru.siruTarget = this.myMouth;
-				this.kissNeckTarget = new GameObject("KissNeckTarget");
-				this.kissNeckTarget.transform.SetParent(this.camera.transform, false);
-				this.kissNeckTarget.transform.localPosition = new Vector3(0.0f, Config.kissNeckAngle, -0.5f);
+				tang = transform.gameObject;
+				siru = gameObject.AddComponent<Siru>();
+				siru.female = female;
+				tangRenderer = siru.tangRenderer = tang.GetComponent<SkinnedMeshRenderer>();
+				kissEyeTarget = GameObject.CreatePrimitive(PrimitiveType.Cube);
+				kissEyeTarget.SetActive(false);
+				kissEyeTarget.AddComponent<DragMove>();
+				kissEyeTarget.transform.localScale = Vector3.one * 0.05f;
+				kissEyeTarget.transform.SetParent(female.objHead.transform);
+				kissEyeTarget.transform.localPosition = new Vector3(0.0f, 0.0f, 0.5f);
+				neckLookController = female.neckLookCtrl;
+				camera = Resources.FindObjectsOfTypeAll<SteamVR_Camera>().FirstOrDefault<SteamVR_Camera>().GetComponent<Camera>().gameObject;
+				myMouth = new GameObject("MyMouth");
+				myMouth.transform.SetParent(camera.transform);
+				myMouth.transform.localPosition = new Vector3(0.0f, -Config.mouthOffset, 0.0f);
+				siru.siruTarget = myMouth;
+				kissNeckTarget = new GameObject("KissNeckTarget");
+				kissNeckTarget.transform.SetParent(camera.transform, false);
+				kissNeckTarget.transform.localPosition = new Vector3(0.0f, Config.kissNeckAngle, -0.5f);
 			}
 		}
 
 		private void Start()
 		{
-			this.scene = UnityEngine.Object.FindObjectOfType<VRHScene>();
-			this.initTangBonePos = this.tangRenderer.bones[0].localPosition;
-			this.initTangBoneRot = this.tangRenderer.bones[0].localRotation;
+			scene = FindObjectOfType<VRHScene>();
+			initTangBonePos = tangRenderer.bones[0].localPosition;
+			initTangBoneRot = tangRenderer.bones[0].localRotation;
 		}
 
 		private void OnDestroy()
 		{
-			UnityEngine.Object.Destroy((UnityEngine.Object) this.siru);
-			UnityEngine.Object.Destroy((UnityEngine.Object) this.kissEyeTarget);
+			Destroy(siru);
+			Destroy(kissEyeTarget);
 		}
 
 		public void ReloadBlendValues()
 		{
-			SkinnedMeshRenderer[] componentsInChildren = this.transform.GetComponentsInChildren<SkinnedMeshRenderer>();
-			this.bvs.Clear();
-			this.bvsShow.Clear();
+			SkinnedMeshRenderer[] componentsInChildren = transform.GetComponentsInChildren<SkinnedMeshRenderer>();
+			bvs.Clear();
+			bvsShow.Clear();
 			foreach (SkinnedMeshRenderer skinnedMeshRenderer in componentsInChildren)
 			{
 				int blendShapeCount = skinnedMeshRenderer.sharedMesh.blendShapeCount;
@@ -170,7 +167,7 @@ namespace Bero.CyuVR
 						blendValue.active = true;
 						blendValue.weight = 0.5f;
 					}
-					this.bvs.Add(blendValue);
+					bvs.Add(blendValue);
 				}
 			}
 		}
@@ -178,39 +175,51 @@ namespace Bero.CyuVR
 		public void ChangeMouthExpression(int index)
 		{
 			if (index >= Singleton<CustomBase>.Instance.lstMouth.Count)
+			{
 				return;
-			this.female.ChangeMouthPtn(index, true);
-			Console.WriteLine("Mouth:{0} {1}", (object) index, (object) Singleton<CustomBase>.Instance.lstMouth[index].list[1]);
+			}
+
+			female.ChangeMouthPtn(index, true);
+			Console.WriteLine("Mouth:{0} {1}", index, Singleton<CustomBase>.Instance.lstMouth[index].list[1]);
 		}
 
 		public void ChangeEyesExpression(int index)
 		{
 			if (index >= Singleton<CustomBase>.Instance.lstEye.Count)
+			{
 				return;
-			this.female.ChangeEyesPtn(index, true);
-			Console.WriteLine("Eyes:{0} {1}", (object) index, (object) Singleton<CustomBase>.Instance.lstEye[index].list[1]);
+			}
+
+			female.ChangeEyesPtn(index, true);
+			Console.WriteLine("Eyes:{0} {1}", index, Singleton<CustomBase>.Instance.lstEye[index].list[1]);
 		}
 
 		public void ChangeEyeBlowExpression(int index)
 		{
 			if (index >= Singleton<CustomBase>.Instance.lstEyebrow.Count)
+			{
 				return;
-			this.female.ChangeEyebrowPtn(index, true);
-			Console.WriteLine("Eye Blow:{0} {1}", (object) index, (object) Singleton<CustomBase>.Instance.lstEyebrow[index].list[1]);
+			}
+
+			female.ChangeEyebrowPtn(index, true);
+			Console.WriteLine("Eye Blow:{0} {1}", index, Singleton<CustomBase>.Instance.lstEyebrow[index].list[1]);
 		}
 
 		public void Kiss(bool active)
 		{
 			if (!active)
 			{
-				this.kissFlag = false;
+				kissFlag = false;
 			}
 			else
 			{
-				this.kissFlag = true;
-				if (this.kissing)
+				kissFlag = true;
+				if (kissing)
+				{
 					return;
-				this.DoKiss();
+				}
+
+				DoKiss();
 			}
 		}
 
@@ -277,140 +286,159 @@ namespace Bero.CyuVR
 
 		private bool IsSiruActive()
 		{
-			if ( this.siru == null)
+			if (siru == null)
+			{
 				return false;
-			return this.siru.siruAmount > 0f;
+			}
+
+			return siru.siruAmount > 0f;
 		}
 
 		public IEnumerator BeroKiss()
 		{
-			this.kissing = true;
-			this.voiceCtrl = UnityEngine.Object.FindObjectOfType<HVoiceCtrl>();
-			this.curEyeValue = 100f;
-			this.curMouthValue = 0f;
-			this.tangSpeed = UnityEngine.Random.Range(10f, 20f);
-			while (this.kissFlag)
+			kissing = true;
+			voiceCtrl = FindObjectOfType<HVoiceCtrl>();
+			curEyeValue = 100f;
+			curMouthValue = 0f;
+			tangSpeed = UnityEngine.Random.Range(10f, 20f);
+			while (kissFlag)
 			{
-				this.curKissValue += Time.deltaTime * this.tangSpeed * 5f;
-				this.curMouthValue += Time.deltaTime * this.tangSpeed * 10f;
-				this.curEyeValue -= Time.deltaTime * this.tangSpeed * 3f;
-				this.curMouthValue = Mathf.Clamp(this.curMouthValue, 0f, 100f);
-				this.curKissValue = Mathf.Clamp(this.curKissValue, 0f, 100f);
-				this.curEyeValue = Mathf.Clamp(this.curEyeValue, 0f, 100f);
-				if (this.curKissValue >= 100f && this.curMouthValue >= 100f)
+				curKissValue += Time.deltaTime * tangSpeed * 5f;
+				curMouthValue += Time.deltaTime * tangSpeed * 10f;
+				curEyeValue -= Time.deltaTime * tangSpeed * 3f;
+				curMouthValue = Mathf.Clamp(curMouthValue, 0f, 100f);
+				curKissValue = Mathf.Clamp(curKissValue, 0f, 100f);
+				curEyeValue = Mathf.Clamp(curEyeValue, 0f, 100f);
+				if (curKissValue >= 100f && curMouthValue >= 100f)
 				{
 					break;
 				}
 				yield return null;
 			}
-			while (this.kissFlag)
+			while (kissFlag)
 			{
 
-					this.RandomMoveFloatTest(ref this.npWeight, ref this.npWeightTo, ref this.npWeightSpeed, 0f, 1f, ref this.npWeightTime, 0.1f, 0.5f);
-					this.RandomMoveFloatTest(ref this.npWeight2, ref this.npWeight2To, ref this.npWeightSpeed2, 0f, 1f, ref this.npWeightTime2, 0.1f, 0.5f);
-					this.RandomMoveFloatTest(ref this.npWeight3, ref this.npWeight3To, ref this.npWeightSpeed3, 0f, 1f, ref this.npWeightTime3, 0.1f, 0.5f);
-					this.RandomMoveFloat(ref this.nnKutiOpenWeight, ref this.nnKutiOpenWeightTo, 0.1f, 0f, 1f, ref this.nnKutiOpenWeightTime, 1f, 5f);
-					this.RandomMoveFloatTest(ref this.tangBonePos.x, ref this.tangBonePosTarget.x, ref this.tangBonePosSpeed.x, -0.002f, 0.002f, ref this.tangBoneTime.x, 0.1f, 2f);
-					this.RandomMoveFloatTest(ref this.tangBonePos.y, ref this.tangBonePosTarget.y, ref this.tangBonePosSpeed.y, -0.001f, 0.001f, ref this.tangBoneTime.y, 0.1f, 2f);
-					this.RandomMoveFloatTest(ref this.tangBonePos.z, ref this.tangBonePosTarget.z, ref this.tangBonePosSpeed.z, -0.002f, 0.002f, ref this.tangBoneTime.z, 0.1f, 2f);
-					this.RandomMoveFloatTest(ref this.tangBoneRot.y, ref this.tangBoneRotTarget.y, ref this.tangBoneRotSpeed.y, -5f, 5f, ref this.tangBoneTime.y, 0.1f, 2f);
-					this.RandomMoveFloatTest(ref this.tangBoneRot.x, ref this.tangBoneRotTarget.x, ref this.tangBoneRotSpeed.x, -5f, 2.5f, ref this.tangBoneTime.x, 0.1f, 2f);
-					this.RandomMoveFloatTest(ref this.tangBoneRot.z, ref this.tangBoneRotTarget.z, ref this.tangBoneRotSpeed.z, -3.5f, 3.5f, ref this.tangBoneTime.z, 0.1f, 2f);
-					this.RandomMoveFloatTest(ref this.curMouthValue, ref this.toMouthValue, ref this.mouthSpeed, 97f, 100f, ref this.mouthOpenTime, 10f, 12f);
-					this.RandomMoveFloatTest(ref this.curEyeValue, ref this.toEyeValue, ref this.eyeOpenSpeed, 0f, 75f, ref this.eyeOpenTime, 0.01f, 1.2f);
-					this.eyesOpenValue = this.curEyeValue / 100f;
-					this.RandomMoveFloatTest(ref this.curKissValue, ref this.toKissValue, ref this.tangSpeed, 25f, 100f, ref this.tangTime, 0.01f, 0.1f);
-					yield return null;
+				RandomMoveFloatTest(ref npWeight, ref npWeightTo, ref npWeightSpeed, 0f, 1f, ref npWeightTime, 0.1f, 0.5f);
+				RandomMoveFloatTest(ref npWeight2, ref npWeight2To, ref npWeightSpeed2, 0f, 1f, ref npWeightTime2, 0.1f, 0.5f);
+				RandomMoveFloatTest(ref npWeight3, ref npWeight3To, ref npWeightSpeed3, 0f, 1f, ref npWeightTime3, 0.1f, 0.5f);
+				RandomMoveFloat(ref nnKutiOpenWeight, ref nnKutiOpenWeightTo, 0.1f, 0f, 1f, ref nnKutiOpenWeightTime, 1f, 5f);
+				RandomMoveFloatTest(ref tangBonePos.x, ref tangBonePosTarget.x, ref tangBonePosSpeed.x, -0.002f, 0.002f, ref tangBoneTime.x, 0.1f, 2f);
+				RandomMoveFloatTest(ref tangBonePos.y, ref tangBonePosTarget.y, ref tangBonePosSpeed.y, -0.001f, 0.001f, ref tangBoneTime.y, 0.1f, 2f);
+				RandomMoveFloatTest(ref tangBonePos.z, ref tangBonePosTarget.z, ref tangBonePosSpeed.z, -0.002f, 0.002f, ref tangBoneTime.z, 0.1f, 2f);
+				RandomMoveFloatTest(ref tangBoneRot.y, ref tangBoneRotTarget.y, ref tangBoneRotSpeed.y, -5f, 5f, ref tangBoneTime.y, 0.1f, 2f);
+				RandomMoveFloatTest(ref tangBoneRot.x, ref tangBoneRotTarget.x, ref tangBoneRotSpeed.x, -5f, 2.5f, ref tangBoneTime.x, 0.1f, 2f);
+				RandomMoveFloatTest(ref tangBoneRot.z, ref tangBoneRotTarget.z, ref tangBoneRotSpeed.z, -3.5f, 3.5f, ref tangBoneTime.z, 0.1f, 2f);
+				RandomMoveFloatTest(ref curMouthValue, ref toMouthValue, ref mouthSpeed, 97f, 100f, ref mouthOpenTime, 10f, 12f);
+				RandomMoveFloatTest(ref curEyeValue, ref toEyeValue, ref eyeOpenSpeed, 0f, 75f, ref eyeOpenTime, 0.01f, 1.2f);
+				eyesOpenValue = curEyeValue / 100f;
+				RandomMoveFloatTest(ref curKissValue, ref toKissValue, ref tangSpeed, 25f, 100f, ref tangTime, 0.01f, 0.1f);
+				yield return null;
 
 			}
-			Traverse.Create(this.hand0).Field("isKiss").SetValue(false);
+			Traverse.Create(hand0).Field("isKiss").SetValue(false);
 			for (; ; )
 			{
-				float num = Mathf.Max(25f, Mathf.Abs(this.tangSpeed));
-				this.curMouthValue -= Time.deltaTime * num * 2f * 0.8f;
-				this.curMouthValue = Mathf.Clamp(this.curMouthValue, 0f, 100f);
-				this.curKissValue -= Time.deltaTime * num * 1f;
-				this.curKissValue = Mathf.Clamp(this.curKissValue, 0f, 100f);
-				this.curEyeValue += Time.deltaTime * num * 1f * 0.8f;
-				this.curEyeValue = Mathf.Clamp(this.curEyeValue, 0f, 100f);
-				this.eyesOpenValue = this.curEyeValue / 100f;
-				if (this.curMouthValue <= 10f && this.curKissValue <= 10f)
+				float num = Mathf.Max(25f, Mathf.Abs(tangSpeed));
+				curMouthValue -= Time.deltaTime * num * 2f * 0.8f;
+				curMouthValue = Mathf.Clamp(curMouthValue, 0f, 100f);
+				curKissValue -= Time.deltaTime * num * 1f;
+				curKissValue = Mathf.Clamp(curKissValue, 0f, 100f);
+				curEyeValue += Time.deltaTime * num * 1f * 0.8f;
+				curEyeValue = Mathf.Clamp(curEyeValue, 0f, 100f);
+				eyesOpenValue = curEyeValue / 100f;
+				if (curMouthValue <= 10f && curKissValue <= 10f)
 				{
 					break;
 				}
 				yield return null;
 			}
-			this.tangBonePos = Vector3.zero;
-			this.tangBoneRot = Quaternion.identity;
+			tangBonePos = Vector3.zero;
+			tangBoneRot = Quaternion.identity;
 			yield return null;
-			this.kissing = false;
+			kissing = false;
 			yield break;
 		}
 
 		public void OnDisable()
 		{
-			this.kissFlag = false;
-			this.kissing = false;
+			kissFlag = false;
+			kissing = false;
 		}
 
 		public void DoKiss()
 		{
-			if ((UnityEngine.Object) this.voiceCtrl == (UnityEngine.Object) null)
-				this.voiceCtrl = UnityEngine.Object.FindObjectOfType<HVoiceCtrl>();
-			if (this.voiceCtrl.nowVoices[0].state == HVoiceCtrl.VoiceKind.voice)
-				this.kissFlag = false;
-			else if (!this.flags.lstHeroine[0].isKiss && !this.flags.lstHeroine[0].denial.kiss)
+			if (voiceCtrl == null)
 			{
-				this.flags.AddNotKiss();
-				if (this.flags.mode == HFlag.EMode.aibu)
-					this.flags.voice.playVoices[0] = 103;
-				this.kissFlag = false;
+				voiceCtrl = FindObjectOfType<HVoiceCtrl>();
+			}
+
+			if (voiceCtrl.nowVoices[0].state == HVoiceCtrl.VoiceKind.voice)
+			{
+				kissFlag = false;
+			}
+			else if (!flags.lstHeroine[0].isKiss && !flags.lstHeroine[0].denial.kiss)
+			{
+				flags.AddNotKiss();
+				if (flags.mode == HFlag.EMode.aibu)
+				{
+					flags.voice.playVoices[0] = 103;
+				}
+
+				kissFlag = false;
 			}
 			else
 			{
-				UnityEngine.Object.FindObjectOfType<VRHScene>();
-				if ((UnityEngine.Object) this.hand0 == (UnityEngine.Object) null)
-					this.hand0 = Traverse.Create((object) this.scene).Field("vrHands").GetValue<VRHandCtrl[]>()[0];
-				if (this.flags.mode == HFlag.EMode.aibu)
+				FindObjectOfType<VRHScene>();
+				if (hand0 == null)
 				{
-					this.flags.click = HFlag.ClickKind.mouth;
-					Traverse.Create((object) this.hand0).Field("isKiss").SetValue((object) true);
-					this.berocyuOverride = true;
-					if (this.flags.lstHeroine[0].HExperience == SaveData.Heroine.HExperienceKind.初めて && this.firstKiss)
-						this.berocyuOverride = true;
+					hand0 = Traverse.Create(scene).Field("vrHands").GetValue<VRHandCtrl[]>()[0];
 				}
-				else
-					this.berocyuOverride = true;
-				this.flags.AddKiss();
-				this.firstKiss = false;
-				this.StartCoroutine(this.BeroKiss());
+
+				if (flags.mode == HFlag.EMode.aibu)
+				{
+					flags.click = HFlag.ClickKind.mouth;
+					Traverse.Create(hand0).Field("isKiss").SetValue(true);
+				}
+				flags.AddKiss();
+				firstKiss = false;
+				StartCoroutine(BeroKiss());
 			}
 		}
 
 		private void OnGUI()
 		{
-			if (!this.gui)
+			if (!gui)
+			{
 				return;
+			}
+
 			float width = 400f;
 			if (rectWin.width < 1f)
-				this.rectWin.Set((float) Screen.width - width, 0.0f, width, (float) Screen.height);
-			this.rectWin = GUI.Window(832, this.rectWin, new GUI.WindowFunction(this.WinFunc), "Control Face");
+			{
+				rectWin.Set(Screen.width - width, 0.0f, width, Screen.height);
+			}
+
+			rectWin = GUI.Window(832, rectWin, new GUI.WindowFunction(WinFunc), "Control Face");
 			Event current = Event.current;
 			if (current.button == 0 && current.isMouse && current.type == EventType.MouseDrag)
-				this.cameraControl.enabled = false;
+			{
+				cameraControl.enabled = false;
+			}
 			else
-				this.cameraControl.enabled = true;
+			{
+				cameraControl.enabled = true;
+			}
 		}
 
 		private void WinFunc(int id)
 		{
 			float num = 5f;
-			GUILayout.BeginArea(new Rect(0.0f + num, 0.0f + num, this.rectWin.width - 2f * num, this.rectWin.height - 2f * num));
-			this.filterText = GUILayout.TextField(this.filterText);
+			GUILayout.BeginArea(new Rect(0.0f + num, 0.0f + num, rectWin.width - 2f * num, rectWin.height - 2f * num));
+			filterText = GUILayout.TextField(filterText);
 			GUILayout.Label("HohoAka");
-			this.hohoAka = GUILayout.HorizontalSlider(this.hohoAka, 0.0f, 100f);
+			hohoAka = GUILayout.HorizontalSlider(hohoAka, 0.0f, 100f);
 			GUILayout.Label("Tear");
-			this.tearLv = GUILayout.Toolbar(this.tearLv, new string[5]
+			tearLv = GUILayout.Toolbar(tearLv, new string[5]
 			{
 				"0",
 				"1",
@@ -418,19 +446,22 @@ namespace Bero.CyuVR
 				"3",
 				"4"
 			});
-			this.bvsShow.Clear();
-			foreach (Cyu.BlendValue bv in this.bvs)
+			bvsShow.Clear();
+			foreach (Cyu.BlendValue bv in bvs)
 			{
-				if (this.filterText.Length <= 0 || bv.name.IndexOf(this.filterText) != -1)
+				if (filterText.Length <= 0 || bv.name.IndexOf(filterText) != -1)
 				{
 					bv.active = GUILayout.Toggle(bv.active, bv.name);
-					bv.value = GUILayout.HorizontalSlider(bv.value, 0.0f, 100f, (GUILayoutOption[]) null);
-					this.bvsShow.Add(bv);
+					bv.value = GUILayout.HorizontalSlider(bv.value, 0.0f, 100f, null);
+					bvsShow.Add(bv);
 				}
 			}
 			if (GUI.changed)
-				this.moveAuto = false;
-			this.moveAuto = GUILayout.Toggle(this.moveAuto, "Move auto");
+			{
+				moveAuto = false;
+			}
+
+			moveAuto = GUILayout.Toggle(moveAuto, "Move auto");
 			GUILayout.EndArea();
 			GUI.DragWindow();
 		}
@@ -439,7 +470,7 @@ namespace Bero.CyuVR
 		{
 			if (voiceCtrl == null)
 			{
-				voiceCtrl = UnityEngine.Object.FindObjectOfType<HVoiceCtrl>();
+				voiceCtrl = FindObjectOfType<HVoiceCtrl>();
 				if (voiceCtrl == null)
 				{
 					return;
@@ -447,7 +478,7 @@ namespace Bero.CyuVR
 			}
 			if (flags == null)
 			{
-				flags = UnityEngine.Object.FindObjectOfType<HFlag>();
+				flags = FindObjectOfType<HFlag>();
 				if (flags == null)
 				{
 					return;
@@ -458,66 +489,86 @@ namespace Bero.CyuVR
 				ReloadBlendValues();
 			}
 
-			float curDistance = Vector3.Distance(this.myMouth.transform.position, this.tang.transform.position);
-			float threshold = this.flags.mode == HFlag.EMode.aibu ? Config.kissDistanceAibu : Config.kissDistance;
+			float curDistance = Vector3.Distance(myMouth.transform.position, tang.transform.position);
+			float threshold = flags.mode == HFlag.EMode.aibu ? Config.kissDistanceAibu : Config.kissDistance;
 			if (curDistance < threshold)
 			{
-				if (!this.IsSiruActive() || this.flags.mode != HFlag.EMode.aibu)
-					this.Kiss(true);
-				else if (curDistance < (Config.kissDistanceAibu - 0.1f) || this.siru.siruAmount < 0.2f)
-					this.Kiss(true);
+				if (!IsSiruActive() || flags.mode != HFlag.EMode.aibu)
+				{
+					Kiss(true);
+				}
+				else if (curDistance < (Config.kissDistanceAibu - 0.1f) || siru.siruAmount < 0.2f)
+				{
+					Kiss(true);
+				}
 				else
-					this.Kiss(false);
+				{
+					Kiss(false);
+				}
 			}
 			else
-				this.Kiss(false);
-			if (this.kissing || this.IsSiruActive())
 			{
-				this.voiceCtrl.isPrcoStop = true;
-				Traverse.Create((object) this.voiceCtrl).Method("BreathProc", new System.Type[3]
+				Kiss(false);
+			}
+
+			if (kissing || IsSiruActive())
+			{
+				voiceCtrl.isPrcoStop = true;
+				Traverse.Create(voiceCtrl).Method("BreathProc", new System.Type[3]
 				{
 					typeof (AnimatorStateInfo),
 					typeof (ChaControl),
 					typeof (int)
-				}, (object[]) null).GetValue<bool>((object) this.female.animBody.GetCurrentAnimatorStateInfo(0), (object) this.female, (object) 0);
+				}, null).GetValue<bool>(female.animBody.GetCurrentAnimatorStateInfo(0), female, 0);
 			}
 			else
-				this.voiceCtrl.isPrcoStop = false;
-			if (this.kissing)
+			{
+				voiceCtrl.isPrcoStop = false;
+			}
+
+			if (kissing)
 			{
 				//change parameter for SpeedUpClickAibu to use Config.kissMotionSpeed to control animation speed during kissing in Aibu
-				if (this.flags.mode == HFlag.EMode.aibu)
-					this.flags.SpeedUpClickAibu(1f * this.flags.rateDragSpeedUp, Config.kissMotionSpeed, true);
-				this.flags.DragStart();
+				if (flags.mode == HFlag.EMode.aibu)
+				{
+					flags.SpeedUpClickAibu(1f * flags.rateDragSpeedUp, Config.kissMotionSpeed, true);
+				}
+
+				flags.DragStart();
 				if (!Config.eyesMovement)
+				{
 					return;
-				this.female.ChangeEyesBlinkFlag(false);
-				this.female.eyesCtrl.ChangePtn(0, true);
-				this.female.eyebrowCtrl.ChangePtn(0, true);
-				this.female.ChangeEyesOpenMax(this.eyesOpenValue);
-				this.female.ChangeEyebrowOpenMax(this.eyesOpenValue);
-				this.female.eyesCtrl.OpenMin = 0.0f;
-				this.female.eyebrowCtrl.OpenMin = 0.0f;
-				float num3 = Vector3.Angle(this.female.objHead.transform.forward, this.kissEyeTarget.transform.position - this.female.objHead.transform.position);
-				this.eyeLookChangeTimer -= Time.deltaTime;
+				}
+
+				female.ChangeEyesBlinkFlag(false);
+				female.eyesCtrl.ChangePtn(0, true);
+				female.eyebrowCtrl.ChangePtn(0, true);
+				female.ChangeEyesOpenMax(eyesOpenValue);
+				female.ChangeEyebrowOpenMax(eyesOpenValue);
+				female.eyesCtrl.OpenMin = 0.0f;
+				female.eyebrowCtrl.OpenMin = 0.0f;
+				float num3 = Vector3.Angle(female.objHead.transform.forward, kissEyeTarget.transform.position - female.objHead.transform.position);
+				eyeLookChangeTimer -= Time.deltaTime;
 				if (eyeLookChangeTimer < 0f || num3 > 45f)
 				{
-					this.eyeLookChangeTimer = UnityEngine.Random.Range(10f, 20f);
-					this.eyeLookX = UnityEngine.Random.Range(-70f, 70f);
-					this.eyeLookY = UnityEngine.Random.Range(-45f, 45f);
+					eyeLookChangeTimer = UnityEngine.Random.Range(10f, 20f);
+					eyeLookX = UnityEngine.Random.Range(-70f, 70f);
+					eyeLookY = UnityEngine.Random.Range(-45f, 45f);
 				}
-				this.kissEyeTarget.transform.RotateAround(kissEyeTarget.transform.parent.position, female.objHead.transform.up, eyeLookX * Time.deltaTime * 0.2f);
-				this.kissEyeTarget.transform.RotateAround(kissEyeTarget.transform.parent.position, female.objHead.transform.right, eyeLookY * Time.deltaTime * 0.2f);
+				kissEyeTarget.transform.RotateAround(kissEyeTarget.transform.parent.position, female.objHead.transform.up, eyeLookX * Time.deltaTime * 0.2f);
+				kissEyeTarget.transform.RotateAround(kissEyeTarget.transform.parent.position, female.objHead.transform.right, eyeLookY * Time.deltaTime * 0.2f);
 			}
 			else
-				this.female.ChangeEyesBlinkFlag(true);
+			{
+				female.ChangeEyesBlinkFlag(true);
+			}
 		}
 
 		public void SetBlendShapeWeight()
 		{
 			try
 			{
-				foreach (Cyu.BlendValue bv in this.bvs)
+				foreach (Cyu.BlendValue bv in bvs)
 				{
 					if (bv.active)
 					{
@@ -563,36 +614,42 @@ namespace Bero.CyuVR
 			catch (Exception ex)
 			{
 				Console.WriteLine(ex.ToString());
-				UnityEngine.Object.Destroy((UnityEngine.Object) this);
+				Destroy(this);
 			}
 		}
 
 		public void LateUpdateHook()
 		{
-			if (!this.kissing)
+			if (!kissing)
+			{
 				return;
-			if (Config.tongueOverride || flags.gaugeFemale > 70 || this.flags.lstHeroine[0].HExperience == SaveData.Heroine.HExperienceKind.淫乱)
-			{
-				this.SetBlendShapeWeight();
-				Vector3 localPosition = this.tangRenderer.bones[0].transform.localPosition;
-				this.tangRenderer.bones[0].transform.localPosition = new Vector3(localPosition.x, this.tangBonePos.y + this.initTangBonePos.y, localPosition.z);
-				this.tangRenderer.bones[0].transform.localRotation = this.initTangBoneRot * Quaternion.Euler(this.tangBoneRot.x, this.tangBoneRot.y, this.tangBoneRot.z);
 			}
-			if (this.kissFlag)
+
+			if (Config.tongueOverride || flags.gaugeFemale > 70 || flags.lstHeroine[0].HExperience == SaveData.Heroine.HExperienceKind.淫乱)
 			{
-				this.female.ChangeLookNeckPtn(1, 1f);
-				this.female.neckLookCtrl.target = this.kissNeckTarget.transform;
-				this.female.ChangeLookEyesPtn(1);
-				this.female.eyeLookCtrl.target = this.kissEyeTarget.transform;
+				SetBlendShapeWeight();
+				Vector3 localPosition = tangRenderer.bones[0].transform.localPosition;
+				tangRenderer.bones[0].transform.localPosition = new Vector3(localPosition.x, tangBonePos.y + initTangBonePos.y, localPosition.z);
+				tangRenderer.bones[0].transform.localRotation = initTangBoneRot * Quaternion.Euler(tangBoneRot.x, tangBoneRot.y, tangBoneRot.z);
+			}
+			if (kissFlag)
+			{
+				female.ChangeLookNeckPtn(1, 1f);
+				female.neckLookCtrl.target = kissNeckTarget.transform;
+				female.ChangeLookEyesPtn(1);
+				female.eyeLookCtrl.target = kissEyeTarget.transform;
 			}
 		}
 
 		internal void ToggleClothesStateAll()
 		{
-			++this.clothesState;
-			if (this.clothesState > 2)
-				this.clothesState = 0;
-			this.female.SetClothesStateAll((byte) this.clothesState);
+			++clothesState;
+			if (clothesState > 2)
+			{
+				clothesState = 0;
+			}
+
+			female.SetClothesStateAll((byte)clothesState);
 		}
 
 		private class BlendValue

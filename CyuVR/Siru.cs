@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -45,81 +44,81 @@ namespace Bero.CyuVR
 
 		private void OnDestroy()
 		{
-			UnityEngine.Object.Destroy((UnityEngine.Object) this.particleSystem.gameObject);
-			UnityEngine.Object.Destroy((UnityEngine.Object) this.head.gameObject);
-			UnityEngine.Object.Destroy((UnityEngine.Object) this.tail.gameObject);
-			UnityEngine.Object.Destroy((UnityEngine.Object) this.top.gameObject);
-			UnityEngine.Object.Destroy((UnityEngine.Object) this.ito.gameObject);
+			Destroy(particleSystem.gameObject);
+			Destroy(head.gameObject);
+			Destroy(tail.gameObject);
+			Destroy(top.gameObject);
+			Destroy(ito.gameObject);
 		}
 
 		private void Start()
 		{
-			this.particleSystem = new GameObject("BeroItoEffect").AddComponent<ParticleSystem>();
-			this.particleSystemRenderer = this.particleSystem.GetOrAddComponent<ParticleSystemRenderer>();
-			this.particleSystemRenderer.renderMode = ParticleSystemRenderMode.Billboard;
-			((IEnumerable<ParticleSystemRenderer>) ((IEnumerable<ParticleSystem>) UnityEngine.Object.FindObjectsOfType<ParticleSystem>()).Where<ParticleSystem>((Func<ParticleSystem, bool>) (x => x.name.IndexOf("LiquidSiru") >= 0)).FirstOrDefault<ParticleSystem>().GetComponentsInChildren<ParticleSystemRenderer>()).ToList<ParticleSystemRenderer>().ForEach((System.Action<ParticleSystemRenderer>) (x => this.orgMaterial.Add(x.material)));
-			((IEnumerable<ParticleSystemRenderer>) ((IEnumerable<ParticleSystem>) UnityEngine.Object.FindObjectsOfType<ParticleSystem>()).Where<ParticleSystem>((Func<ParticleSystem, bool>) (x => x.name.IndexOf("LiquidSio") >= 0)).FirstOrDefault<ParticleSystem>().GetComponentsInChildren<ParticleSystemRenderer>()).ToList<ParticleSystemRenderer>().ForEach((System.Action<ParticleSystemRenderer>) (x => this.orgMaterial.Add(x.material)));
-			((IEnumerable<ParticleSystemRenderer>) ((IEnumerable<ParticleSystem>) UnityEngine.Object.FindObjectsOfType<ParticleSystem>()).Where<ParticleSystem>((Func<ParticleSystem, bool>) (x => x.name.IndexOf("LiquidToilet") >= 0)).FirstOrDefault<ParticleSystem>().GetComponentsInChildren<ParticleSystemRenderer>()).ToList<ParticleSystemRenderer>().ForEach((System.Action<ParticleSystemRenderer>) (x => this.orgMaterial.Add(x.material)));
-			this.particleSystemRenderer.material = this.orgMaterial[0];
-			ParticleSystem.MainModule main = this.particleSystem.main;
+			particleSystem = new GameObject("BeroItoEffect").AddComponent<ParticleSystem>();
+			particleSystemRenderer = particleSystem.GetOrAddComponent<ParticleSystemRenderer>();
+			particleSystemRenderer.renderMode = ParticleSystemRenderMode.Billboard;
+			((IEnumerable<ParticleSystem>)FindObjectsOfType<ParticleSystem>()).Where<ParticleSystem>(x => x.name.IndexOf("LiquidSiru") >= 0).FirstOrDefault<ParticleSystem>().GetComponentsInChildren<ParticleSystemRenderer>().ToList<ParticleSystemRenderer>().ForEach(x => orgMaterial.Add(x.material));
+			((IEnumerable<ParticleSystem>)FindObjectsOfType<ParticleSystem>()).Where<ParticleSystem>(x => x.name.IndexOf("LiquidSio") >= 0).FirstOrDefault<ParticleSystem>().GetComponentsInChildren<ParticleSystemRenderer>().ToList<ParticleSystemRenderer>().ForEach(x => orgMaterial.Add(x.material));
+			((IEnumerable<ParticleSystem>)FindObjectsOfType<ParticleSystem>()).Where<ParticleSystem>(x => x.name.IndexOf("LiquidToilet") >= 0).FirstOrDefault<ParticleSystem>().GetComponentsInChildren<ParticleSystemRenderer>().ToList<ParticleSystemRenderer>().ForEach(x => orgMaterial.Add(x.material));
+			particleSystemRenderer.material = orgMaterial[0];
+			ParticleSystem.MainModule main = particleSystem.main;
 			main.startSize = new ParticleSystem.MinMaxCurve(0.05f, 0.07f);
 			main.startSpeed = new ParticleSystem.MinMaxCurve(3f, 4f);
 
 			//Due to Unity limitation, "rateOverTime" cannot be called directly from particleSystem.emission, so create new temporary variable "em"
-			var em = this.particleSystem.emission;
-			em.rateOverTime = (ParticleSystem.MinMaxCurve) 2f;
+			var em = particleSystem.emission;
+			em.rateOverTime = 2f;
 
-			this.top = new GameObject("ItoTop").transform;
-			this.tail = new GameObject("Itotail").transform;
-			this.head = new GameObject("ItoHead").transform;
-			this.top.gameObject.name = "ItoTop";
-			this.tail.gameObject.name = "ItoTail";
-			this.head.gameObject.name = "ItoHead";
-			this.tail.position = this.female.objHead.transform.TransformPoint(0.0f, 0.0f, 1f);
-			this.head.transform.localScale = Vector3.one * 0.005f;
-			this.tail.transform.localScale = Vector3.one * 0.03f;
-			this.ito = new GameObject("BeroIto").AddComponent<LineRenderer>();
-			ParticleSystem.ShapeModule shape = this.particleSystem.shape;
+			top = new GameObject("ItoTop").transform;
+			tail = new GameObject("Itotail").transform;
+			head = new GameObject("ItoHead").transform;
+			top.gameObject.name = "ItoTop";
+			tail.gameObject.name = "ItoTail";
+			head.gameObject.name = "ItoHead";
+			tail.position = female.objHead.transform.TransformPoint(0.0f, 0.0f, 1f);
+			head.transform.localScale = Vector3.one * 0.005f;
+			tail.transform.localScale = Vector3.one * 0.03f;
+			ito = new GameObject("BeroIto").AddComponent<LineRenderer>();
+			ParticleSystem.ShapeModule shape = particleSystem.shape;
 			shape.shapeType = ParticleSystemShapeType.Cone;
 			shape.angle = 10f;
 			shape.radius = 0.5f;
-			this.ito.numCapVertices = 40;
-			this.ito.numCornerVertices = 32;
-			this.ito.enabled = true;
-			this.ito.useWorldSpace = true;
-			this.ito.startWidth = 0.005f;
-			this.ito.endWidth = 0.005f;
-			this.flags = UnityEngine.Object.FindObjectOfType<HFlag>();
-			this.itoWaitTimer = this.itoStartTime;
+			ito.numCapVertices = 40;
+			ito.numCornerVertices = 32;
+			ito.enabled = true;
+			ito.useWorldSpace = true;
+			ito.startWidth = 0.005f;
+			ito.endWidth = 0.005f;
+			flags = FindObjectOfType<HFlag>();
+			itoWaitTimer = itoStartTime;
 		}
 
 		public void StartIto()
 		{
-			this.itoOn = true;
-			this.ito.enabled = true;
+			itoOn = true;
+			ito.enabled = true;
 		}
 
 		public void BreakIto()
 		{
-			if (this.itoBreaking)
+			if (itoBreaking)
 				return;
-			this.itoBreaking = true;
-			this.itoTimer = this.itoRemainTime;
+			itoBreaking = true;
+			itoTimer = itoRemainTime;
 		}
 
 		private float GetVoiceValue()
 		{
-			if ((bool)female.asVoice && female.asVoice.isPlaying && female.wavInfoData != null)
-				return this.female.wavInfoData.GetValue(this.female.asVoice.time);
+			if (female.asVoice && female.asVoice.isPlaying && female.wavInfoData != null)
+				return female.wavInfoData.GetValue(female.asVoice.time);
 			return 0f;
 		}
 
 		private IEnumerator ItoBreaking()
 		{
-			this.itoBreaking = true;
-			this.ito.enabled = false;
-			this.itoOn = false;
-			this.itoBreaking = false;
+			itoBreaking = true;
+			ito.enabled = false;
+			itoOn = false;
+			itoBreaking = false;
 			yield return null;
 		}
 
@@ -146,53 +145,56 @@ namespace Bero.CyuVR
 
 		private void Update()
 		{
-			this.ito.material = this.orgMaterial[this.itoMatIndex];
-			this.particleSystemRenderer.material = this.orgMaterial[this.siruMatIndex];
-			this.ito.textureMode = this.lineTextureMode;
+			ito.material = orgMaterial[itoMatIndex];
+			particleSystemRenderer.material = orgMaterial[siruMatIndex];
+			ito.textureMode = lineTextureMode;
 
 			//Due to Unity limitation, "startColor" cannot be called directly from particleSystem.main, so create new temporary variable "mn"
-			var mn = this.particleSystem.main;
-			mn.startColor = (double) this.flags.gaugeFemale < 70.0 ? (ParticleSystem.MinMaxGradient) new Color(1f, 1f, 1f, 1f) : (ParticleSystem.MinMaxGradient) new Color(1f, 0.62f, 0.85f);
+			var mn = particleSystem.main;
+			mn.startColor = flags.gaugeFemale < 70.0 ? new Color(1f, 1f, 1f, 1f) : (ParticleSystem.MinMaxGradient)new Color(1f, 0.62f, 0.85f);
 			//Due to Unity limitation, "rateOverTime" cannot be called directly from particleSystem.emission, so create new temporary variable "em"
-			var em = this.particleSystem.emission;
-			em.rateOverTime = (ParticleSystem.MinMaxCurve) (2f * this.GetVoiceValue());
+			var em = particleSystem.emission;
+			em.rateOverTime = 2f * GetVoiceValue();
 
 			if (Vector3.SqrMagnitude(tail.transform.position - head.transform.position) < itoDistance && female.GetComponent<Cyu>().kissing)
-				this.siruAmount += Time.deltaTime * 0.05f;
-			else if (this.itoBreaking)
-				this.siruAmount -= Time.deltaTime * 0.5f;
+				siruAmount += Time.deltaTime * 0.05f;
+			else if (itoBreaking)
+				siruAmount -= Time.deltaTime * 0.5f;
 			else
-				this.siruAmount -= Time.deltaTime * 0.05f;
+				siruAmount -= Time.deltaTime * 0.05f;
 			if (siruAmount > 0f && Vector3.SqrMagnitude(tail.transform.position - head.transform.position) > itoBreakDistance)
-				this.BreakIto();
-			this.siruAmount = Mathf.Clamp(this.siruAmount, 0.0f, 1f);
-			ref Vector3 local = ref this.tangRenderer.sharedMesh.vertices[this.tangVertexIndex];
+				BreakIto();
+			siruAmount = Mathf.Clamp(siruAmount, 0.0f, 1f);
+			ref Vector3 local = ref tangRenderer.sharedMesh.vertices[tangVertexIndex];
 			Mesh mesh = new Mesh();
-			this.tangRenderer.BakeMesh(mesh);
-			Vector3 vector3 = mesh.vertices[this.tangVertexIndex];
+			tangRenderer.BakeMesh(mesh);
+			Vector3 vector3 = mesh.vertices[tangVertexIndex];
 			vector3 = new Vector3(vector3.x, vector3.y, vector3.z);
-			this.head.position = this.tangRenderer.transform.position + this.tangRenderer.transform.rotation * vector3;
-			this.tail.position = this.siruTarget.transform.position;
-			if (this.itoBreaking)
+			head.position = tangRenderer.transform.position + tangRenderer.transform.rotation * vector3;
+			tail.position = siruTarget.transform.position;
+			if (itoBreaking)
 			{
-				this.itoTimer -= Time.deltaTime;
-				int index = this.posList.Count - 2;
+				itoTimer -= Time.deltaTime;
+				int index = posList.Count - 2;
 				if (index > 0)
 				{
-					this.tail.position = this.posList[index];
+					tail.position = posList[index];
 					if (itoTimer < 0f || siruAmount <= 0f)
 					{
-						this.itoBreaking = false;
-						this.siruAmount = 0.0f;
+						itoBreaking = false;
+						siruAmount = 0.0f;
 					}
 				}
-				float y = this.top.position.y;
-				this.top.position = Vector3.Lerp(this.head.position, this.tail.position, 10f * Time.deltaTime);
-				this.top.position = new Vector3(this.top.position.x, y - Time.deltaTime * 0.3f, this.top.position.z);
+				float y = top.position.y;
+				top.position = Vector3.Lerp(head.position, tail.position, 10f * Time.deltaTime);
+				top.position = new Vector3(top.position.x, y - Time.deltaTime * 0.3f, top.position.z);
 			}
 			else
-				this.top.position = Vector3.Lerp(this.head.position, this.tail.position, 10f * Time.deltaTime) - new Vector3(0.0f, 0.5f * Vector3.SqrMagnitude(this.head.position - this.tail.position), 0.0f);
-			this.OnLineDraw();
+			{
+				top.position = Vector3.Lerp(head.position, tail.position, 10f * Time.deltaTime) - new Vector3(0.0f, 0.5f * Vector3.SqrMagnitude(head.position - tail.position), 0.0f);
+			}
+
+			OnLineDraw();
 		}
 
 		public static Vector3 BezierCurve(Vector3 pt1, Vector3 pt2, Vector3 ctrlPt, float t)
@@ -211,34 +213,35 @@ namespace Bero.CyuVR
 
 		public void OnLineDraw()
 		{
-			if (this.posListDelays[Time.frameCount % 5] == null)
-				this.posListDelays[Time.frameCount % 5] = new List<Vector3>();
-			this.posList.Clear();
-			this.posListDelays[Time.frameCount % 5].Clear();
-			this.posList.Add(this.head.position);
-			this.posListDelays[Time.frameCount % 5].Add(this.head.position);
+			if (posListDelays[Time.frameCount % 5] == null)
+				posListDelays[Time.frameCount % 5] = new List<Vector3>();
+
+			posList.Clear();
+			posListDelays[Time.frameCount % 5].Clear();
+			posList.Add(head.position);
+			posListDelays[Time.frameCount % 5].Add(head.position);
 			float t = 0.0f;
 			int index = 1;
-			while ((double) t < 1.0)
+			while (t < 1.0)
 			{
 				t += 0.03f;
-				Vector3 a = Siru.BezierCurve(this.head.position, this.tail.position, this.top.position, t);
-				if (this.posListDelays.Length == 5 && this.posListDelays[(Time.frameCount + 1) % 5] != null && this.posListDelays[(Time.frameCount + 1) % 5].Count > index)
+				Vector3 a = BezierCurve(head.position, tail.position, top.position, t);
+				if (posListDelays.Length == 5 && posListDelays[(Time.frameCount + 1) % 5] != null && posListDelays[(Time.frameCount + 1) % 5].Count > index)
 				{
-					Vector3 vector3 = Vector3.Lerp(a, this.posListDelays[(Time.frameCount + 1) % 5][index], Mathf.Abs(0.5f - t));
-					this.posList.Add(vector3);
-					this.posListDelays[Time.frameCount % 5].Add(vector3);
+					Vector3 vector3 = Vector3.Lerp(a, posListDelays[(Time.frameCount + 1) % 5][index], Mathf.Abs(0.5f - t));
+					posList.Add(vector3);
+					posListDelays[Time.frameCount % 5].Add(vector3);
 				}
 				else
 				{
-					this.posList.Add(a);
-					this.posListDelays[Time.frameCount % 5].Add(a);
+					posList.Add(a);
+					posListDelays[Time.frameCount % 5].Add(a);
 				}
 				++index;
 			}
-			this.ito.positionCount = this.posList.Count;
-			this.ito.SetPositions(this.posList.ToArray());
-			this.UpdateWidthCurve();
+			ito.positionCount = posList.Count;
+			ito.SetPositions(posList.ToArray());
+			UpdateWidthCurve();
 		}
 	}
 }

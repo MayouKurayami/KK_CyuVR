@@ -9,25 +9,25 @@ namespace Bero.CyuVR
 	{
 		private static Cyu GetCyu()
 		{
-			ChaControl component = (ChaControl) null;
+			ChaControl component = null;
 			if (CyuLoaderVR.lstFemale.Count > 0)
 				component = CyuLoaderVR.lstFemale[0];
-			if ((UnityEngine.Object) component == (UnityEngine.Object) null)
-				return (Cyu) null;
+			if (component == null)
+				return null;
 			return component.GetOrAddComponent<Cyu>();
 		}
 
-		[HarmonyPatch(typeof (FaceBlendShape), "LateUpdate", null, null)]
+		[HarmonyPatch(typeof(FaceBlendShape), "LateUpdate", null, null)]
 		[HarmonyPostfix]
 		public static void FaceBlendShapeLateUpdateHook()
 		{
-			Cyu cyu = Hooks.GetCyu();
-			if (!((UnityEngine.Object) cyu != (UnityEngine.Object) null))
+			Cyu cyu = GetCyu();
+			if (!(cyu != null))
 				return;
 			cyu.LateUpdateHook();
 		}
 
-		[HarmonyPatch(typeof (VRHandCtrl), "IsKissAction", null, null)]
+		[HarmonyPatch(typeof(VRHandCtrl), "IsKissAction", null, null)]
 		[HarmonyPrefix]
 		public static bool IsKissActionHook(ref bool __result, VRHandCtrl __instance)
 		{
@@ -43,7 +43,7 @@ namespace Bero.CyuVR
 			return true;
 		}
 
-		[HarmonyPatch(typeof (HVoiceCtrl), "IsBreathPtnConditions", new System.Type[] {typeof (List<int>), typeof (int)}, null)]
+		[HarmonyPatch(typeof(HVoiceCtrl), "IsBreathPtnConditions", new System.Type[] { typeof(List<int>), typeof(int) }, null)]
 		[HarmonyPrefix]
 		public static bool IsBreathPtnConditionsHook(
 			ref bool __result,

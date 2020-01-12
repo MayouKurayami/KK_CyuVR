@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -25,13 +24,13 @@ namespace Bero
 		{
 			get
 			{
-				if ((UnityEngine.Object) VR.steamvr_camera == (UnityEngine.Object) null)
+				if (steamvr_camera == null)
 				{
-					VR.steamvr_camera = UnityEngine.Object.FindObjectOfType<SteamVR_Camera>();
-					if ((UnityEngine.Object) VR.steamvr_camera == (UnityEngine.Object) null)
-						return (Camera) null;
+					steamvr_camera = Object.FindObjectOfType<SteamVR_Camera>();
+					if (steamvr_camera == null)
+						return null;
 				}
-				return VR.steamvr_camera.GetComponent<Camera>();
+				return steamvr_camera.GetComponent<Camera>();
 			}
 		}
 
@@ -39,13 +38,13 @@ namespace Bero
 		{
 			get
 			{
-				if (VR.rightController == null)
+				if (rightController == null)
 				{
-					SteamVR_TrackedObject rightTrackedObject = VR.RightTrackedObject;
-					if ((UnityEngine.Object) rightTrackedObject != (UnityEngine.Object) null)
-						VR.rightController = SteamVR_Controller.Input((int) rightTrackedObject.index);
+					SteamVR_TrackedObject rightTrackedObject = RightTrackedObject;
+					if (rightTrackedObject != null)
+						rightController = SteamVR_Controller.Input((int)rightTrackedObject.index);
 				}
-				return VR.rightController;
+				return rightController;
 			}
 		}
 
@@ -53,9 +52,9 @@ namespace Bero
 		{
 			get
 			{
-				if ((UnityEngine.Object) VR.rightTrackedObject == (UnityEngine.Object) null)
-					VR.rightTrackedObject = ((IEnumerable<SteamVR_TrackedObject>) UnityEngine.Object.FindObjectsOfType<SteamVR_TrackedObject>()).ToList<SteamVR_TrackedObject>().Where<SteamVR_TrackedObject>((Func<SteamVR_TrackedObject, bool>) (x => x.name.IndexOf("right") >= 0)).FirstOrDefault<SteamVR_TrackedObject>();
-				return VR.rightTrackedObject;
+				if (rightTrackedObject == null)
+					rightTrackedObject = Object.FindObjectsOfType<SteamVR_TrackedObject>().ToList<SteamVR_TrackedObject>().Where<SteamVR_TrackedObject>(x => x.name.IndexOf("right") >= 0).FirstOrDefault<SteamVR_TrackedObject>();
+				return rightTrackedObject;
 			}
 		}
 
@@ -63,13 +62,13 @@ namespace Bero
 		{
 			get
 			{
-				if (VR.leftController == null)
+				if (leftController == null)
 				{
-					SteamVR_TrackedObject leftTrackedObject = VR.LeftTrackedObject;
-					if ((UnityEngine.Object) leftTrackedObject != (UnityEngine.Object) null)
-						VR.leftController = SteamVR_Controller.Input((int) leftTrackedObject.index);
+					SteamVR_TrackedObject leftTrackedObject = LeftTrackedObject;
+					if (leftTrackedObject != null)
+						leftController = SteamVR_Controller.Input((int)leftTrackedObject.index);
 				}
-				return VR.leftController;
+				return leftController;
 			}
 		}
 
@@ -77,9 +76,9 @@ namespace Bero
 		{
 			get
 			{
-				if ((UnityEngine.Object) VR.leftTrackedObject == (UnityEngine.Object) null)
-					VR.leftTrackedObject = ((IEnumerable<SteamVR_TrackedObject>) UnityEngine.Object.FindObjectsOfType<SteamVR_TrackedObject>()).ToList<SteamVR_TrackedObject>().Where<SteamVR_TrackedObject>((Func<SteamVR_TrackedObject, bool>) (x => x.name.IndexOf("left") >= 0)).FirstOrDefault<SteamVR_TrackedObject>();
-				return VR.leftTrackedObject;
+				if (leftTrackedObject == null)
+					leftTrackedObject = Object.FindObjectsOfType<SteamVR_TrackedObject>().ToList<SteamVR_TrackedObject>().Where<SteamVR_TrackedObject>(x => x.name.IndexOf("left") >= 0).FirstOrDefault<SteamVR_TrackedObject>();
+				return leftTrackedObject;
 			}
 		}
 	}

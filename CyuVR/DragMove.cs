@@ -17,7 +17,7 @@ namespace Bero.CyuVR
 
 		protected virtual void Awake()
 		{
-			this.cameraControl = UnityEngine.Object.FindObjectOfType<CameraControl_Ver2>();
+			cameraControl = FindObjectOfType<CameraControl_Ver2>();
 		}
 
 		private void Start()
@@ -26,31 +26,31 @@ namespace Bero.CyuVR
 
 		public virtual void Show(bool show)
 		{
-			((IEnumerable<Renderer>) this.GetComponentsInChildren<Renderer>()).ToList<Renderer>().ForEach((System.Action<Renderer>) (x => x.enabled = show));
+			GetComponentsInChildren<Renderer>().ToList<Renderer>().ForEach(x => x.enabled = show);
 		}
 
 		private void SetColor(Color color)
 		{
-			((IEnumerable<MeshRenderer>) this.GetComponentsInChildren<MeshRenderer>()).ToList<MeshRenderer>().ForEach((System.Action<MeshRenderer>) (x => ((IEnumerable<Material>) x.materials).ToList<Material>().ForEach((System.Action<Material>) (y => y.color = color))));
+			GetComponentsInChildren<MeshRenderer>().ToList<MeshRenderer>().ForEach(x => x.materials.ToList<Material>().ForEach(y => y.color = color));
 		}
 
 		protected virtual void OnMouseDown()
 		{
-			this.cameraControlOff = true;
-			this.cameraControl.enabled = false;
-			this.dragging = true;
+			cameraControlOff = true;
+			cameraControl.enabled = false;
+			dragging = true;
 		}
 
 		protected virtual void OnMouseUp()
 		{
-			this.cameraControlOff = false;
-			this.cameraControl.enabled = true;
-			this.dragging = false;
+			cameraControlOff = false;
+			cameraControl.enabled = true;
+			dragging = false;
 		}
 
 		protected virtual void OnMouseDrag()
 		{
-			this.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.WorldToScreenPoint(this.transform.position).z));
+			transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.WorldToScreenPoint(transform.position).z));
 		}
 	}
 }
