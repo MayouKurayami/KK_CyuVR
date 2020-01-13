@@ -14,12 +14,12 @@ namespace Bero.CyuVR
 
 		private void Awake()
 		{
-			kissDistance = float.Parse(BepInEx.Config.GetEntry("KissDistance", "0.20", "Cyu"));
+			kissDistance = float.Parse(BepInEx.Config.GetEntry("KissDistance", "0.18", "Cyu"));
 			kissDistanceAibu = float.Parse(BepInEx.Config.GetEntry("KissDistanceAibu", "0.35", "Cyu"));
 			eyesMovement = bool.Parse(BepInEx.Config.GetEntry("EyesMovement", "true", "Cyu"));
 			tongueOverride = bool.Parse(BepInEx.Config.GetEntry("TongueOverride", "false", "Cyu"));
 			mouthOffset = float.Parse(BepInEx.Config.GetEntry("MouthOffset", "0.12", "Cyu"));
-			kissNeckAngle = float.Parse(BepInEx.Config.GetEntry("KissNeckAngle", "0.38", "Cyu"));
+			kissNeckAngle = float.Parse(BepInEx.Config.GetEntry("KissNeckAngle", "0.2", "Cyu"));
 			kissMotionSpeed = float.Parse(BepInEx.Config.GetEntry("KissMotionSpeed", "0.1", "Cyu"));
 			kissMotionSpeed = Mathf.Clamp(kissMotionSpeed, 0.1f, 1.5f);
 		}
