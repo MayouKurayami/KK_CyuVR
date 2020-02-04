@@ -490,7 +490,12 @@ namespace Bero.CyuVR
 			}
 
 			float curDistance = Vector3.Distance(myMouth.transform.position, tang.transform.position);
-			float threshold = flags.mode == HFlag.EMode.aibu ? Config.kissDistanceAibu : Config.kissDistance;
+			float threshold;
+			if (flags.mode == HFlag.EMode.aibu)
+				threshold = Config.kissDistanceAibu;
+			else
+				threshold = Config.kissDistance;
+
 			if (curDistance < threshold)
 			{
 				if (!IsSiruActive() || flags.mode != HFlag.EMode.aibu)
