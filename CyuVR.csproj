@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{870C0456-40AF-4D28-A6C7-280392CB7754}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <AssemblyName>CyuVR</AssemblyName>
+    <AssemblyName>KK_CyuVR</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <ApplicationVersion>1.0.0.0</ApplicationVersion>
     <FileAlignment>512</FileAlignment>

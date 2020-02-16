@@ -2,11 +2,11 @@
 using System.Runtime.InteropServices;
 using static Bero.CyuVR.CyuLoaderVR;
 
-[assembly: AssemblyTitle("CyuVR")]
+[assembly: AssemblyTitle(PluginName)]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("CyuVR")]
+[assembly: AssemblyProduct(PluginName)]
 [assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: ComVisible(false)]
