@@ -8,7 +8,8 @@ using UnityEngine;
 namespace Bero.CyuVR
 {
 	[BepInPlugin("bero.cyu.cyuvr", "CyuVR", Version)]
-	[BepInProcess("KoikatuVR.exe")]
+	[BepInProcess("KoikatuVR")]
+	[BepInProcess("Koikatsu Party VR")]
 	public class CyuLoaderVR : BaseUnityPlugin
 	{
 		public const string Version = "0.1.1";
@@ -25,8 +26,6 @@ namespace Bero.CyuVR
 		{
 			Application.logMessageReceived += new Application.LogCallback(HandleLog);
 			DontDestroyOnLoad(new GameObject("BeroConfig").AddComponent<Config>());
-			if (!Application.dataPath.EndsWith("KoikatuVR_Data"))
-				return;
 			try
 			{
 				HarmonyInstance.Create("bero.cyuvr").PatchAll(typeof(Hooks));
