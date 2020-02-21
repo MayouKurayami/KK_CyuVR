@@ -342,11 +342,11 @@ namespace Bero.CyuVR
 			for (; ; )
 			{
 				float num = Mathf.Max(25f, Mathf.Abs(tangSpeed));
-				curMouthValue -= Time.deltaTime * num * 2f * 0.8f;
+				curMouthValue -= Time.deltaTime * num;
 				curMouthValue = Mathf.Clamp(curMouthValue, 0f, 100f);
-				curKissValue -= Time.deltaTime * num * 1f;
+				curKissValue -= Time.deltaTime * num;
 				curKissValue = Mathf.Clamp(curKissValue, 0f, 100f);
-				curEyeValue += Time.deltaTime * num * 1f * 0.8f;
+				curEyeValue += Time.deltaTime * num * 0.5f;
 				curEyeValue = Mathf.Clamp(curEyeValue, 0f, 100f);
 				eyesOpenValue = curEyeValue / 100f;
 				if (curMouthValue <= 10f && curKissValue <= 10f)
