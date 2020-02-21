@@ -15,7 +15,7 @@ namespace Bero.CyuVR
 		private Rect rectWin = new Rect(0.0f, 0.0f, 0.0f, 0.0f);
 		private float curMouthValue = 100f;
 		private float toMouthValue = 95f;
-		private float toEyeValue = 55f;
+		private float toEyeValue = Config.eyesMovement;
 		private float toKissValue = 75f;
 		private float tangAcc = 15f;
 		private float toTangSpeed = 35f;
@@ -310,7 +310,7 @@ namespace Bero.CyuVR
 				curKissValue = Mathf.Clamp(curKissValue, 0f, 100f);
 				curEyeValue = Mathf.Clamp(curEyeValue, 0f, 100f);
 				eyesOpenValue = curEyeValue / 100f;
-				EyeAnimate(Config.eyesMovement);
+				EyeAnimate(Config.eyesMovement > 0);
 				if (curKissValue >= 100f && curMouthValue >= 100f)
 				{
 					break;
@@ -331,10 +331,10 @@ namespace Bero.CyuVR
 				RandomMoveFloatTest(ref tangBoneRot.x, ref tangBoneRotTarget.x, ref tangBoneRotSpeed.x, -5f, 2.5f, ref tangBoneTime.x, 0.1f, 2f);
 				RandomMoveFloatTest(ref tangBoneRot.z, ref tangBoneRotTarget.z, ref tangBoneRotSpeed.z, -3.5f, 3.5f, ref tangBoneTime.z, 0.1f, 2f);
 				RandomMoveFloatTest(ref curMouthValue, ref toMouthValue, ref mouthSpeed, 97f, 100f, ref mouthOpenTime, 10f, 12f);
-				RandomMoveFloatTest(ref curEyeValue, ref toEyeValue, ref eyeOpenSpeed, 0f, 55f, ref eyeOpenTime, 0.01f, 1.2f);
+				RandomMoveFloatTest(ref curEyeValue, ref toEyeValue, ref eyeOpenSpeed, 0f, Config.eyesMovement, ref eyeOpenTime, 0.01f, 1.2f);
 				eyesOpenValue = curEyeValue / 100f;
 				RandomMoveFloatTest(ref curKissValue, ref toKissValue, ref tangSpeed, 25f, 100f, ref tangTime, 0.01f, 0.1f);
-				EyeAnimate(Config.eyesMovement);
+				EyeAnimate(Config.eyesMovement > 0);
 				yield return null;
 
 			}
