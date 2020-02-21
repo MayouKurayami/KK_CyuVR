@@ -309,6 +309,8 @@ namespace Bero.CyuVR
 				curMouthValue = Mathf.Clamp(curMouthValue, 0f, 100f);
 				curKissValue = Mathf.Clamp(curKissValue, 0f, 100f);
 				curEyeValue = Mathf.Clamp(curEyeValue, 0f, 100f);
+				eyesOpenValue = curEyeValue / 100f;
+				EyeAnimate(Config.eyesMovement);
 				if (curKissValue >= 100f && curMouthValue >= 100f)
 				{
 					break;
@@ -332,6 +334,7 @@ namespace Bero.CyuVR
 				RandomMoveFloatTest(ref curEyeValue, ref toEyeValue, ref eyeOpenSpeed, 0f, 55f, ref eyeOpenTime, 0.01f, 1.2f);
 				eyesOpenValue = curEyeValue / 100f;
 				RandomMoveFloatTest(ref curKissValue, ref toKissValue, ref tangSpeed, 25f, 100f, ref tangTime, 0.01f, 0.1f);
+				EyeAnimate(Config.eyesMovement);
 				yield return null;
 
 			}
@@ -540,28 +543,6 @@ namespace Bero.CyuVR
 				}
 
 				flags.DragStart();
-				if (!Config.eyesMovement)
-				{
-					return;
-				}
-
-				female.ChangeEyesBlinkFlag(false);
-				female.eyesCtrl.ChangePtn(0, true);
-				female.eyebrowCtrl.ChangePtn(0, true);
-				female.ChangeEyesOpenMax(eyesOpenValue);
-				female.ChangeEyebrowOpenMax(eyesOpenValue);
-				female.eyesCtrl.OpenMin = 0.0f;
-				female.eyebrowCtrl.OpenMin = 0.0f;
-				float num3 = Vector3.Angle(female.objHead.transform.forward, kissEyeTarget.transform.position - female.objHead.transform.position);
-				eyeLookChangeTimer -= Time.deltaTime;
-				if (eyeLookChangeTimer < 0f || num3 > 45f)
-				{
-					eyeLookChangeTimer = UnityEngine.Random.Range(10f, 20f);
-					eyeLookX = UnityEngine.Random.Range(-70f, 70f);
-					eyeLookY = UnityEngine.Random.Range(-45f, 45f);
-				}
-				kissEyeTarget.transform.RotateAround(kissEyeTarget.transform.parent.position, female.objHead.transform.up, eyeLookX * Time.deltaTime * 0.2f);
-				kissEyeTarget.transform.RotateAround(kissEyeTarget.transform.parent.position, female.objHead.transform.right, eyeLookY * Time.deltaTime * 0.2f);
 			}
 			else
 			{
@@ -644,6 +625,35 @@ namespace Bero.CyuVR
 				female.ChangeLookEyesPtn(1);
 				female.eyeLookCtrl.target = kissEyeTarget.transform;
 			}
+		}
+
+		/// <summary>
+		/// Execute female eye movement
+		/// </summary>
+		/// <param name="condition">Condition to determine whether the function runs or not</param>
+		private void EyeAnimate(bool condition)
+		{
+			if (!condition)
+			{
+				return;
+			}	
+			female.ChangeEyesBlinkFlag(false);
+			female.eyesCtrl.ChangePtn(0, true);
+			female.eyebrowCtrl.ChangePtn(0, true);
+			female.ChangeEyesOpenMax(eyesOpenValue);
+			female.ChangeEyebrowOpenMax(eyesOpenValue);
+			female.eyesCtrl.OpenMin = 0.0f;
+			female.eyebrowCtrl.OpenMin = 0.0f;
+			float num3 = Vector3.Angle(female.objHead.transform.forward, kissEyeTarget.transform.position - female.objHead.transform.position);
+			eyeLookChangeTimer -= Time.deltaTime;
+			if (eyeLookChangeTimer < 0f || num3 > 45f)
+			{
+				eyeLookChangeTimer = UnityEngine.Random.Range(10f, 20f);
+				eyeLookX = UnityEngine.Random.Range(-70f, 70f);
+				eyeLookY = UnityEngine.Random.Range(-45f, 45f);
+			}
+			kissEyeTarget.transform.RotateAround(kissEyeTarget.transform.parent.position, female.objHead.transform.up, eyeLookX * Time.deltaTime * 0.2f);
+			kissEyeTarget.transform.RotateAround(kissEyeTarget.transform.parent.position, female.objHead.transform.right, eyeLookY * Time.deltaTime * 0.2f);
 		}
 
 		internal void ToggleClothesStateAll()
