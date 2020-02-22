@@ -611,7 +611,10 @@ namespace Bero.CyuVR
 				return;
 			}
 
-			if (Config.tongueOverride || flags.gaugeFemale > 70 || flags.lstHeroine[0].HExperience == SaveData.Heroine.HExperienceKind.淫乱)
+			//Animate mouth and tongue if
+			// - tongueMovement config is set to ForceOn, or
+			// - tongueMovement config is set to Auto while female excite gauge is over 70 or H state is "lewd"
+			if (Config.tongueMovement == FrenchMode.ForceOn || (Config.tongueMovement == FrenchMode.Auto && (flags.gaugeFemale > 70 || flags.lstHeroine[0].HExperience == SaveData.Heroine.HExperienceKind.淫乱)))
 			{
 				SetBlendShapeWeight();
 				Vector3 localPosition = tangRenderer.bones[0].transform.localPosition;
@@ -677,6 +680,12 @@ namespace Bero.CyuVR
 			public float min;
 			public float max;
 			public bool active;
+		}
+		public enum FrenchMode
+		{
+			ForceOff,
+			Auto,
+			ForceOn
 		}
 	}
 }

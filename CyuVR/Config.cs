@@ -7,7 +7,7 @@ namespace Bero.CyuVR
 		public static float kissDistance;
 		public static float kissDistanceAibu;
 		public static float eyesMovement;
-		public static bool tongueOverride;
+		public static Cyu.FrenchMode tongueMovement;
 		public static float mouthOffset;
 		public static float kissNeckAngle;
 		public static float kissMotionSpeed;
@@ -17,7 +17,7 @@ namespace Bero.CyuVR
 			kissDistance = float.Parse(BepInEx.Config.GetEntry("KissDistance", "0.18", "Cyu"));
 			kissDistanceAibu = float.Parse(BepInEx.Config.GetEntry("KissDistanceAibu", "0.35", "Cyu"));
 			eyesMovement = float.Parse(BepInEx.Config.GetEntry("EyesMovement", "45", "Cyu"));
-			tongueOverride = bool.Parse(BepInEx.Config.GetEntry("TongueOverride", "false", "Cyu"));
+			tongueMovement = (Cyu.FrenchMode) int.Parse(BepInEx.Config.GetEntry("TongueMovement", "1", "Cyu"));
 			mouthOffset = float.Parse(BepInEx.Config.GetEntry("MouthOffset", "0.12", "Cyu"));
 			kissNeckAngle = float.Parse(BepInEx.Config.GetEntry("KissNeckAngle", "0.2", "Cyu"));
 			kissMotionSpeed = float.Parse(BepInEx.Config.GetEntry("KissMotionSpeed", "0.1", "Cyu"));
