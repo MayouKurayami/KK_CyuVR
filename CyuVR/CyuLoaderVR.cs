@@ -4,12 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using System.ComponentModel;
 
 namespace Bero.CyuVR
 {
 	[BepInPlugin("bero.cyu.cyuvr", PluginName, Version)]
-	[BepInProcess("KoikatuVR")]
-	[BepInProcess("Koikatsu Party VR")]
 	public class CyuLoaderVR : BaseUnityPlugin
 	{
 		public const string PluginName = "KK_CyuVR";
@@ -17,6 +16,38 @@ namespace Bero.CyuVR
 		public static List<ChaControl> lstFemale = new List<ChaControl>();
 		private string animationName = "";
 		private HFlag hFlag;
+		private bool dataPathVR;
+
+		[DisplayName("Kiss Activation Distance")]
+		[Description("When not in caress mode, kissing will start when the headset is within this range to the girl's head")]
+		public static ConfigWrapper<float> KissDistance { get; private set; }
+
+		[DisplayName("Kiss Activation Distance in Caress Mode")]
+		[Description("In caress mode, kissing will start when the headset is within this range to the girl's head")]
+		public static ConfigWrapper<float> KissDistanceAibu { get; private set; }
+
+		[DisplayName("Eyes Animation")]
+		[Description("Enable/disable eye and eyelids movement during kissing. Set to 0 to keep eyes closed during kiss")]
+		[AcceptableValueRange(0f, 100f, true)]
+		public static ConfigWrapper<float> EyesMovement { get; private set; }
+
+		[DisplayName("Mouth Movement")]
+		[Description("Enable/disable tongue and mouth movement in kissing (french kiss)")]
+		public static ConfigWrapper<Cyu.FrenchMode> MouthMovement { get; private set; }
+
+		[DisplayName("Player Mouth Offset")]
+		[Description("Negative vertical offset to player's mouth (increase this value to make your own mouth lower)")]
+		public static ConfigWrapper<float> MouthOffset { get; private set; }
+
+		[DisplayName("Girl Neck Elevation")]
+		[Description("How much the girl raises her head during kiss")]
+		public static ConfigWrapper<float> KissNeckAngle { get; private set; }
+
+		[DisplayName("Kiss Intensity in Caress Mode")]
+		[Description("Speed of kissing motion in caress mode")]
+		[AcceptableValueRange(0.1f, 1.5f, true)]
+		public static ConfigWrapper<float> KissMotionSpeed { get; private set; }
+
 
 		private void HandleLog(string condition, string stackTrace, LogType type)
 		{
@@ -26,7 +57,17 @@ namespace Bero.CyuVR
 		private void Awake()
 		{
 			Application.logMessageReceived += new Application.LogCallback(HandleLog);
-			DontDestroyOnLoad(new GameObject("BeroConfig").AddComponent<Config>());
+
+			KissDistance = new ConfigWrapper<float>("KissDistance", this, 0.18f);
+			KissDistanceAibu = new ConfigWrapper<float>("KissDistanceAibu", this, 0.35f);
+			EyesMovement = new ConfigWrapper<float>("EyesMovement", this, 45f);
+			MouthMovement = new ConfigWrapper<Cyu.FrenchMode>("MouthMovement", this, Cyu.FrenchMode.Auto);
+			MouthOffset = new ConfigWrapper<float>("MouthOffset", this, 0.12f);
+			KissNeckAngle = new ConfigWrapper<float>("KissNeckAngle", this, 0.2f);
+			KissMotionSpeed = new ConfigWrapper<float>("KissMotionSpeed", this, 0.1f);
+
+			if (!(dataPathVR = Application.dataPath.EndsWith("KoikatuVR_Data")))
+				return;
 			try
 			{
 				HarmonyInstance.Create("bero.cyuvr").PatchAll(typeof(Hooks));
@@ -39,6 +80,9 @@ namespace Bero.CyuVR
 
 		private void Update()
 		{
+			if (!dataPathVR)
+				return;
+
 			if (hFlag == null)
 			{
 				hFlag = FindObjectOfType<HFlag>();

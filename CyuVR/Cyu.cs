@@ -15,7 +15,7 @@ namespace Bero.CyuVR
 		private Rect rectWin = new Rect(0.0f, 0.0f, 0.0f, 0.0f);
 		private float curMouthValue = 100f;
 		private float toMouthValue = 95f;
-		private float toEyeValue = Config.eyesMovement;
+		private float toEyeValue = CyuLoaderVR.EyesMovement.Value;
 		private float toKissValue = 75f;
 		private float tangAcc = 15f;
 		private float toTangSpeed = 35f;
@@ -126,11 +126,11 @@ namespace Bero.CyuVR
 				camera = Resources.FindObjectsOfTypeAll<SteamVR_Camera>().FirstOrDefault<SteamVR_Camera>().GetComponent<Camera>().gameObject;
 				myMouth = new GameObject("MyMouth");
 				myMouth.transform.SetParent(camera.transform);
-				myMouth.transform.localPosition = new Vector3(0.0f, -Config.mouthOffset, 0.0f);
+				myMouth.transform.localPosition = new Vector3(0.0f, -CyuLoaderVR.MouthOffset.Value, 0.0f);
 				siru.siruTarget = myMouth;
 				kissNeckTarget = new GameObject("KissNeckTarget");
 				kissNeckTarget.transform.SetParent(camera.transform, false);
-				kissNeckTarget.transform.localPosition = new Vector3(0.0f, Config.kissNeckAngle, -0.5f);
+				kissNeckTarget.transform.localPosition = new Vector3(0.0f, CyuLoaderVR.KissNeckAngle.Value, -0.5f);
 			}
 		}
 
@@ -310,7 +310,7 @@ namespace Bero.CyuVR
 				curKissValue = Mathf.Clamp(curKissValue, 0f, 100f);
 				curEyeValue = Mathf.Clamp(curEyeValue, 0f, 100f);
 				eyesOpenValue = curEyeValue / 100f;
-				EyeAnimate(Config.eyesMovement > 0);
+				EyeAnimate(CyuLoaderVR.EyesMovement.Value > 0);
 				if (curKissValue >= 100f && curMouthValue >= 100f)
 				{
 					break;
@@ -331,10 +331,10 @@ namespace Bero.CyuVR
 				RandomMoveFloatTest(ref tangBoneRot.x, ref tangBoneRotTarget.x, ref tangBoneRotSpeed.x, -5f, 2.5f, ref tangBoneTime.x, 0.1f, 2f);
 				RandomMoveFloatTest(ref tangBoneRot.z, ref tangBoneRotTarget.z, ref tangBoneRotSpeed.z, -3.5f, 3.5f, ref tangBoneTime.z, 0.1f, 2f);
 				RandomMoveFloatTest(ref curMouthValue, ref toMouthValue, ref mouthSpeed, 97f, 100f, ref mouthOpenTime, 10f, 12f);
-				RandomMoveFloatTest(ref curEyeValue, ref toEyeValue, ref eyeOpenSpeed, 0f, Config.eyesMovement, ref eyeOpenTime, 0.01f, 1.2f);
+				RandomMoveFloatTest(ref curEyeValue, ref toEyeValue, ref eyeOpenSpeed, 0f, CyuLoaderVR.EyesMovement.Value, ref eyeOpenTime, 0.01f, 1.2f);
 				eyesOpenValue = curEyeValue / 100f;
 				RandomMoveFloatTest(ref curKissValue, ref toKissValue, ref tangSpeed, 25f, 100f, ref tangTime, 0.01f, 0.1f);
-				EyeAnimate(Config.eyesMovement > 0);
+				EyeAnimate(CyuLoaderVR.EyesMovement.Value > 0);
 				yield return null;
 
 			}
@@ -495,9 +495,9 @@ namespace Bero.CyuVR
 			float curDistance = Vector3.Distance(myMouth.transform.position, tang.transform.position);
 			float threshold;
 			if (flags.mode == HFlag.EMode.aibu)
-				threshold = Config.kissDistanceAibu;
+				threshold = CyuLoaderVR.KissDistanceAibu.Value;
 			else
-				threshold = Config.kissDistance;
+				threshold = CyuLoaderVR.KissDistance.Value;
 
 			if (curDistance < threshold)
 			{
@@ -505,7 +505,7 @@ namespace Bero.CyuVR
 				{
 					Kiss(true);
 				}
-				else if (curDistance < (Config.kissDistanceAibu - 0.1f) || siru.siruAmount < 0.2f)
+				else if (curDistance < (CyuLoaderVR.KissDistanceAibu.Value - 0.1f) || siru.siruAmount < 0.2f)
 				{
 					Kiss(true);
 				}
@@ -536,10 +536,10 @@ namespace Bero.CyuVR
 
 			if (kissing)
 			{
-				//change parameter for SpeedUpClickAibu to use Config.kissMotionSpeed to control animation speed during kissing in Aibu
+				//change parameter for SpeedUpClickAibu to use kissMotionSpeed to control animation speed during kissing in Aibu
 				if (flags.mode == HFlag.EMode.aibu)
 				{
-					flags.SpeedUpClickAibu(1f * flags.rateDragSpeedUp, Config.kissMotionSpeed, true);
+					flags.SpeedUpClickAibu(1f * flags.rateDragSpeedUp, CyuLoaderVR.KissMotionSpeed.Value, true);
 				}
 
 				flags.DragStart();
@@ -614,7 +614,7 @@ namespace Bero.CyuVR
 			//Animate mouth and tongue if
 			// - tongueMovement config is set to ForceOn, or
 			// - tongueMovement config is set to Auto while female excite gauge is over 70 or H state is "lewd"
-			if (Config.tongueMovement == FrenchMode.ForceOn || (Config.tongueMovement == FrenchMode.Auto && (flags.gaugeFemale > 70 || flags.lstHeroine[0].HExperience == SaveData.Heroine.HExperienceKind.淫乱)))
+			if (CyuLoaderVR.MouthMovement.Value == FrenchMode.ForceOn || (CyuLoaderVR.MouthMovement.Value == FrenchMode.Auto && (flags.gaugeFemale > 70 || flags.lstHeroine[0].HExperience == SaveData.Heroine.HExperienceKind.淫乱)))
 			{
 				SetBlendShapeWeight();
 				Vector3 localPosition = tangRenderer.bones[0].transform.localPosition;
