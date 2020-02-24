@@ -89,6 +89,7 @@ namespace Bero.CyuVR
 		private float npWeightSpeed;
 		private float npWeightSpeed2;
 		private float npWeightSpeed3;
+		internal static float dragSpeed = 0.001f;
 
 		public bool IsKiss
 		{
@@ -536,10 +537,21 @@ namespace Bero.CyuVR
 
 			if (kissing)
 			{
-				//change parameter for SpeedUpClickAibu to use kissMotionSpeed to control animation speed during kissing in Aibu
+				//Use configured value (KissMotionSpeed) to control animation speed during kissing in caress mode
+				//Increase animation speed further if GropeOverride is set to true and groping motion is larger than KissMotionSpeed
 				if (flags.mode == HFlag.EMode.aibu)
 				{
-					flags.SpeedUpClickAibu(1f * flags.rateDragSpeedUp, CyuLoaderVR.KissMotionSpeed.Value, true);
+					if (CyuLoaderVR.GropeOverride.Value)
+					{
+						//Use the higher value between dragSpeed(value based on controller movement) and speedItem(game calculated value) to set kissing animation speed
+						//Then make sure the speed value used for calculating animation speed is reset to a minimum
+						//so that it doesn't get stuck at a high value, causing kissing animation speed to also be stuck at a high value.
+						flags.SpeedUpClickAibu(flags.rateDragSpeedUp, Mathf.Clamp(Mathf.Max(dragSpeed, flags.speedItem), CyuLoaderVR.KissMotionSpeed.Value, 1.5f), true);
+
+						dragSpeed = 0.0001f;
+					}
+					else
+						flags.SpeedUpClickAibu(flags.rateDragSpeedUp, CyuLoaderVR.KissMotionSpeed.Value, true);
 				}
 
 				flags.DragStart();

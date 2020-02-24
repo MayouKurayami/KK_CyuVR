@@ -27,8 +27,8 @@ namespace Bero.CyuVR
 		[Description("In caress mode, kissing will start when the headset is within this range to the girl's head")]
 		public static ConfigWrapper<float> KissDistanceAibu { get; private set; }
 
-		[DisplayName("Eyes Animation")]
-		[Description("Enable/disable eye and eyelids movement during kissing. Set to 0 to keep eyes closed during kiss")]
+		[DisplayName("Eyes Animation Openness")]
+		[Description("Openness of eyes and eyelids during kissing. Set to 0 to keep eyes closed during kiss")]
 		[AcceptableValueRange(0f, 100f, true)]
 		public static ConfigWrapper<float> EyesMovement { get; private set; }
 
@@ -49,6 +49,10 @@ namespace Bero.CyuVR
 		[AcceptableValueRange(0.1f, 1.5f, true)]
 		public static ConfigWrapper<float> KissMotionSpeed { get; private set; }
 
+		[DisplayName("Increase Kiss Intensity by Groping")]
+		[Description("Override kissing motion speed in caress mode by groping")]
+		public static ConfigWrapper<bool> GropeOverride { get; private set; }
+
 
 		private void HandleLog(string condition, string stackTrace, LogType type)
 		{
@@ -66,6 +70,7 @@ namespace Bero.CyuVR
 			MouthOffset = new ConfigWrapper<float>("MouthOffset", this, 0.12f);
 			KissNeckAngle = new ConfigWrapper<float>("KissNeckAngle", this, 0.2f);
 			KissMotionSpeed = new ConfigWrapper<float>("KissMotionSpeed", this, 0.1f);
+			GropeOverride = new ConfigWrapper<bool>("GropeOverride", this, true);
 
 			if (!(dataPathVR = Application.dataPath.EndsWith("KoikatuVR_Data")))
 				return;

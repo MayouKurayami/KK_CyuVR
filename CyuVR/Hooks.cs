@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace Bero.CyuVR
 {
@@ -181,6 +182,23 @@ namespace Bero.CyuVR
 			}
 			__result = false;
 			return false;
+		}
+
+		//When beginning to touch in caress mode, the game passes a really high rate value (_rateSpeedUp) to item speed and thus making it at maximum in the beginning.
+		//This behavior interferes with the kissing animation speed since it's dependent on the item speed, causing kissing animation speed to also skyrocket when started touching.
+		//The below patch normalizes abnormally high speed values and converts other values into ones in a polynomial function curve between 0.1 and 1.5, 
+		//which is the range of the kissing animation speed, thus making them suitable to be passed onto Cyu to calculate kissing animation speed
+		[HarmonyPatch(typeof(HFlag), "SpeedUpClickItemAibu")]
+		[HarmonyPrefix]
+		public static void SpeedUpClickItemAibuPre(ref float _rateSpeedUp)
+		{
+			if (_rateSpeedUp > 1f)
+			{
+				_rateSpeedUp = 0.7f;
+				return;
+			}
+			else
+				Cyu.dragSpeed = Mathf.Clamp(0.1f + (214.444f * _rateSpeedUp) - (7222.222f * Mathf.Pow(_rateSpeedUp,2) ), 0.1f, 1.5f);
 		}
 	}
 }
