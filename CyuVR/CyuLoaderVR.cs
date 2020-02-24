@@ -11,7 +11,8 @@ namespace Bero.CyuVR
 	[BepInPlugin("bero.cyu.cyuvr", PluginName, Version)]
 	public class CyuLoaderVR : BaseUnityPlugin
 	{
-		public const string PluginName = "KK_CyuVR";
+		public const string PluginName = "CyuVR";
+		public const string AssembName = "KK_CyuVR";
 		public const string Version = "0.1.1";
 		public static List<ChaControl> lstFemale = new List<ChaControl>();
 		private string animationName = "";
