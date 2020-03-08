@@ -21,7 +21,7 @@ This is a BepInEx 4 plugin, to run it with BepInEx 5 you'd need [BepInEx 4 Patch
 Installation of the [**CrossFader.dll**](https://vr-erogamer.com/wp-content/uploads/CrossFader.zip) plugin found on https://vr-erogamer.com/archives/527 is strongly recommended to ensure smooth animation in and out of kissing.   
 (Install by placing in BepInEx root folder alongside KK_CyuVR.dll)
 
-Also recommended is the [**KoikatuVRAssistPlugin**](https://mega.nz/#!YQZyWRwQ!C2FX0Iwp-X7F5z55ytTlQGkjfqH6kQP-wcDPfNBvT0s) plugin found on https://vr-erogamer.com/archives/322, for easier movement and better access to actions in VR. With it installed, one can rotate and move the camera by the controller while in Action (Caress) Mode by holding the trigger button. While the UI menu is visible, hold the grip button for 1 second to freeze it in place, and drag and move it by holding the grip button. Double click the grip button to return the menu to your controller.
+Also recommended is the [**KoikatuVRAssistPlugin**](https://mega.nz/#!YQZyWRwQ!C2FX0Iwp-X7F5z55ytTlQGkjfqH6kQP-wcDPfNBvT0s) plugin found on https://vr-erogamer.com/archives/322, for easier movement and better access to actions in VR. With it installed, one can rotate and move the camera at all times by holding the trigger button. While the UI menu is visible, hold the grip button for 1 second to freeze it in place, and drag and move it by holding the grip button. Double click the grip button to return the menu to your controller.
 
 ## Configurations
 Configurations are located in *config.ini* in the BepInEx root folder, under section **[bero.cyu.cyuvr]**.  
@@ -39,7 +39,7 @@ Configurations are located in *config.ini* in the BepInEx root folder, under sec
 
 - **Kiss Intensity in Caress Mode (KissMotionSpeed)** - Default speed of kissing motion in caress mode. **(0.1-1.5, Default: 0.1)**  
 
-- **Mouth Movement** - Mode of tongue and mouth movement (french kiss) - **Auto** will enable tongue and mouth movement when character is in "lewd" state OR when female character's excitement gauge is above 70 (climax threshold). **ForceOn** will enable tongue and mouth movement at all times, and **ForceOff** will disable it completely. **(Default: Auto)**  
+- **Mode of Tongue and Mouth Movement (MouthMovement)** - Set when to enable/disable tongue and mouth movement (french kiss) in kissing. **Auto** will enable tongue and mouth movement when character is in "lewd" state OR when female character's excitement gauge is above 70 (climax threshold). **ForceOn** will enable tongue and mouth movement at all times, and **ForceOff** will disable it completely. **(Default: Auto)**  
 
 - **Player Mouth Offset (MouthOffset)** - *Negative* vertical offset to player's mouth (increase this value to make your own mouth lower). Affects calculation of the kiss activation distances and attachment point of saliva string. **(Default: 0.12)**  
 

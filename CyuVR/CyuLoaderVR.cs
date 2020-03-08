@@ -32,8 +32,8 @@ namespace Bero.CyuVR
 		[AcceptableValueRange(0f, 100f, true)]
 		public static ConfigWrapper<float> EyesMovement { get; private set; }
 
-		[DisplayName("Mouth Movement")]
-		[Description("Enable/disable tongue and mouth movement in kissing (french kiss)")]
+		[DisplayName("Mode of Tongue and Mouth Movement")]
+		[Description("Set when to enable/disable tongue and mouth movement (french kiss) in kissing")]
 		public static ConfigWrapper<Cyu.FrenchMode> MouthMovement { get; private set; }
 
 		[DisplayName("Player Mouth Offset")]
