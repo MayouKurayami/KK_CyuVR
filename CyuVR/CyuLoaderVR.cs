@@ -28,7 +28,7 @@ namespace Bero.CyuVR
 		public static ConfigWrapper<float> KissDistanceAibu { get; private set; }
 
 		[DisplayName("Eyes Animation Openness")]
-		[Description("Openness of eyes and eyelids during kissing. Set to 0 to keep eyes closed during kiss")]
+		[Description("Maximum openness of eyes and eyelids during kissing. Set to 0 to keep eyes closed during kiss")]
 		[AcceptableValueRange(0f, 100f, true)]
 		public static ConfigWrapper<float> EyesMovement { get; private set; }
 
@@ -65,7 +65,7 @@ namespace Bero.CyuVR
 
 			KissDistance = new ConfigWrapper<float>("KissDistance", this, 0.18f);
 			KissDistanceAibu = new ConfigWrapper<float>("KissDistanceAibu", this, 0.35f);
-			EyesMovement = new ConfigWrapper<float>("EyesMovement", this, 45f);
+			EyesMovement = new ConfigWrapper<float>("EyesMovement", this, 15f);
 			MouthMovement = new ConfigWrapper<Cyu.FrenchMode>("MouthMovement", this, Cyu.FrenchMode.Auto);
 			MouthOffset = new ConfigWrapper<float>("MouthOffset", this, 0.12f);
 			KissNeckAngle = new ConfigWrapper<float>("KissNeckAngle", this, 0.2f);
