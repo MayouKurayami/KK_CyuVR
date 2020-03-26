@@ -9,7 +9,7 @@ The original plugin can be found here: https://vr-erogamer.com/archives/454
 - Afterschool DLC  
 - [Koikatsu Official VR Patch 0531](http://www.illusion.jp/preview/koikatu/download/vr.php)  
 - BepInEx 4 and above  
-- (optional, strongly recommended): [CrossFader](https://vr-erogamer.com/wp-content/uploads/CrossFader.zip) plugin
+- (optional, strongly recommended): [CrossFader](https://github.com/MayouKurayami/KK_CrossFader/releases) plugin
 - (optional, recommended): [KoikatuVRAssistPlugin](https://mega.nz/#!YQZyWRwQ!C2FX0Iwp-X7F5z55ytTlQGkjfqH6kQP-wcDPfNBvT0s) plugin
 
 
@@ -18,8 +18,7 @@ The original plugin can be found here: https://vr-erogamer.com/archives/454
 Place **KK_CyuVR.dll** in BepInEx root folder.  
 This is a BepInEx 4 plugin, to run it with BepInEx 5 you'd need [BepInEx 4 Patcher](https://github.com/BepInEx/BepInEx.BepInEx4Upgrader). (Included within HF Patch)
 
-Installation of the [**CrossFader.dll**](https://vr-erogamer.com/wp-content/uploads/CrossFader.zip) plugin found on https://vr-erogamer.com/archives/527 is strongly recommended to ensure smooth animation in and out of kissing.   
-(Install by placing in BepInEx root folder alongside KK_CyuVR.dll)
+Installation of the [**CrossFader.dll**](https://github.com/MayouKurayami/KK_CrossFader/releases) plugin is strongly recommended to ensure smooth animation in and out of kissing.   
 
 Also recommended is the [**KoikatuVRAssistPlugin**](https://mega.nz/#!YQZyWRwQ!C2FX0Iwp-X7F5z55ytTlQGkjfqH6kQP-wcDPfNBvT0s) plugin found on https://vr-erogamer.com/archives/322, for easier movement and better access to actions in VR. With it installed, one can rotate and move the camera at all times by holding the trigger button. While the UI menu is visible, hold the grip button for 1 second to freeze it in place, and drag and move it by holding the grip button. Double click the grip button to return the menu to your controller.
 
