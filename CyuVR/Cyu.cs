@@ -11,19 +11,15 @@ namespace Bero.CyuVR
 	public class Cyu : MonoBehaviour
 	{
 		private float tangSpeed = 35f;
-		private float winHeight = 300f;
 		private Rect rectWin = new Rect(0.0f, 0.0f, 0.0f, 0.0f);
 		private float curMouthValue = 100f;
 		private float toMouthValue = 95f;
 		private float toEyeValue = CyuLoaderVR.EyesMovement.Value;
 		private float toKissValue = 75f;
-		private float tangAcc = 15f;
-		private float toTangSpeed = 35f;
 		private List<Cyu.BlendValue> bvs = new List<Cyu.BlendValue>();
 		private List<Cyu.BlendValue> bvsShow = new List<Cyu.BlendValue>();
 		private string filterText = "";
 		public float eyesOpenValue = 100f;
-		private bool firstKiss = true;
 		private float mouthSpeed = 1f;
 		private float npWeight = 0.33f;
 		private float npWeightTo = 0.33f;
@@ -48,14 +44,11 @@ namespace Bero.CyuVR
 		private float tangTime = 1f;
 		private float mouthOpenTime = 1f;
 		private Vector3 tangBonePosSpeed = Vector3.one;
-		private float tangWeight;
 		private HVoiceCtrl voiceCtrl;
 		private float curEyeValue;
 		private float curKissValue;
 		private bool moveAuto;
-		private bool kissFlag;
 		private ChaControl female;
-		private ChaControl male;
 		public bool gui;
 		public float hohoAka;
 		public int tearLv;
@@ -64,48 +57,34 @@ namespace Bero.CyuVR
 		public bool kissing;
 		private bool bero;
 		public GameObject maleTang;
-		private bool kissManual;
 		internal HFlag flags;
-		private NeckLookControllerVer2 neckLookController;
 		public GameObject camera;
 		public GameObject kissNeckTarget;
 		private VRHScene scene;
 		private VRHandCtrl hand0;
-		private int layerInc;
 		private GameObject tang;
 		private SkinnedMeshRenderer tangRenderer;
 		private Siru siru;
 		private GameObject myMouth;
 		private GameObject kissEyeTarget;
 		private float eyeLookX;
-		private float eyeLookXTo;
 		private float eyeLookY;
-		private float eyeLookYTo;
 		private float eyeLookChangeTimer;
 		private CameraControl_Ver2 cameraControl;
 		private Vector3 initTangBonePos;
 		private Quaternion initTangBoneRot;
-		private float tangBoneRotYTo;
-		private float tangBoneRotSpeedTo;
 		private float npWeightSpeed;
 		private float npWeightSpeed2;
 		private float npWeightSpeed3;
 		internal static float dragSpeed = 0.001f;
 		internal HAibu aibu;
 
-		public bool IsKiss
-		{
-			get
-			{
-				return kissFlag;
-			}
-		}
+		public bool IsKiss { get; private set; }
 
 		private void Awake()
 		{
 			cameraControl = FindObjectOfType<CameraControl_Ver2>();
 			female = GetComponent<ChaControl>();
-			male = FindObjectsOfType<ChaControl>().Where<ChaControl>(x => x.name.IndexOf("chaM") >= 0).FirstOrDefault<ChaControl>();
 			ReloadBlendValues();
 			Transform transform = female.GetComponentsInChildren<Transform>().ToList<Transform>().Where<Transform>(x => x.name == "o_tang").FirstOrDefault<Transform>();
 			if (transform == null)
@@ -125,7 +104,6 @@ namespace Bero.CyuVR
 				kissEyeTarget.transform.localScale = Vector3.one * 0.05f;
 				kissEyeTarget.transform.SetParent(female.objHead.transform);
 				kissEyeTarget.transform.localPosition = new Vector3(0.0f, 0.0f, 0.5f);
-				neckLookController = female.neckLookCtrl;
 				camera = Resources.FindObjectsOfTypeAll<SteamVR_Camera>().FirstOrDefault<SteamVR_Camera>().GetComponent<Camera>().gameObject;
 				myMouth = new GameObject("MyMouth");
 				myMouth.transform.SetParent(camera.transform);
@@ -214,11 +192,11 @@ namespace Bero.CyuVR
 		{
 			if (!active)
 			{
-				kissFlag = false;
+				IsKiss = false;
 			}
 			else
 			{
-				kissFlag = true;
+				IsKiss = true;
 				if (kissing)
 				{
 					return;
@@ -306,7 +284,7 @@ namespace Bero.CyuVR
 			curEyeValue = 100f;
 			curMouthValue = 0f;
 			tangSpeed = UnityEngine.Random.Range(10f, 20f);
-			while (kissFlag)
+			while (IsKiss)
 			{
 				curKissValue += Time.deltaTime * tangSpeed * 5f;
 				curMouthValue += Time.deltaTime * tangSpeed * 10f;
@@ -323,7 +301,7 @@ namespace Bero.CyuVR
 				yield return null;
 			}
 			bero = true;
-			while (kissFlag)
+			while (IsKiss)
 			{
 				RandomMoveFloatTest(ref npWeight, ref npWeightTo, ref npWeightSpeed, 0f, 1f, ref npWeightTime, 0.1f, 0.5f);
 				RandomMoveFloatTest(ref npWeight2, ref npWeight2To, ref npWeightSpeed2, 0f, 1f, ref npWeightTime2, 0.1f, 0.5f);
@@ -370,7 +348,7 @@ namespace Bero.CyuVR
 
 		public void OnDisable()
 		{
-			kissFlag = false;
+			IsKiss = false;
 			kissing = false;
 		}
 
@@ -383,7 +361,7 @@ namespace Bero.CyuVR
 
 			if (voiceCtrl.nowVoices[0].state == HVoiceCtrl.VoiceKind.voice)
 			{
-				kissFlag = false;
+				IsKiss = false;
 			}
 			else if (!flags.lstHeroine[0].isKiss && !flags.lstHeroine[0].denial.kiss)
 			{
@@ -393,11 +371,10 @@ namespace Bero.CyuVR
 					flags.voice.playVoices[0] = 103;
 				}
 
-				kissFlag = false;
+				IsKiss = false;
 			}
 			else
 			{
-				FindObjectOfType<VRHScene>();
 				if (hand0 == null)
 				{
 					hand0 = Traverse.Create(scene).Field("vrHands").GetValue<VRHandCtrl[]>()[0];
@@ -409,7 +386,6 @@ namespace Bero.CyuVR
 					Traverse.Create(hand0).Field("isKiss").SetValue(true);
 				}
 				flags.AddKiss();
-				firstKiss = false;
 				StartCoroutine(BeroKiss());
 			}
 		}
@@ -646,7 +622,7 @@ namespace Bero.CyuVR
 				tangRenderer.bones[0].transform.localPosition = new Vector3(localPosition.x, tangBonePos.y + initTangBonePos.y, localPosition.z);
 				tangRenderer.bones[0].transform.localRotation = initTangBoneRot * Quaternion.Euler(tangBoneRot.x, tangBoneRot.y, tangBoneRot.z);
 			}
-			if (kissFlag)
+			if (IsKiss)
 			{
 				female.ChangeLookNeckPtn(1, 1f);
 				female.neckLookCtrl.target = kissNeckTarget.transform;
@@ -702,8 +678,6 @@ namespace Bero.CyuVR
 			public string name;
 			public float value;
 			public SkinnedMeshRenderer renderer;
-			public float min;
-			public float max;
 			public bool active;
 		}
 		public enum FrenchMode

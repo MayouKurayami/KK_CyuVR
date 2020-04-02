@@ -7,38 +7,29 @@ namespace Bero.CyuVR
 {
 	public class Siru : MonoBehaviour
 	{
-		private float itoRemainTime = 10f;
-		private float itoStartTime = 10f;
+		private const float itoRemainTime = 10f;
 		public int tangVertexIndex = 161;
 		private List<Vector3> posList = new List<Vector3>();
-		private int itoMatIndex = 1;
-		private int siruMatIndex = 6;
+		private const int itoMatIndex = 1;
+		private const int siruMatIndex = 6;
 		private List<Vector3>[] posListDelays = new List<Vector3>[5];
 		private List<Material> orgMaterial = new List<Material>();
-		private float distanceReduction = 100f;
-		private float itoDistance = 0.025f;
-		private float itoBreakDistance = 0.07f;
-		public float t;
+		private const float distanceReduction = 100f;
+		private const float itoDistance = 0.025f;
+		private const float itoBreakDistance = 0.07f;
 		public Transform head;
 		public Transform top;
 		public Transform tail;
 		private ParticleSystem particleSystem;
 		private HFlag flags;
-		private GameObject itoTop;
-		private GameObject itoTail;
-		private GameObject itoHead;
 		public bool itoOn;
-		private ParticleSystem subEmitter;
 		public bool itoBreaking;
 		private float itoTimer;
-		private float itoWaitTimer;
-		private const int delay = 5;
 		public GameObject siruTarget;
 		private LineRenderer ito;
 		public SkinnedMeshRenderer tangRenderer;
 		public ChaControl female;
 		private LineTextureMode lineTextureMode;
-		private GameObject pTang;
 		private ParticleSystemRenderer particleSystemRenderer;
 		public float siruAmount;
 
@@ -89,7 +80,6 @@ namespace Bero.CyuVR
 			ito.startWidth = 0.005f;
 			ito.endWidth = 0.005f;
 			flags = FindObjectOfType<HFlag>();
-			itoWaitTimer = itoStartTime;
 		}
 
 		public void StartIto()

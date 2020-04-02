@@ -10,10 +10,7 @@ namespace Bero.CyuVR
 		public static readonly Color COLOR_HIGHLIGHT = Color.blue;
 		public bool managible = true;
 		private CameraControl_Ver2 cameraControl;
-		private bool cameraControlOff;
 		public bool dragging;
-		protected Color colorOrg;
-		public Color colorCreater;
 
 		protected virtual void Awake()
 		{
@@ -36,14 +33,12 @@ namespace Bero.CyuVR
 
 		protected virtual void OnMouseDown()
 		{
-			cameraControlOff = true;
 			cameraControl.enabled = false;
 			dragging = true;
 		}
 
 		protected virtual void OnMouseUp()
 		{
-			cameraControlOff = false;
 			cameraControl.enabled = true;
 			dragging = false;
 		}
