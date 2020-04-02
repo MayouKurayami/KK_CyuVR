@@ -55,7 +55,7 @@ namespace Bero.CyuVR
 		public int clothState;
 		internal int clothesState;
 		public bool kissing;
-		private bool bero;
+		internal bool bero;
 		public GameObject maleTang;
 		internal HFlag flags;
 		public GameObject camera;
@@ -551,13 +551,6 @@ namespace Bero.CyuVR
 				
 				if (flags.mode == HFlag.EMode.aibu)
 				{
-					//If kissing is initiated while groping and groping stops in the middle of kissing, this makes sure animation will return to normal idle (non-groping)
-					// after kissing is disengaged, by setting the backIdle field (used to return animation to the previous state) to the right value
-					if (MathfEx.IsRange(HFlag.ClickKind.de_muneL, flags.click, HFlag.ClickKind.de_siriR, isEqual: true))
-					{
-						Traverse.Create(aibu).Field("backIdle").SetValue(0);
-					}
-
 					//Use configured value (KissMotionSpeed) to control animation speed during kissing in caress mode
 					//Increase animation speed further if GropeOverride is set to true and groping motion is larger than KissMotionSpeed
 					if (CyuLoaderVR.GropeOverride.Value && bero)

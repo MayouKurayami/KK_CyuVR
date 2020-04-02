@@ -201,8 +201,9 @@ namespace Bero.CyuVR
 				Cyu.dragSpeed = Mathf.Clamp(0.1f + (214.444f * _rateSpeedUp) - (7222.222f * Mathf.Pow(_rateSpeedUp,2) ), 0.1f, 1.5f);
 		}
 
-		//For some reason when starting to grope by grabbing a body part, the value set to flags.click would be overriden to ClickKind.none later in the frame
-		//This patch sets the backIdle field (used to return animation to the previous state) to the right value based on flags.click before it gets overridden
+		//If groping is initiated during kissing, the game does not continue the groping animation after disengaged from kissing.
+		//This patch sets the backIdle field (used to return animation to the previous state) to the right value based on flags.click 
+		//before flags.click gets overridden to ClickKind.none later in the frame
 		[HarmonyPatch(typeof(VRHandCtrl), "JudgeProc")]
 		[HarmonyPrefix]
 		public static void JudgeProcPre()
@@ -222,6 +223,21 @@ namespace Bero.CyuVR
 				{
 					Traverse.Create(cyu.aibu).Field("backIdle").SetValue(3);
 				}
+			}
+		}
+
+		//If kissing is initiated while groping and groping stops in the middle of kissing, this makes sure animation will return to normal idle (non-groping)
+		// after kissing is disengaged, by setting the backIdle field (used to return animation to the previous state) to the right value
+		[HarmonyPatch(typeof(VRHandCtrl), "FinishAction")]
+		[HarmonyPostfix]
+		public static void FinishActionPost()
+		{
+			Cyu cyu = GetCyu();
+			if (!cyu)
+				return;
+			if ((cyu.flags.mode == HFlag.EMode.aibu) && cyu.bero)
+			{
+				Traverse.Create(cyu.aibu).Field("backIdle").SetValue(0);
 			}
 		}
 	}
