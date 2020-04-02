@@ -200,5 +200,29 @@ namespace Bero.CyuVR
 			else
 				Cyu.dragSpeed = Mathf.Clamp(0.1f + (214.444f * _rateSpeedUp) - (7222.222f * Mathf.Pow(_rateSpeedUp,2) ), 0.1f, 1.5f);
 		}
+
+		//For some reason when starting to grope by grabbing a body part, the value set to flags.click would be overriden to ClickKind.none later in the frame
+		//This patch sets the backIdle field (used to return animation to the previous state) to the right value based on flags.click before it gets overridden
+		[HarmonyPatch(typeof(VRHandCtrl), "JudgeProc")]
+		[HarmonyPrefix]
+		public static void JudgeProcPre()
+		{
+			Cyu cyu = GetCyu();
+			if (cyu && cyu.IsKiss)
+			{
+				if (cyu.flags.click == HFlag.ClickKind.muneL || cyu.flags.click == HFlag.ClickKind.muneR)
+				{
+					Traverse.Create(cyu.aibu).Field("backIdle").SetValue(1);
+				}
+				else if (cyu.flags.click == HFlag.ClickKind.kokan)
+				{
+					Traverse.Create(cyu.aibu).Field("backIdle").SetValue(2);
+				}
+				else if (cyu.flags.click == HFlag.ClickKind.siriL || cyu.flags.click == HFlag.ClickKind.siriR || cyu.flags.click == HFlag.ClickKind.anal)
+				{
+					Traverse.Create(cyu.aibu).Field("backIdle").SetValue(3);
+				}
+			}
+		}
 	}
 }

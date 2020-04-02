@@ -64,7 +64,7 @@ namespace Bero.CyuVR
 		public bool kissing;
 		public GameObject maleTang;
 		private bool kissManual;
-		private HFlag flags;
+		internal HFlag flags;
 		private NeckLookControllerVer2 neckLookController;
 		public GameObject camera;
 		public GameObject kissNeckTarget;
@@ -90,6 +90,7 @@ namespace Bero.CyuVR
 		private float npWeightSpeed2;
 		private float npWeightSpeed3;
 		internal static float dragSpeed = 0.001f;
+		internal HAibu aibu;
 
 		public bool IsKiss
 		{
@@ -140,6 +141,8 @@ namespace Bero.CyuVR
 			scene = FindObjectOfType<VRHScene>();
 			initTangBonePos = tangRenderer.bones[0].localPosition;
 			initTangBoneRot = tangRenderer.bones[0].localRotation;
+
+			aibu = Traverse.Create(scene).Field("lstProc").GetValue<List<HActionBase>>().OfType<HAibu>().FirstOrDefault();
 		}
 
 		private void OnDestroy()
@@ -537,10 +540,18 @@ namespace Bero.CyuVR
 
 			if (kissing)
 			{
-				//Use configured value (KissMotionSpeed) to control animation speed during kissing in caress mode
-				//Increase animation speed further if GropeOverride is set to true and groping motion is larger than KissMotionSpeed
+				
 				if (flags.mode == HFlag.EMode.aibu)
 				{
+					//If kissing is initiated while groping and groping stops in the middle of kissing, this makes sure animation will return to normal idle (non-groping)
+					// after kissing is disengaged, by setting the backIdle field (used to return animation to the previous state) to the right value
+					if (MathfEx.IsRange(HFlag.ClickKind.de_muneL, flags.click, HFlag.ClickKind.de_siriR, isEqual: true))
+					{
+						Traverse.Create(aibu).Field("backIdle").SetValue(0);
+					}
+
+					//Use configured value (KissMotionSpeed) to control animation speed during kissing in caress mode
+					//Increase animation speed further if GropeOverride is set to true and groping motion is larger than KissMotionSpeed
 					if (CyuLoaderVR.GropeOverride.Value)
 					{
 						//Use the higher value between dragSpeed(value based on controller movement) and speedItem(game calculated value) to set kissing animation speed
