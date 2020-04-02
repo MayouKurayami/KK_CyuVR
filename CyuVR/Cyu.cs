@@ -62,6 +62,7 @@ namespace Bero.CyuVR
 		public int clothState;
 		internal int clothesState;
 		public bool kissing;
+		private bool bero;
 		public GameObject maleTang;
 		private bool kissManual;
 		internal HFlag flags;
@@ -321,9 +322,9 @@ namespace Bero.CyuVR
 				}
 				yield return null;
 			}
+			bero = true;
 			while (kissFlag)
 			{
-
 				RandomMoveFloatTest(ref npWeight, ref npWeightTo, ref npWeightSpeed, 0f, 1f, ref npWeightTime, 0.1f, 0.5f);
 				RandomMoveFloatTest(ref npWeight2, ref npWeight2To, ref npWeightSpeed2, 0f, 1f, ref npWeightTime2, 0.1f, 0.5f);
 				RandomMoveFloatTest(ref npWeight3, ref npWeight3To, ref npWeightSpeed3, 0f, 1f, ref npWeightTime3, 0.1f, 0.5f);
@@ -338,11 +339,12 @@ namespace Bero.CyuVR
 				RandomMoveFloatTest(ref curEyeValue, ref toEyeValue, ref eyeOpenSpeed, 0f, CyuLoaderVR.EyesMovement.Value, ref eyeOpenTime, 0.01f, 1.2f);
 				eyesOpenValue = curEyeValue / 100f;
 				RandomMoveFloatTest(ref curKissValue, ref toKissValue, ref tangSpeed, 25f, 100f, ref tangTime, 0.01f, 0.1f);
-				EyeAnimate(CyuLoaderVR.EyesMovement.Value > 0);
+				EyeAnimate(CyuLoaderVR.EyesMovement.Value > 0);	
 				yield return null;
 
 			}
 			Traverse.Create(hand0).Field("isKiss").SetValue(false);
+			bero = false;
 			for (; ; )
 			{
 				float num = Mathf.Max(25f, Mathf.Abs(tangSpeed));
@@ -552,7 +554,7 @@ namespace Bero.CyuVR
 
 					//Use configured value (KissMotionSpeed) to control animation speed during kissing in caress mode
 					//Increase animation speed further if GropeOverride is set to true and groping motion is larger than KissMotionSpeed
-					if (CyuLoaderVR.GropeOverride.Value)
+					if (CyuLoaderVR.GropeOverride.Value && bero)
 					{
 						//Use the higher value between dragSpeed(value based on controller movement) and speedItem(game calculated value) to set kissing animation speed
 						//Then make sure the speed value used for calculating animation speed is reset to a minimum
