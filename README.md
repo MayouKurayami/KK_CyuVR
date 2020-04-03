@@ -47,7 +47,7 @@ Configurations are located in *config.ini* in the BepInEx root folder, under sec
 - Unknown compatibility with Koikatsu Party (Steam release)  
 - Currently does not work in the unofficial VR mod for main game.
 - In **caress mode**, the girl will lean forward to initialize kissing. Approach the girl slowly to avoid ~~bumping~~ clipping into her head.  
-- This plugin will only enable kissing in situations where it's possible to kiss as in the non-VR version of the game. Therefore, it would not work in 3P, Darkness mode...etc.  
+- This plugin will only properly work in situations where it's possible to kiss as in the non-VR version of the game. Therefore, it would not work well in 3P, Darkness mode...etc.  
 
 ## Credits
 All credit of the plugin up to version 0.0.4 goes to the unknown developer who made this plugin.  
