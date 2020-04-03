@@ -13,7 +13,7 @@ namespace Bero.CyuVR
 	{
 		public const string PluginName = "CyuVR";
 		public const string AssembName = "KK_CyuVR";
-		public const string Version = "1.0.1";
+		public const string Version = "1.0.3";
 		public static List<ChaControl> lstFemale = new List<ChaControl>();
 		private string animationName = "";
 		private HFlag hFlag;
