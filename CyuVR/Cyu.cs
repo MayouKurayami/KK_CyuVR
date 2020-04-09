@@ -60,8 +60,7 @@ namespace Bero.CyuVR
 		internal HFlag flags;
 		public GameObject camera;
 		public GameObject kissNeckTarget;
-		private VRHScene scene;
-		private VRHandCtrl hand0;
+		private object hand0;
 		private GameObject tang;
 		private SkinnedMeshRenderer tangRenderer;
 		private Siru siru;
@@ -117,7 +116,7 @@ namespace Bero.CyuVR
 
 		private void Start()
 		{
-			scene = FindObjectOfType<VRHScene>();
+			var scene = FindObjectOfType<VRHScene>();
 			initTangBonePos = tangRenderer.bones[0].localPosition;
 			initTangBoneRot = tangRenderer.bones[0].localRotation;
 
@@ -377,6 +376,7 @@ namespace Bero.CyuVR
 			{
 				if (hand0 == null)
 				{
+					var scene = FindObjectOfType<VRHScene>();
 					hand0 = Traverse.Create(scene).Field("vrHands").GetValue<VRHandCtrl[]>()[0];
 				}
 
@@ -410,10 +410,7 @@ namespace Bero.CyuVR
 					}
 					aibu.SetPlay("K_Touch");
 					Traverse.Create(aibu).Field("backIdle").SetValue(backIdle);
-					for (int i = 0; i < scene.sprites.Length; i++)
-					{
-						scene.sprites[i].imageSpeedSlliderCover70.enabled = false;
-					}
+					
 				}
 				flags.AddKiss();
 				StartCoroutine(BeroKiss());
