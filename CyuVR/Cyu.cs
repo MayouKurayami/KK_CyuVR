@@ -96,6 +96,7 @@ namespace Bero.CyuVR
 				tang = transform.gameObject;
 				siru = gameObject.AddComponent<Siru>();
 				siru.female = female;
+				siru.cyu = this;
 				tangRenderer = siru.tangRenderer = tang.GetComponent<SkinnedMeshRenderer>();
 				kissEyeTarget = GameObject.CreatePrimitive(PrimitiveType.Cube);
 				kissEyeTarget.SetActive(false);

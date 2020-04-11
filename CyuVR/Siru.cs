@@ -8,7 +8,7 @@ namespace Bero.CyuVR
 	public class Siru : MonoBehaviour
 	{
 		private const float itoRemainTime = 10f;
-		public int tangVertexIndex = 161;
+		public const int tangVertexIndex = 161;
 		private List<Vector3> posList = new List<Vector3>();
 		private const int itoMatIndex = 1;
 		private const int siruMatIndex = 6;
@@ -21,7 +21,6 @@ namespace Bero.CyuVR
 		public Transform top;
 		public Transform tail;
 		private ParticleSystem particleSystem;
-		private HFlag flags;
 		public bool itoOn;
 		public bool itoBreaking;
 		private float itoTimer;
@@ -29,9 +28,9 @@ namespace Bero.CyuVR
 		private LineRenderer ito;
 		public SkinnedMeshRenderer tangRenderer;
 		public ChaControl female;
-		private LineTextureMode lineTextureMode;
 		private ParticleSystemRenderer particleSystemRenderer;
 		public float siruAmount;
+		internal Cyu cyu;
 
 		private void OnDestroy()
 		{
@@ -50,14 +49,16 @@ namespace Bero.CyuVR
 			((IEnumerable<ParticleSystem>)FindObjectsOfType<ParticleSystem>()).Where<ParticleSystem>(x => x.name.IndexOf("LiquidSiru") >= 0).FirstOrDefault<ParticleSystem>().GetComponentsInChildren<ParticleSystemRenderer>().ToList<ParticleSystemRenderer>().ForEach(x => orgMaterial.Add(x.material));
 			((IEnumerable<ParticleSystem>)FindObjectsOfType<ParticleSystem>()).Where<ParticleSystem>(x => x.name.IndexOf("LiquidSio") >= 0).FirstOrDefault<ParticleSystem>().GetComponentsInChildren<ParticleSystemRenderer>().ToList<ParticleSystemRenderer>().ForEach(x => orgMaterial.Add(x.material));
 			((IEnumerable<ParticleSystem>)FindObjectsOfType<ParticleSystem>()).Where<ParticleSystem>(x => x.name.IndexOf("LiquidToilet") >= 0).FirstOrDefault<ParticleSystem>().GetComponentsInChildren<ParticleSystemRenderer>().ToList<ParticleSystemRenderer>().ForEach(x => orgMaterial.Add(x.material));
-			particleSystemRenderer.material = orgMaterial[0];
 			ParticleSystem.MainModule main = particleSystem.main;
 			main.startSize = new ParticleSystem.MinMaxCurve(0.05f, 0.07f);
 			main.startSpeed = new ParticleSystem.MinMaxCurve(3f, 4f);
 
+			//Due to Unity limitation, "startColor" cannot be called directly from particleSystem.main, so create new temporary variable "mn"
+			var mn = particleSystem.main;
+			mn.startColor = cyu.flags.gaugeFemale < 70.0 ? new Color(1f, 1f, 1f, 1f) : (ParticleSystem.MinMaxGradient)new Color(1f, 0.62f, 0.85f);
 			//Due to Unity limitation, "rateOverTime" cannot be called directly from particleSystem.emission, so create new temporary variable "em"
 			var em = particleSystem.emission;
-			em.rateOverTime = 2f;
+			em.rateOverTime = 2f * GetVoiceValue();
 
 			top = new GameObject("ItoTop").transform;
 			tail = new GameObject("Itotail").transform;
@@ -79,7 +80,9 @@ namespace Bero.CyuVR
 			ito.useWorldSpace = true;
 			ito.startWidth = 0.005f;
 			ito.endWidth = 0.005f;
-			flags = FindObjectOfType<HFlag>();
+
+			ito.material = orgMaterial[itoMatIndex];
+			particleSystemRenderer.material = orgMaterial[siruMatIndex];
 		}
 
 		public void StartIto()
@@ -101,15 +104,6 @@ namespace Bero.CyuVR
 			if (female.asVoice && female.asVoice.isPlaying && female.wavInfoData != null)
 				return female.wavInfoData.GetValue(female.asVoice.time);
 			return 0f;
-		}
-
-		private IEnumerator ItoBreaking()
-		{
-			itoBreaking = true;
-			ito.enabled = false;
-			itoOn = false;
-			itoBreaking = false;
-			yield return null;
 		}
 
 		private void UpdateWidthCurve()
@@ -135,18 +129,17 @@ namespace Bero.CyuVR
 
 		private void Update()
 		{
-			ito.material = orgMaterial[itoMatIndex];
-			particleSystemRenderer.material = orgMaterial[siruMatIndex];
-			ito.textureMode = lineTextureMode;
+			if (siruAmount == 0f && !cyu.kissing)
+				return;
 
 			//Due to Unity limitation, "startColor" cannot be called directly from particleSystem.main, so create new temporary variable "mn"
 			var mn = particleSystem.main;
-			mn.startColor = flags.gaugeFemale < 70.0 ? new Color(1f, 1f, 1f, 1f) : (ParticleSystem.MinMaxGradient)new Color(1f, 0.62f, 0.85f);
+			mn.startColor = cyu.flags.gaugeFemale < 70.0 ? new Color(1f, 1f, 1f, 1f) : (ParticleSystem.MinMaxGradient)new Color(1f, 0.62f, 0.85f);
 			//Due to Unity limitation, "rateOverTime" cannot be called directly from particleSystem.emission, so create new temporary variable "em"
 			var em = particleSystem.emission;
 			em.rateOverTime = 2f * GetVoiceValue();
 
-			if (Vector3.SqrMagnitude(tail.transform.position - head.transform.position) < itoDistance && female.GetComponent<Cyu>().kissing)
+			if (cyu.kissing && Vector3.SqrMagnitude(tail.transform.position - head.transform.position) < itoDistance)
 				siruAmount += Time.deltaTime * 0.05f;
 			else if (itoBreaking)
 				siruAmount -= Time.deltaTime * 0.5f;
@@ -155,11 +148,9 @@ namespace Bero.CyuVR
 			if (siruAmount > 0f && Vector3.SqrMagnitude(tail.transform.position - head.transform.position) > itoBreakDistance)
 				BreakIto();
 			siruAmount = Mathf.Clamp(siruAmount, 0.0f, 1f);
-			ref Vector3 local = ref tangRenderer.sharedMesh.vertices[tangVertexIndex];
 			Mesh mesh = new Mesh();
 			tangRenderer.BakeMesh(mesh);
 			Vector3 vector3 = mesh.vertices[tangVertexIndex];
-			vector3 = new Vector3(vector3.x, vector3.y, vector3.z);
 			head.position = tangRenderer.transform.position + tangRenderer.transform.rotation * vector3;
 			tail.position = siruTarget.transform.position;
 			if (itoBreaking)
