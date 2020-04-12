@@ -60,7 +60,7 @@ namespace Bero.CyuVR
 		internal HFlag flags;
 		public GameObject camera;
 		public GameObject kissNeckTarget;
-		private object hand0;
+		private object[] hands = new object[2];
 		private GameObject tang;
 		private SkinnedMeshRenderer tangRenderer;
 		private Siru siru;
@@ -122,6 +122,7 @@ namespace Bero.CyuVR
 			initTangBoneRot = tangRenderer.bones[0].localRotation;
 
 			aibu = Traverse.Create(scene).Field("lstProc").GetValue<List<HActionBase>>().OfType<HAibu>().FirstOrDefault();
+			hands = Traverse.Create(scene).Field("vrHands").GetValue<VRHandCtrl[]>();	
 		}
 
 		private void OnDestroy()
@@ -321,7 +322,9 @@ namespace Bero.CyuVR
 				yield return null;
 
 			}
-			Traverse.Create(hand0).Field("isKiss").SetValue(false);
+			foreach (VRHandCtrl hand in hands)
+				Traverse.Create(hand).Field("isKiss").SetValue(false);
+
 			bero = false;
 			for (; ; )
 			{
@@ -375,43 +378,37 @@ namespace Bero.CyuVR
 			}
 			else
 			{
-				if (hand0 == null)
-				{
-					var scene = FindObjectOfType<VRHScene>();
-					hand0 = Traverse.Create(scene).Field("vrHands").GetValue<VRHandCtrl[]>()[0];
-				}
-
 				if (flags.mode == HFlag.EMode.aibu)
 				{
-					int backIdle;
-					switch (flags.nowAnimStateName)
+					int backIdle = 0;
+
+					if (((VRHandCtrl[])hands).Any((VRHandCtrl h) => h.IsAction()))
 					{
-						case "Idle":
-							backIdle = 0;
-							break;
+						switch (flags.nowAnimStateName)
+						{
+							case "M_Idle":
+							case "M_Touch":
+								backIdle = 1;
+								break;
 
-						case "M_Idle":
-						case "M_Touch":
-							backIdle = 1;
-							break;
+							case "A_Idle":
+							case "A_Touch":
+								backIdle = 2;
+								break;
 
-						case "A_Idle":
-						case "A_Touch":
-							backIdle = 2;
-							break;
+							case "S_Idle":
+							case "S_Touch":
+								backIdle = 3;
+								break;
 
-						case "S_Idle":
-						case "S_Touch":
-							backIdle = 3;
-							break;
-
-						default:
-							backIdle = 0;
-							break;
+							default:
+								backIdle = 0;
+								break;
+						}
 					}
-					aibu.SetPlay("K_Touch");
+
 					Traverse.Create(aibu).Field("backIdle").SetValue(backIdle);
-					
+					aibu.SetPlay("K_Touch");
 				}
 				flags.AddKiss();
 				StartCoroutine(BeroKiss());
