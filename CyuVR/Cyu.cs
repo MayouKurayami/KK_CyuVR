@@ -322,8 +322,6 @@ namespace Bero.CyuVR
 				yield return null;
 
 			}
-			foreach (VRHandCtrl hand in hands)
-				Traverse.Create(hand).Field("isKiss").SetValue(false);
 
 			bero = false;
 			for (; ; )
