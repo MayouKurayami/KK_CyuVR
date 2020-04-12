@@ -55,7 +55,8 @@ namespace Bero.CyuVR
 		public int clothState;
 		internal int clothesState;
 		public bool kissing;
-		internal bool bero;
+		internal bool isTouching;
+		internal Phase kissPhase = Phase.None;
 		public GameObject maleTang;
 		internal HFlag flags;
 		public GameObject camera;
@@ -76,6 +77,7 @@ namespace Bero.CyuVR
 		private float npWeightSpeed2;
 		private float npWeightSpeed3;
 		internal static float dragSpeed = 0.001f;
+		private const float exitKissDistance = 0.15f;
 		internal HAibu aibu;
 
 		public bool IsKiss { get; private set; }
@@ -281,6 +283,7 @@ namespace Bero.CyuVR
 		public IEnumerator BeroKiss()
 		{
 			kissing = true;
+			kissPhase = Phase.Engaging;
 			voiceCtrl = FindObjectOfType<HVoiceCtrl>();
 			curEyeValue = 100f;
 			curMouthValue = 0f;
@@ -301,7 +304,7 @@ namespace Bero.CyuVR
 				}
 				yield return null;
 			}
-			bero = true;
+			kissPhase = Phase.InAction;
 			while (IsKiss)
 			{
 				RandomMoveFloatTest(ref npWeight, ref npWeightTo, ref npWeightSpeed, 0f, 1f, ref npWeightTime, 0.1f, 0.5f);
@@ -323,7 +326,7 @@ namespace Bero.CyuVR
 
 			}
 
-			bero = false;
+			kissPhase = Phase.Disengaging;
 			for (; ; )
 			{
 				float num = Mathf.Max(25f, Mathf.Abs(tangSpeed));
@@ -343,6 +346,7 @@ namespace Bero.CyuVR
 			tangBonePos = Vector3.zero;
 			tangBoneRot = Quaternion.identity;
 			yield return null;
+			kissPhase = Phase.None;
 			kissing = false;
 			yield break;
 		}
@@ -380,7 +384,7 @@ namespace Bero.CyuVR
 				{
 					int backIdle = 0;
 
-					if (((VRHandCtrl[])hands).Any((VRHandCtrl h) => h.IsAction()))
+					if (isTouching)
 					{
 						switch (flags.nowAnimStateName)
 						{
@@ -489,17 +493,25 @@ namespace Bero.CyuVR
 			float curDistance = Vector3.Distance(myMouth.transform.position, tang.transform.position);
 			float threshold;
 			if (flags.mode == HFlag.EMode.aibu)
+			{
 				threshold = CyuLoaderVR.KissDistanceAibu.Value;
+
+				if (((VRHandCtrl[])hands).Any((VRHandCtrl h) => h.IsAction()))
+					isTouching = true;
+				else
+					isTouching = false;
+			}
+				
 			else
 				threshold = CyuLoaderVR.KissDistance.Value;
 
 			if (curDistance < threshold)
 			{
-				if (!IsSiruActive() || flags.mode != HFlag.EMode.aibu)
+				if (flags.mode != HFlag.EMode.aibu || (!kissing && !IsSiruActive()) )
 				{
 					Kiss(true);
 				}
-				else if (curDistance < (CyuLoaderVR.KissDistanceAibu.Value - 0.1f) || siru.siruAmount < 0.2f)
+				else if (curDistance < (isTouching ? (exitKissDistance + 0.04) : exitKissDistance) || kissPhase == Phase.Engaging)
 				{
 					Kiss(true);
 				}
@@ -535,7 +547,7 @@ namespace Bero.CyuVR
 				{
 					//Use configured value (KissMotionSpeed) to control animation speed during kissing in caress mode
 					//Increase animation speed further if GropeOverride is set to true and groping motion is larger than KissMotionSpeed
-					if (CyuLoaderVR.GropeOverride.Value && bero)
+					if (CyuLoaderVR.GropeOverride.Value && kissPhase == Phase.InAction)
 					{
 						//Use the higher value between dragSpeed(value based on controller movement) and speedItem(game calculated value) to set kissing animation speed
 						//Then make sure the speed value used for calculating animation speed is reset to a minimum
@@ -690,6 +702,14 @@ namespace Bero.CyuVR
 			ForceOff,
 			Auto,
 			ForceOn
+		}
+
+		internal enum Phase
+		{
+			None,
+			Engaging,
+			InAction,
+			Disengaging
 		}
 	}
 }

@@ -251,7 +251,7 @@ namespace Bero.CyuVR
 			if (!cyu)
 				return;
 
-			if ((cyu.flags.mode == HFlag.EMode.aibu) && cyu.bero)
+			if ((cyu.flags.mode == HFlag.EMode.aibu) && cyu.kissPhase == Cyu.Phase.InAction)
 			{
 				Traverse.Create(cyu.aibu).Field("backIdle").SetValue(0);
 			}
