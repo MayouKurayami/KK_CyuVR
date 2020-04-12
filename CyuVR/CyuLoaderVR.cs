@@ -16,7 +16,7 @@ namespace Bero.CyuVR
 		public const string Version = "1.0.3";
 		public static List<ChaControl> lstFemale = new List<ChaControl>();
 		private string animationName = "";
-		private HFlag hFlag;
+		internal static HFlag hFlag;
 		private bool dataPathVR;
 
 		[DisplayName("Kiss Activation Distance")]
@@ -86,28 +86,22 @@ namespace Bero.CyuVR
 
 		private void Update()
 		{
-			if (!dataPathVR)
+			if (!dataPathVR || hFlag == null)
 				return;
 
-			if (hFlag == null)
-			{
-				hFlag = FindObjectOfType<HFlag>();
-				if (hFlag == null)
-					return;
-			}
 			if (!(animationName != hFlag.nowAnimationInfo.nameAnimation))
 				return;
+
 			lstFemale.Clear();
 			FindObjectsOfType<ChaControl>().ToList<ChaControl>().Where<ChaControl>(x => x.chaFile.parameter.sex == 1).ToList<ChaControl>().ForEach(x =>
-		  {
-			  Cyu component = x.GetComponent<Cyu>();
-			  if (component != null)
-				  Destroy(component);
-			  x.gameObject.AddComponent<Cyu>();
-			  lstFemale.Add(x);
-		  });
+				{
+					Cyu component = x.GetComponent<Cyu>();
+					if (component != null)
+						Destroy(component);
+					x.gameObject.AddComponent<Cyu>().flags = hFlag;
+					lstFemale.Add(x);
+				 });
 			animationName = hFlag.nowAnimationInfo.nameAnimation;
-			Console.WriteLine(animationName);
 		}
 	}
 }

@@ -485,22 +485,11 @@ namespace Bero.CyuVR
 			{
 				voiceCtrl = FindObjectOfType<HVoiceCtrl>();
 				if (voiceCtrl == null)
-				{
 					return;
-				}
 			}
-			if (flags == null)
-			{
-				flags = FindObjectOfType<HFlag>();
-				if (flags == null)
-				{
-					return;
-				}
-			}
+	
 			if (bvs.Count() == 0)
-			{
 				ReloadBlendValues();
-			}
 
 			float curDistance = Vector3.Distance(myMouth.transform.position, tang.transform.position);
 			float threshold;
