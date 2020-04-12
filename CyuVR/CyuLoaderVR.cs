@@ -18,6 +18,7 @@ namespace Bero.CyuVR
 		private string animationName = "";
 		internal static HFlag hFlag;
 		private bool dataPathVR;
+		internal static Cyu mainCyu;
 
 		[DisplayName("Kiss Activation Distance")]
 		[Description("When not in caress mode, kissing will start when the headset is within this range to the girl's head")]
@@ -101,6 +102,7 @@ namespace Bero.CyuVR
 					x.gameObject.AddComponent<Cyu>().flags = hFlag;
 					lstFemale.Add(x);
 				 });
+			mainCyu = lstFemale[0].GetComponent<Cyu>();
 			animationName = hFlag.nowAnimationInfo.nameAnimation;
 		}
 	}

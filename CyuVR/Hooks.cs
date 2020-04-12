@@ -8,16 +8,6 @@ namespace Bero.CyuVR
 {
 	public static class Hooks
 	{
-		private static Cyu GetCyu()
-		{
-			ChaControl component = null;
-			if (CyuLoaderVR.lstFemale.Count > 0)
-				component = CyuLoaderVR.lstFemale[0];
-			if (component == null)
-				return null;
-			return component.GetOrAddComponent<Cyu>();
-		}
-
 		//This should hook to a method that loads as late as possible in the loading phase
 		//Hooking method "MapSameObjectDisable" because: "Something that happens at the end of H scene loading, good enough place to hook" - DeathWeasel1337/Anon11
 		//https://github.com/DeathWeasel1337/KK_Plugins/blob/master/KK_EyeShaking/KK.EyeShaking.Hooks.cs#L20
@@ -32,8 +22,8 @@ namespace Bero.CyuVR
 		[HarmonyPostfix]
 		public static void FaceBlendShapeLateUpdateHook()
 		{
-			Cyu cyu = GetCyu();
-			if (!(cyu != null))
+			Cyu cyu = CyuLoaderVR.mainCyu;
+			if (cyu == null)
 				return;
 			cyu.LateUpdateHook();
 		}
@@ -44,7 +34,9 @@ namespace Bero.CyuVR
 		{
 			try
 			{
-				__result = CyuLoaderVR.lstFemale[0].GetComponent<Cyu>().IsKiss;
+				//IsKissAction is only called in caress mode, which only exists when there is a single girl in H
+				//Therefore we only need the first Cyu object
+				__result = CyuLoaderVR.mainCyu.IsKiss;
 				return false;
 			}
 			catch (Exception ex)
@@ -202,6 +194,12 @@ namespace Bero.CyuVR
 		[HarmonyPrefix]
 		public static void SpeedUpClickItemAibuPre(ref float _rateSpeedUp)
 		{
+			//This patch is only designed for caress mode, which only exists when there is a single girl in H
+			//Therefore we only need the first Cyu object
+			Cyu cyu = CyuLoaderVR.mainCyu;
+			if (!cyu)
+				return;
+
 			if (_rateSpeedUp > 1f)
 			{
 				_rateSpeedUp = 0.7f;
@@ -218,7 +216,12 @@ namespace Bero.CyuVR
 		[HarmonyPrefix]
 		public static void JudgeProcPre()
 		{
-			Cyu cyu = GetCyu();
+			//This patch is only designed for caress mode, which only exists when there is a single girl in H
+			//Therefore we only need the first Cyu object
+			Cyu cyu = CyuLoaderVR.mainCyu;
+			if (!cyu)
+				return;
+
 			if (cyu && cyu.IsKiss)
 			{
 				if (cyu.flags.click == HFlag.ClickKind.muneL || cyu.flags.click == HFlag.ClickKind.muneR)
@@ -242,9 +245,12 @@ namespace Bero.CyuVR
 		[HarmonyPostfix]
 		public static void FinishActionPost()
 		{
-			Cyu cyu = GetCyu();
+			//This patch is only designed for caress mode, which only exists when there is a single girl in H
+			//Therefore we only need the first Cyu object
+			Cyu cyu = CyuLoaderVR.mainCyu;
 			if (!cyu)
 				return;
+
 			if ((cyu.flags.mode == HFlag.EMode.aibu) && cyu.bero)
 			{
 				Traverse.Create(cyu.aibu).Field("backIdle").SetValue(0);
