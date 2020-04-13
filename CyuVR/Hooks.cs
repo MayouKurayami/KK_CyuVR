@@ -15,7 +15,7 @@ namespace Bero.CyuVR
 		[HarmonyPatch(typeof(VRHScene), "MapSameObjectDisable")]
 		public static void VRHSceneLoadPostfix(VRHScene __instance)
 		{
-			CyuLoaderVR.hFlag = __instance.flags;
+			CyuLoaderVR.InitCyu(__instance.flags);
 		}
 
 		[HarmonyPatch(typeof(FaceBlendShape), "LateUpdate", null, null)]

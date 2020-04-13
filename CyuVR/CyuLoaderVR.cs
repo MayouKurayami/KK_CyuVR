@@ -15,7 +15,7 @@ namespace Bero.CyuVR
 		public const string AssembName = "KK_CyuVR";
 		public const string Version = "1.0.3";
 		public static List<ChaControl> lstFemale = new List<ChaControl>();
-		private string animationName = "";
+		private static string animationName = "";
 		internal static HFlag hFlag;
 		private bool dataPathVR;
 		internal static Cyu mainCyu;
@@ -90,20 +90,25 @@ namespace Bero.CyuVR
 			if (!dataPathVR || hFlag == null)
 				return;
 
-			if (!(animationName != hFlag.nowAnimationInfo.nameAnimation))
-				return;
+			if (animationName != hFlag.nowAnimationInfo.nameAnimation)
+				InitCyu(hFlag);
+		}
 
+		internal static void InitCyu(HFlag flags)
+		{
+			hFlag = flags;
+			
 			lstFemale.Clear();
 			FindObjectsOfType<ChaControl>().ToList<ChaControl>().Where<ChaControl>(x => x.chaFile.parameter.sex == 1).ToList<ChaControl>().ForEach(x =>
-				{
-					Cyu component = x.GetComponent<Cyu>();
-					if (component != null)
-						Destroy(component);
-					x.gameObject.AddComponent<Cyu>().flags = hFlag;
-					lstFemale.Add(x);
-				 });
+			{
+				Cyu component = x.GetComponent<Cyu>();
+				if (component != null)
+					Destroy(component);
+				x.gameObject.AddComponent<Cyu>().flags = flags;
+				lstFemale.Add(x);
+			});
 			mainCyu = lstFemale[0].GetComponent<Cyu>();
-			animationName = hFlag.nowAnimationInfo.nameAnimation;
+			animationName = flags.nowAnimationInfo.nameAnimation;
 		}
 	}
 }
