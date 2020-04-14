@@ -77,7 +77,7 @@ namespace Bero.CyuVR
 		private float npWeightSpeed2;
 		private float npWeightSpeed3;
 		internal static float dragSpeed = 0.001f;
-		private const float exitKissDistance = 0.15f;
+		private const float exitKissDistance = 0.16f;
 		internal HAibu aibu;
 
 		public bool IsKiss { get; private set; }
@@ -511,7 +511,7 @@ namespace Bero.CyuVR
 				{
 					Kiss(true);
 				}
-				else if (curDistance < (isTouching ? (exitKissDistance + 0.04) : exitKissDistance) || kissPhase == Phase.Engaging)
+				else if (curDistance < (isTouching ? (exitKissDistance + 0.04f) : exitKissDistance) || kissPhase == Phase.Engaging)
 				{
 					Kiss(true);
 				}
