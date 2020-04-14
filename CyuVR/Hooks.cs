@@ -206,7 +206,7 @@ namespace Bero.CyuVR
 				return;
 			}
 			else
-				Cyu.dragSpeed = Mathf.Clamp(0.1f + (214.444f * _rateSpeedUp) - (7222.222f * Mathf.Pow(_rateSpeedUp,2) ), 0.1f, 1.5f);
+				Cyu.dragSpeed = Mathf.Clamp(0.1f + (214.444f * _rateSpeedUp) - (7222.222f * _rateSpeedUp * _rateSpeedUp), 0.1f, 1.5f);
 		}
 
 		//If groping is initiated during kissing, the game does not continue the groping animation after disengaged from kissing.
