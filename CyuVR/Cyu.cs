@@ -76,7 +76,7 @@ namespace Bero.CyuVR
 		private float npWeightSpeed;
 		private float npWeightSpeed2;
 		private float npWeightSpeed3;
-		internal static float dragSpeed = 0.001f;
+		internal float dragSpeed = 0.001f;
 		private const float exitKissDistance = 0.16f;
 		internal HAibu aibu;
 
