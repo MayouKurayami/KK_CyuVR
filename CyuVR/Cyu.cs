@@ -673,8 +673,12 @@ namespace Bero.CyuVR
 				eyeLookX = UnityEngine.Random.Range(-70f, 70f);
 				eyeLookY = UnityEngine.Random.Range(-45f, 45f);
 			}
-			kissEyeTarget.transform.RotateAround(kissEyeTarget.transform.parent.position, female.objHead.transform.up, eyeLookX * Time.deltaTime * 0.2f);
-			kissEyeTarget.transform.RotateAround(kissEyeTarget.transform.parent.position, female.objHead.transform.right, eyeLookY * Time.deltaTime * 0.2f);
+			if (kissPhase == Phase.InAction)
+			{
+				kissEyeTarget.transform.RotateAround(kissEyeTarget.transform.parent.position, female.objHead.transform.up, eyeLookX * Time.deltaTime * 0.2f);
+				kissEyeTarget.transform.RotateAround(kissEyeTarget.transform.parent.position, female.objHead.transform.right, eyeLookY * Time.deltaTime * 0.2f);
+			}
+			
 		}
 
 		internal void ToggleClothesStateAll()
