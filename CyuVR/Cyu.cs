@@ -284,7 +284,6 @@ namespace Bero.CyuVR
 		{
 			kissing = true;
 			kissPhase = Phase.Engaging;
-			voiceCtrl = FindObjectOfType<HVoiceCtrl>();
 			curEyeValue = 100f;
 			curMouthValue = 0f;
 			tangSpeed = UnityEngine.Random.Range(10f, 20f);
