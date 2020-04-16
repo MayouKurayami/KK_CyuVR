@@ -3,6 +3,7 @@ using Harmony;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Linq;
 using UnityEngine;
 
@@ -79,6 +80,9 @@ namespace Bero.CyuVR
 		internal float dragSpeed = 0.001f;
 		private const float exitKissDistance = 0.16f;
 		internal HAibu aibu;
+		private delegate bool BreathProc(HVoiceCtrl _instance, AnimatorStateInfo _ai, ChaControl _female, int _main);
+		private BreathProc breathProcDelegate;
+
 
 		public bool IsKiss { get; private set; }
 
@@ -124,7 +128,16 @@ namespace Bero.CyuVR
 			initTangBoneRot = tangRenderer.bones[0].localRotation;
 
 			aibu = Traverse.Create(scene).Field("lstProc").GetValue<List<HActionBase>>().OfType<HAibu>().FirstOrDefault();
-			hands = Traverse.Create(scene).Field("vrHands").GetValue<VRHandCtrl[]>();	
+			hands = Traverse.Create(scene).Field("vrHands").GetValue<VRHandCtrl[]>();
+
+			MethodInfo breathProcInfo = AccessTools.Method(typeof(HVoiceCtrl), "BreathProc", new Type[3]
+				{
+					typeof (AnimatorStateInfo),
+					typeof (ChaControl),
+					typeof (int)
+				});
+			breathProcDelegate = (BreathProc)Delegate.CreateDelegate(typeof(BreathProc), breathProcInfo);
+
 		}
 
 		private void OnDestroy()
@@ -527,12 +540,7 @@ namespace Bero.CyuVR
 			if (kissing || IsSiruActive())
 			{
 				voiceCtrl.isPrcoStop = true;
-				Traverse.Create(voiceCtrl).Method("BreathProc", new System.Type[3]
-				{
-					typeof (AnimatorStateInfo),
-					typeof (ChaControl),
-					typeof (int)
-				}, null).GetValue<bool>(female.animBody.GetCurrentAnimatorStateInfo(0), female, 0);
+				breathProcDelegate.Invoke(voiceCtrl, female.animBody.GetCurrentAnimatorStateInfo(0), female, 0);
 			}
 			else
 			{
