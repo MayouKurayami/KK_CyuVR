@@ -99,15 +99,18 @@ namespace Bero.CyuVR
 			hFlag = flags;
 			
 			lstFemale.Clear();
-			FindObjectsOfType<ChaControl>().ToList<ChaControl>().Where<ChaControl>(x => x.chaFile.parameter.sex == 1).ToList<ChaControl>().ForEach(x =>
+			FindObjectsOfType<ChaControl>().ToList<ChaControl>().Where<ChaControl>(x => x.chaFile.parameter.sex == 1).ToList<ChaControl>().ForEach(female =>
 			{
-				Cyu component = x.GetComponent<Cyu>();
-				if (component != null)
-					Destroy(component);
-				x.gameObject.AddComponent<Cyu>().flags = flags;
-				lstFemale.Add(x);
+				Cyu oldCyu = female.GetComponent<Cyu>();
+				if (oldCyu != null)
+					Destroy(oldCyu);
+
+				Cyu newCyu = female.gameObject.AddComponent<Cyu>();
+				newCyu.flags = flags;
+				lstFemale.Add(female);
+				if (lstFemale.Count < 2)
+					mainCyu = newCyu;
 			});
-			mainCyu = lstFemale[0].GetComponent<Cyu>();
 			animationName = flags.nowAnimationInfo.nameAnimation;
 		}
 	}
