@@ -256,5 +256,13 @@ namespace Bero.CyuVR
 				Traverse.Create(cyu.aibu).Field("backIdle").SetValue(0);
 			}
 		}
+
+		[HarmonyPatch(typeof(Animator), "CrossFadeInFixedTime",  new Type[] {typeof(string), typeof(float), typeof(int)} )]
+		[HarmonyPrefix]
+		public static void CrossFadeInFixedTimePre(string stateName, ref float transitionDuration)
+		{
+			if (stateName == "K_Touch")
+				transitionDuration = 1f;
+		}
 	}
 }
