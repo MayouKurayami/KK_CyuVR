@@ -309,7 +309,7 @@ namespace Bero.CyuVR
 				curKissValue = Mathf.Clamp(curKissValue, 0f, 100f);
 				curEyeValue = Mathf.Clamp(curEyeValue, 0f, 100f);
 				eyesOpenValue = curEyeValue / 100f;
-				EyeAnimate(CyuLoaderVR.EyesMovement.Value > 0);
+				EyeAnimate();
 				if (curKissValue >= 100f && curMouthValue >= 100f)
 				{
 					break;
@@ -333,7 +333,7 @@ namespace Bero.CyuVR
 				RandomMoveFloatTest(ref curEyeValue, ref toEyeValue, ref eyeOpenSpeed, 0f, CyuLoaderVR.EyesMovement.Value, ref eyeOpenTime, 0.01f, 1.2f);
 				eyesOpenValue = curEyeValue / 100f;
 				RandomMoveFloatTest(ref curKissValue, ref toKissValue, ref tangSpeed, 25f, 100f, ref tangTime, 0.01f, 0.1f);
-				EyeAnimate(CyuLoaderVR.EyesMovement.Value > 0);	
+				EyeAnimate();	
 				yield return null;
 
 			}
@@ -658,10 +658,9 @@ namespace Bero.CyuVR
 		/// <summary>
 		/// Execute female eye movement
 		/// </summary>
-		/// <param name="condition">Condition to determine whether the function runs or not</param>
-		private void EyeAnimate(bool condition)
+		private void EyeAnimate()
 		{
-			if (!condition)
+			if (CyuLoaderVR.EyesMovement.Value <= 0 && kissPhase == Phase.InAction)
 			{
 				return;
 			}	
