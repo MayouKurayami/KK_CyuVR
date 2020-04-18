@@ -197,7 +197,7 @@ namespace Bero.CyuVR
 			//This patch is only designed for caress mode, which only exists when there is a single girl in H
 			//Therefore we only need the first Cyu object
 			Cyu cyu = CyuLoaderVR.mainCyu;
-			if (cyu?.flags.mode != HFlag.EMode.aibu)
+			if (!CyuLoaderVR.GropeOverride.Value || !cyu || cyu.flags.mode != HFlag.EMode.aibu  || !cyu.IsKiss)
 				return;
 
 			if (_rateSpeedUp > 1f)
