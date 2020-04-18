@@ -394,35 +394,31 @@ namespace Bero.CyuVR
 			{
 				if (flags.mode == HFlag.EMode.aibu)
 				{
-					int backIdle = 0;
-
+					flags.click = HFlag.ClickKind.mouth;
+				
 					if (isTouching)
 					{
 						switch (flags.nowAnimStateName)
 						{
-							case "M_Idle":
 							case "M_Touch":
-								backIdle = 1;
+								aibu.SetPlay("K_Touch");
+								Traverse.Create(aibu).Field("backIdle").SetValue(1);
 								break;
 
-							case "A_Idle":
 							case "A_Touch":
-								backIdle = 2;
+								aibu.SetPlay("K_Touch");
+								Traverse.Create(aibu).Field("backIdle").SetValue(2);
 								break;
 
-							case "S_Idle":
 							case "S_Touch":
-								backIdle = 3;
+								aibu.SetPlay("K_Touch");
+								Traverse.Create(aibu).Field("backIdle").SetValue(3);
 								break;
 
 							default:
-								backIdle = 0;
 								break;
 						}
 					}
-
-					Traverse.Create(aibu).Field("backIdle").SetValue(backIdle);
-					aibu.SetPlay("K_Touch");
 				}
 				flags.AddKiss();
 				StartCoroutine(BeroKiss());
