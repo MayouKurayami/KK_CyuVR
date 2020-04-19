@@ -219,22 +219,32 @@ namespace Bero.CyuVR
 			//This patch is only designed for caress mode, which only exists when there is a single girl in H
 			//Therefore we only need the first Cyu object
 			Cyu cyu = CyuLoaderVR.mainCyu;
-			if (!cyu)
+			if (!cyu || cyu.flags.mode != HFlag.EMode.aibu)
 				return;
 
-			if (cyu.flags.mode == HFlag.EMode.aibu && cyu.IsKiss)
+			if (cyu.touchOrder.Last() != null)
+				cyu.touchOrder[cyu.touchOrder.Length - 2] = cyu.touchOrder[cyu.touchOrder.Length - 1];
+
+			cyu.touchOrder[cyu.touchOrder.Length - 1] = cyu.flags.click;
+
+			if (cyu.IsKiss)
 			{
-				if (cyu.flags.click == HFlag.ClickKind.muneL || cyu.flags.click == HFlag.ClickKind.muneR)
+				switch (cyu.touchOrder.Last())
 				{
-					Traverse.Create(cyu.aibu).Field("backIdle").SetValue(1);
-				}
-				else if (cyu.flags.click == HFlag.ClickKind.kokan)
-				{
-					Traverse.Create(cyu.aibu).Field("backIdle").SetValue(2);
-				}
-				else if (cyu.flags.click == HFlag.ClickKind.siriL || cyu.flags.click == HFlag.ClickKind.siriR || cyu.flags.click == HFlag.ClickKind.anal)
-				{
-					Traverse.Create(cyu.aibu).Field("backIdle").SetValue(3);
+					case HFlag.ClickKind.muneL:
+					case HFlag.ClickKind.muneR:
+						Traverse.Create(cyu.aibu).Field("backIdle").SetValue(1);
+						break;
+
+					case HFlag.ClickKind.kokan:
+						Traverse.Create(cyu.aibu).Field("backIdle").SetValue(2);
+						break;
+
+					case HFlag.ClickKind.siriL:
+					case HFlag.ClickKind.siriR:
+					case HFlag.ClickKind.anal:
+						Traverse.Create(cyu.aibu).Field("backIdle").SetValue(3);
+						break;
 				}
 			}
 		}
@@ -248,12 +258,38 @@ namespace Bero.CyuVR
 			//This patch is only designed for caress mode, which only exists when there is a single girl in H
 			//Therefore we only need the first Cyu object
 			Cyu cyu = CyuLoaderVR.mainCyu;
-			if (!cyu)
+			if (!cyu || cyu.flags.mode != HFlag.EMode.aibu)
 				return;
 
-			if ((cyu.flags.mode == HFlag.EMode.aibu) && (cyu.kissPhase == Cyu.Phase.InAction || cyu.kissPhase == Cyu.Phase.Engaging) )
+			int index = Array.LastIndexOf(cyu.touchOrder, cyu.flags.click - 6);
+			if (index > -1)
+				Array.Clear(cyu.touchOrder, index, 1);
+
+
+			if (cyu.kissPhase == Cyu.Phase.InAction || cyu.kissPhase == Cyu.Phase.Engaging)
 			{
-				Traverse.Create(cyu.aibu).Field("backIdle").SetValue(0);
+				switch (cyu.touchOrder.LastOrDefault(x => x != null))
+				{
+					case HFlag.ClickKind.muneL:
+					case HFlag.ClickKind.muneR:
+						Traverse.Create(cyu.aibu).Field("backIdle").SetValue(1);
+						break;
+
+					case HFlag.ClickKind.kokan:
+						Traverse.Create(cyu.aibu).Field("backIdle").SetValue(2);
+						break;
+
+					case HFlag.ClickKind.siriL:
+					case HFlag.ClickKind.siriR:
+					case HFlag.ClickKind.anal:
+						Traverse.Create(cyu.aibu).Field("backIdle").SetValue(3);
+						break;
+
+					default:
+						Traverse.Create(cyu.aibu).Field("backIdle").SetValue(0);
+						break;
+				}
+				
 			}
 		}
 

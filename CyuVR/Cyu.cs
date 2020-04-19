@@ -82,6 +82,7 @@ namespace Bero.CyuVR
 		internal HAibu aibu;
 		private delegate bool BreathProc(HVoiceCtrl _instance, AnimatorStateInfo _ai, ChaControl _female, int _main);
 		private BreathProc breathProcDelegate;
+		internal object[] touchOrder = new object[2];
 
 
 		public bool IsKiss { get; private set; }
