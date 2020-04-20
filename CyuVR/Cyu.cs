@@ -400,23 +400,29 @@ namespace Bero.CyuVR
 					if (flags.motion > 0)
 					{
 						aibu.SetPlay("K_Touch");
-						switch (flags.nowAnimStateName)
+
+						if (!isTouching)
+							Traverse.Create(aibu).Field("backIdle").SetValue(0);
+						else
 						{
-							case "M_Touch":
-							case "M_Idle":
-								Traverse.Create(aibu).Field("backIdle").SetValue(1);
-								break;
+							switch (flags.nowAnimStateName)
+							{
+								case "M_Touch":
+								case "M_Idle":
+									Traverse.Create(aibu).Field("backIdle").SetValue(1);
+									break;
 
-							case "A_Touch":
-							case "A_Idle":
-								Traverse.Create(aibu).Field("backIdle").SetValue(2);
-								break;
+								case "A_Touch":
+								case "A_Idle":
+									Traverse.Create(aibu).Field("backIdle").SetValue(2);
+									break;
 
-							case "S_Touch":
-							case "S_Idle":
-								Traverse.Create(aibu).Field("backIdle").SetValue(3);
-								break;
-						}	
+								case "S_Touch":
+								case "S_Idle":
+									Traverse.Create(aibu).Field("backIdle").SetValue(3);
+									break;
+							}
+						}
 					}
 				}
 				flags.AddKiss();
