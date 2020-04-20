@@ -555,7 +555,7 @@ namespace Bero.CyuVR
 				{
 					//Use configured value (KissMotionSpeed) to control animation speed during kissing in caress mode
 					//Increase animation speed further if GropeOverride is set to true and groping motion is larger than KissMotionSpeed
-					if (CyuLoaderVR.GropeOverride.Value && kissPhase == Phase.InAction)
+					if (CyuLoaderVR.GropeOverride.Value && kissPhase == Phase.InAction && isTouching)
 					{
 						//Use the higher value between dragSpeed(value based on controller movement) and speedItem(game calculated value) to set kissing animation speed
 						//Then make sure the speed value used for calculating animation speed is reset to a minimum
