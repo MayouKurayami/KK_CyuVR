@@ -397,21 +397,24 @@ namespace Bero.CyuVR
 				{
 					flags.click = HFlag.ClickKind.mouth;
 				
-					if (isTouching)
+					if (flags.motion > 0)
 					{
 						switch (flags.nowAnimStateName)
 						{
 							case "M_Touch":
+							case "M_Idle":
 								aibu.SetPlay("K_Touch");
 								Traverse.Create(aibu).Field("backIdle").SetValue(1);
 								break;
 
 							case "A_Touch":
+							case "A_Idle":
 								aibu.SetPlay("K_Touch");
 								Traverse.Create(aibu).Field("backIdle").SetValue(2);
 								break;
 
 							case "S_Touch":
+							case "S_Idle":
 								aibu.SetPlay("K_Touch");
 								Traverse.Create(aibu).Field("backIdle").SetValue(3);
 								break;
