@@ -266,7 +266,7 @@ namespace Bero.CyuVR
 				Array.Clear(cyu.touchOrder, index, 1);
 
 
-			if (cyu.kissPhase == Cyu.Phase.InAction || cyu.kissPhase == Cyu.Phase.Engaging)
+			if (cyu.IsKiss && cyu.kissPhase != Cyu.Phase.Disengaging)
 			{
 				switch (cyu.touchOrder.LastOrDefault(x => x != null))
 				{
