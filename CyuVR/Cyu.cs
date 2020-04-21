@@ -394,36 +394,35 @@ namespace Bero.CyuVR
 			else
 			{
 				if (flags.mode == HFlag.EMode.aibu)
-				{
-					flags.click = HFlag.ClickKind.mouth;
-				
-					if (flags.motion > 0)
+				{		
+					if (female.animBody.GetNextAnimatorClipInfoCount(0) > 0)
 					{
-						aibu.SetPlay("K_Touch");
-
-						if (!isTouching)
-							Traverse.Create(aibu).Field("backIdle").SetValue(0);
-						else
+						switch (touchOrder.LastOrDefault(x => x != null))
 						{
-							switch (flags.nowAnimStateName)
-							{
-								case "M_Touch":
-								case "M_Idle":
-									Traverse.Create(aibu).Field("backIdle").SetValue(1);
-									break;
+							case HFlag.ClickKind.muneL:
+							case HFlag.ClickKind.muneR:
+								Traverse.Create(aibu).Field("backIdle").SetValue(1);
+								break;
 
-								case "A_Touch":
-								case "A_Idle":
-									Traverse.Create(aibu).Field("backIdle").SetValue(2);
-									break;
+							case HFlag.ClickKind.kokan:
+								Traverse.Create(aibu).Field("backIdle").SetValue(2);
+								break;
 
-								case "S_Touch":
-								case "S_Idle":
-									Traverse.Create(aibu).Field("backIdle").SetValue(3);
-									break;
-							}
+							case HFlag.ClickKind.siriL:
+							case HFlag.ClickKind.siriR:
+							case HFlag.ClickKind.anal:
+								Traverse.Create(aibu).Field("backIdle").SetValue(3);
+								break;
+
+							default:
+								Traverse.Create(aibu).Field("backIdle").SetValue(0);
+								break;
 						}
+
+						aibu.SetPlay("K_Touch");
 					}
+					else
+						flags.click = HFlag.ClickKind.mouth;
 				}
 				flags.AddKiss();
 				StartCoroutine(BeroKiss());
