@@ -334,7 +334,8 @@ namespace Bero.CyuVR
 				RandomMoveFloatTest(ref curEyeValue, ref toEyeValue, ref eyeOpenSpeed, 0f, CyuLoaderVR.EyesMovement.Value, ref eyeOpenTime, 0.01f, 1.2f);
 				eyesOpenValue = curEyeValue / 100f;
 				RandomMoveFloatTest(ref curKissValue, ref toKissValue, ref tangSpeed, 25f, 100f, ref tangTime, 0.01f, 0.1f);
-				EyeAnimate();	
+				if (CyuLoaderVR.EyesMovement.Value > 0)
+					EyeAnimate();	
 				yield return null;
 
 			}
@@ -646,13 +647,20 @@ namespace Bero.CyuVR
 				tangRenderer.bones[0].transform.localPosition = new Vector3(localPosition.x, tangBonePos.y + initTangBonePos.y, localPosition.z);
 				tangRenderer.bones[0].transform.localRotation = initTangBoneRot * Quaternion.Euler(tangBoneRot.x, tangBoneRot.y, tangBoneRot.z);
 			}
+
 			if (IsKiss)
 			{
 				female.ChangeLookNeckPtn(1, 1f);
 				female.neckLookCtrl.target = kissNeckTarget.transform;
+			}
+			
+			if (kissPhase == Phase.InAction)
+			{
 				female.ChangeLookEyesPtn(1);
 				female.eyeLookCtrl.target = kissEyeTarget.transform;
 			}
+			
+			
 		}
 
 		/// <summary>
@@ -660,10 +668,6 @@ namespace Bero.CyuVR
 		/// </summary>
 		private void EyeAnimate()
 		{
-			if (CyuLoaderVR.EyesMovement.Value <= 0 && kissPhase == Phase.InAction)
-			{
-				return;
-			}	
 			female.ChangeEyesBlinkFlag(false);
 			female.eyesCtrl.ChangePtn(0, true);
 			female.eyebrowCtrl.ChangePtn(0, true);
@@ -679,11 +683,9 @@ namespace Bero.CyuVR
 				eyeLookX = UnityEngine.Random.Range(-70f, 70f);
 				eyeLookY = UnityEngine.Random.Range(-45f, 45f);
 			}
-			if (kissPhase == Phase.InAction)
-			{
-				kissEyeTarget.transform.RotateAround(kissEyeTarget.transform.parent.position, female.objHead.transform.up, eyeLookX * Time.deltaTime * 0.2f);
-				kissEyeTarget.transform.RotateAround(kissEyeTarget.transform.parent.position, female.objHead.transform.right, eyeLookY * Time.deltaTime * 0.2f);
-			}
+			
+			kissEyeTarget.transform.RotateAround(kissEyeTarget.transform.parent.position, female.objHead.transform.up, eyeLookX * Time.deltaTime * 0.2f);
+			kissEyeTarget.transform.RotateAround(kissEyeTarget.transform.parent.position, female.objHead.transform.right, eyeLookY * Time.deltaTime * 0.2f);
 			
 		}
 
