@@ -145,6 +145,8 @@ namespace Bero.CyuVR
 		{
 			Destroy(siru);
 			Destroy(kissEyeTarget);
+			Destroy(myMouth);
+			Destroy(kissNeckTarget);
 		}
 
 		public void ReloadBlendValues()
