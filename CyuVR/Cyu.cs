@@ -11,6 +11,8 @@ namespace Bero.CyuVR
 {
 	public class Cyu : MonoBehaviour
 	{
+		private const float ExitKissDistance = 0.16f;
+
 		private float tangSpeed = 35f;
 		private Rect rectWin = new Rect(0.0f, 0.0f, 0.0f, 0.0f);
 		private float curMouthValue = 100f;
@@ -56,7 +58,7 @@ namespace Bero.CyuVR
 		public int clothState;
 		internal int clothesState;
 		public bool kissing;
-		internal bool isTouching;
+		internal bool isAibuTouching;
 		internal Phase kissPhase = Phase.None;
 		public GameObject maleTang;
 		internal HFlag flags;
@@ -78,7 +80,6 @@ namespace Bero.CyuVR
 		private float npWeightSpeed2;
 		private float npWeightSpeed3;
 		internal float dragSpeed = 0.001f;
-		private const float exitKissDistance = 0.16f;
 		internal HAibu aibu;
 		private delegate bool BreathProc(HVoiceCtrl _instance, AnimatorStateInfo _ai, ChaControl _female, int _main);
 		private BreathProc breathProcDelegate;
@@ -512,28 +513,21 @@ namespace Bero.CyuVR
 				threshold = CyuLoaderVR.KissDistanceAibu.Value;
 
 				if (((VRHandCtrl[])hands).Any((VRHandCtrl h) => h.IsAction()))
-					isTouching = true;
+					isAibuTouching = true;
 				else
-					isTouching = false;
-			}
-				
+					isAibuTouching = false;
+			}	
 			else
 				threshold = CyuLoaderVR.KissDistance.Value;
 
 			if (curDistance < threshold)
 			{
 				if (flags.mode != HFlag.EMode.aibu || (!kissing && !IsSiruActive()) )
-				{
 					Kiss(true);
-				}
-				else if (curDistance < (isTouching ? (exitKissDistance + 0.04f) : exitKissDistance) || kissPhase == Phase.Engaging)
-				{
+				else if (curDistance < (isAibuTouching ? (ExitKissDistance + 0.04f) : ExitKissDistance) || kissPhase == Phase.Engaging)
 					Kiss(true);
-				}
 				else
-				{
 					Kiss(false);
-				}
 			}
 			else
 			{
@@ -557,7 +551,7 @@ namespace Bero.CyuVR
 				{
 					//Use configured value (KissMotionSpeed) to control animation speed during kissing in caress mode
 					//Increase animation speed further if GropeOverride is set to true and groping motion is larger than KissMotionSpeed
-					if (CyuLoaderVR.GropeOverride.Value && kissPhase == Phase.InAction && isTouching)
+					if (CyuLoaderVR.GropeOverride.Value && kissPhase == Phase.InAction && isAibuTouching)
 					{
 						//Use the higher value between dragSpeed(value based on controller movement) and speedItem(game calculated value) to set kissing animation speed
 						//Then make sure the speed value used for calculating animation speed is reset to a minimum
