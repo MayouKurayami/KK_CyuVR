@@ -66,7 +66,7 @@ namespace Bero.CyuVR
 
 			KissDistance = new ConfigWrapper<float>("KissDistance", this, 0.18f);
 			KissDistanceAibu = new ConfigWrapper<float>("KissDistanceAibu", this, 0.28f);
-			EyesMovement = new ConfigWrapper<float>("EyesMovement", this, 15f);
+			EyesMovement = new ConfigWrapper<float>("EyesMovement", this, 50f);
 			MouthMovement = new ConfigWrapper<Cyu.FrenchMode>("MouthMovement", this, Cyu.FrenchMode.Auto);
 			MouthOffset = new ConfigWrapper<float>("MouthOffset", this, 0.12f);
 			KissNeckAngle = new ConfigWrapper<float>("KissNeckAngle", this, 0.2f);
