@@ -376,61 +376,58 @@ namespace Bero.CyuVR
 
 		public void DoKiss()
 		{
-			if (voiceCtrl == null)
-			{
-				voiceCtrl = FindObjectOfType<HVoiceCtrl>();
-			}
-
 			if (voiceCtrl.nowVoices[0].state == HVoiceCtrl.VoiceKind.voice)
 			{
 				IsKiss = false;
+				return;
 			}
-			else if (!flags.lstHeroine[0].isKiss && !flags.lstHeroine[0].denial.kiss)
+			if (!flags.lstHeroine[0].isKiss && !flags.lstHeroine[0].denial.kiss)
 			{
 				flags.AddNotKiss();
+
 				if (flags.mode == HFlag.EMode.aibu)
-				{
 					flags.voice.playVoices[0] = 103;
-				}
 
 				IsKiss = false;
+				return;
 			}
-			else
-			{
-				if (flags.mode == HFlag.EMode.aibu)
-				{		
-					if (female.animBody.GetNextAnimatorClipInfoCount(0) > 0)
+		
+			if (flags.mode == HFlag.EMode.aibu)
+			{		
+				if (female.animBody.GetNextAnimatorClipInfoCount(0) > 0)
+				{
+					switch (touchOrder.LastOrDefault(x => x != null))
 					{
-						switch (touchOrder.LastOrDefault(x => x != null))
-						{
-							case HFlag.ClickKind.muneL:
-							case HFlag.ClickKind.muneR:
-								Traverse.Create(aibu).Field("backIdle").SetValue(1);
-								break;
+						case HFlag.ClickKind.muneL:
+						case HFlag.ClickKind.muneR:
+							Traverse.Create(aibu).Field("backIdle").SetValue(1);
+							break;
 
-							case HFlag.ClickKind.kokan:
-								Traverse.Create(aibu).Field("backIdle").SetValue(2);
-								break;
+						case HFlag.ClickKind.kokan:
+							Traverse.Create(aibu).Field("backIdle").SetValue(2);
+							break;
 
-							case HFlag.ClickKind.siriL:
-							case HFlag.ClickKind.siriR:
-							case HFlag.ClickKind.anal:
-								Traverse.Create(aibu).Field("backIdle").SetValue(3);
-								break;
+						case HFlag.ClickKind.siriL:
+						case HFlag.ClickKind.siriR:
+						case HFlag.ClickKind.anal:
+							Traverse.Create(aibu).Field("backIdle").SetValue(3);
+							break;
 
-							default:
-								Traverse.Create(aibu).Field("backIdle").SetValue(0);
-								break;
-						}
-
-						aibu.SetPlay("K_Touch");
+						default:
+							Traverse.Create(aibu).Field("backIdle").SetValue(0);
+							break;
 					}
-					else
-						flags.click = HFlag.ClickKind.mouth;
+
+					aibu.SetPlay("K_Touch");
 				}
-				flags.AddKiss();
-				StartCoroutine(BeroKiss());
+				else
+				{
+					flags.click = HFlag.ClickKind.mouth;
+				}
 			}
+
+			flags.AddKiss();
+			StartCoroutine(BeroKiss());
 		}
 
 		private void OnGUI()
