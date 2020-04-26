@@ -84,6 +84,8 @@ namespace Bero.CyuVR
 		private delegate bool BreathProc(HVoiceCtrl _instance, AnimatorStateInfo _ai, ChaControl _female, int _main);
 		private BreathProc breathProcDelegate;
 		internal object[] touchOrder = new object[2];
+		internal static bool nonAibuOrg;
+		internal static HFlag.FinishKind oldFinish;
 
 
 		public bool IsKiss { get; private set; }
@@ -208,11 +210,13 @@ namespace Bero.CyuVR
 			Console.WriteLine("Eye Blow:{0} {1}", index, Singleton<CustomBase>.Instance.lstEyebrow[index].list[1]);
 		}
 
-		public void Kiss(bool active)
+		public void Kiss(bool active, bool immediateStop = false)
 		{
 			if (!active)
 			{
 				IsKiss = false;
+				if (immediateStop)
+					kissing = false;
 			}
 			else
 			{
@@ -220,7 +224,7 @@ namespace Bero.CyuVR
 				if (kissing)
 				{
 					return;
-				}
+				}	
 
 				DoKiss();
 			}
@@ -517,7 +521,12 @@ namespace Bero.CyuVR
 			else
 				threshold = CyuLoaderVR.KissDistance.Value;
 
-			if (curDistance < threshold)
+			if (nonAibuOrg)
+			{
+				//Stop kissing immediately without disengaging transition to prevent interferring with orgasm animation or voice
+				Kiss(false, immediateStop: true);
+			}
+			else if (curDistance < threshold)
 			{
 				if (flags.mode != HFlag.EMode.aibu || (!kissing && !IsSiruActive()) )
 					Kiss(true);
@@ -531,7 +540,7 @@ namespace Bero.CyuVR
 				Kiss(false);
 			}
 
-			if (kissing || IsSiruActive())
+			if (!nonAibuOrg && (kissing || IsSiruActive()))
 			{
 				voiceCtrl.isPrcoStop = true;
 				breathProcDelegate.Invoke(voiceCtrl, female.animBody.GetCurrentAnimatorStateInfo(0), female, 0);
@@ -542,8 +551,7 @@ namespace Bero.CyuVR
 			}
 
 			if (kissing)
-			{
-				
+			{		
 				if (flags.mode == HFlag.EMode.aibu)
 				{
 					//Use configured value (KissMotionSpeed) to control animation speed during kissing in caress mode
@@ -561,10 +569,22 @@ namespace Bero.CyuVR
 						flags.SpeedUpClickAibu(flags.rateDragSpeedUp, CyuLoaderVR.KissMotionSpeed.Value, true);
 				}
 
+				if (flags.finish != HFlag.FinishKind.none)
+				{
+					oldFinish = flags.finish;
+					flags.finish = HFlag.FinishKind.none;
+				}
+
 				flags.DragStart();
 			}
 			else
 			{
+				if (oldFinish != HFlag.FinishKind.none)
+				{
+					flags.finish = oldFinish;
+					oldFinish = HFlag.FinishKind.none;
+				}
+
 				female.ChangeEyesBlinkFlag(true);
 			}
 		}
