@@ -8,8 +8,14 @@ namespace Bero.CyuVR
 {
 	public static class Hooks
 	{
-		private readonly static string[] OrgAnim = new string[] { "_Start", "IN_Loop", "OUT_Loop", "Orgasm_Loop" };
-		private readonly static string[] ResetFinishAnim = new string[] { "WLoop", "Insert", "Idle" };
+		/// <summary>
+		/// Strings that are part of the names of animations played during orgasm
+		/// </summary>
+		private readonly static string[] OrgAnims = new string[] { "_Start", "IN_Loop", "OUT_Loop", "Orgasm_Loop" };
+		/// <summary>
+		/// Strings that are part of the names of animations played when sex is resumed after orgasm
+		/// </summary>
+		private readonly static string[] ResumeAnims = new string[] { "WLoop", "Insert", "Idle" };
 
 		//This should hook to a method that loads as late as possible in the loading phase
 		//Hooking method "MapSameObjectDisable" because: "Something that happens at the end of H scene loading, good enough place to hook" - DeathWeasel1337/Anon11
@@ -212,8 +218,9 @@ namespace Bero.CyuVR
 				cyu.dragSpeed = Math.Max(cyu.dragSpeed, Mathf.Clamp(0.1f + (214.444f * _rateSpeedUp) - (7222.222f * _rateSpeedUp * _rateSpeedUp), 0.1f, 1.5f));
 		}
 
+		//This patch happens when a body part is touched.
 		//If groping is initiated during kissing, the game does not continue the groping animation after disengaged from kissing.
-		//This patch sets the backIdle field (used to return animation to the previous state) to the right value based on flags.click 
+		//This patch updates the touched body parts array and sets the backIdle field (used to return animation to the previous state) to the right value based on flags.click 
 		//before flags.click gets overridden to ClickKind.none later in the frame
 		[HarmonyPatch(typeof(VRHandCtrl), "JudgeProc")]
 		[HarmonyPrefix]
@@ -225,11 +232,15 @@ namespace Bero.CyuVR
 			if (!cyu || cyu.flags.mode != HFlag.EMode.aibu)
 				return;
 
+			//If the last position in the array is filled, move it back one position and fill the last position with the current action
+			//This ensures the last touched body part is always tracked in the last position of the array, 
+			//while the first position tracks any other body part that is being touched concurrently 
 			if (cyu.touchOrder.Last() != null)
 				cyu.touchOrder[cyu.touchOrder.Length - 2] = cyu.touchOrder[cyu.touchOrder.Length - 1];
 
 			cyu.touchOrder[cyu.touchOrder.Length - 1] = cyu.flags.click;
 
+			//If currently kissing, update back-to-idle animation to the current touched body part
 			if (cyu.IsKiss)
 			{
 				switch (cyu.touchOrder.Last())
@@ -252,6 +263,7 @@ namespace Bero.CyuVR
 			}
 		}
 
+		//This patch happens when a body part is released.
 		//If kissing is initiated while groping and groping stops in the middle of kissing, this makes sure animation will return to normal idle (non-groping)
 		// after kissing is disengaged, by setting the backIdle field (used to return animation to the previous state) to the right value
 		[HarmonyPatch(typeof(VRHandCtrl), "FinishAction")]
@@ -264,11 +276,15 @@ namespace Bero.CyuVR
 			if (!cyu || cyu.flags.mode != HFlag.EMode.aibu)
 				return;
 
+			//Find any entry in the touched body parts array that matches with the body part that was just released, and clear it
 			int index = Array.LastIndexOf(cyu.touchOrder, cyu.flags.click - 6);
 			if (index > -1)
 				Array.Clear(cyu.touchOrder, index, 1);
 
-
+			//While kissing and not in disengagement transition, update the back-to-idle animation to the last holding body part,
+			//or set it to idle if no body part is currently being held.
+			//It's too late to change the back-to-idle animation during disengagement transition, as the crossfade to the next animation has already begun
+			//Changing the backIdle variable in this case would result in it being the wrong value and causing undesired behaviors
 			if (cyu.IsKiss && cyu.kissPhase != Cyu.Phase.Disengaging)
 			{
 				switch (cyu.touchOrder.LastOrDefault(x => x != null))
@@ -291,11 +307,11 @@ namespace Bero.CyuVR
 					default:
 						Traverse.Create(cyu.aibu).Field("backIdle").SetValue(0);
 						break;
-				}
-				
+				}	
 			}
 		}
 
+		//Make sure kissing engagement transition always last one second, to avoid girl from jumping forward too fast
 		[HarmonyPatch(typeof(Animator), "CrossFadeInFixedTime",  new Type[] {typeof(string), typeof(float), typeof(int)} )]
 		[HarmonyPrefix]
 		public static void CrossFadeInFixedTimePre(string stateName, ref float transitionDuration)
@@ -308,18 +324,19 @@ namespace Bero.CyuVR
 		[HarmonyPrefix]
 		public static void SetPlayPre(string _nextAnimation)
 		{
-			if (OrgAnim.Any(str => _nextAnimation.Contains(str)))
+			if (OrgAnims.Any(str => _nextAnimation.Contains(str)))
 			{
-				Cyu.nonAibuOrg = true;
-				return;
+				Cyu.isInOrgasm = true;
 			}		
 			else
-				Cyu.nonAibuOrg = false;
+			{
+				Cyu.isInOrgasm = false;
 
-			//Update the stored finish flag in Cyu to none when motion restarts right after orgasm
-			//This is when the vanilla game would reset the finish flag to none, so this ensures that Cyu doesn't return an incorrect finish flag after kissing is done
-			if (CyuLoaderVR.hFlag?.nowAnimStateName.Contains("_A") ?? false && ResetFinishAnim.Any(str => _nextAnimation.Contains(str)))
-				Cyu.oldFinish = HFlag.FinishKind.none;
+				//Update the stored finish flag in Cyu to none when motion restarts right after orgasm
+				//This is when the vanilla game would reset the finish flag to none, so this ensures that Cyu doesn't return an incorrect finish flag after kissing is done
+				if (CyuLoaderVR.hFlag?.nowAnimStateName.Contains("_A") ?? false && ResumeAnims.Any(str => _nextAnimation.Contains(str)))
+					Cyu.origFinishFlag = HFlag.FinishKind.none;
+			}
 		}
 	}
 }

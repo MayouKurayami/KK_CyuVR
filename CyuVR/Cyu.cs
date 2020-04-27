@@ -84,9 +84,8 @@ namespace Bero.CyuVR
 		private delegate bool BreathProc(HVoiceCtrl _instance, AnimatorStateInfo _ai, ChaControl _female, int _main);
 		private BreathProc breathProcDelegate;
 		internal object[] touchOrder = new object[2];
-		internal static bool nonAibuOrg;
-		internal static HFlag.FinishKind oldFinish;
-
+		internal static bool isInOrgasm;
+		internal static HFlag.FinishKind origFinishFlag;
 
 		public bool IsKiss { get; private set; }
 
@@ -291,6 +290,10 @@ namespace Bero.CyuVR
 			}
 		}
 
+		/// <summary>
+		/// Checks whether saliva string exists and is visible
+		/// </summary>
+		/// <returns>Returns true if saliva string exists and is visible, and false otherwise</returns>
 		private bool IsSiruActive()
 		{
 			if (siru == null)
@@ -380,11 +383,13 @@ namespace Bero.CyuVR
 
 		public void DoKiss()
 		{
+			//Stop kissing is girl is speaking
 			if (voiceCtrl.nowVoices[0].state == HVoiceCtrl.VoiceKind.voice)
 			{
 				IsKiss = false;
 				return;
 			}
+			//No kissing if girl doesn't allow
 			if (!flags.lstHeroine[0].isKiss && !flags.lstHeroine[0].denial.kiss)
 			{
 				flags.AddNotKiss();
@@ -398,6 +403,8 @@ namespace Bero.CyuVR
 		
 			if (flags.mode == HFlag.EMode.aibu)
 			{		
+				//This is to determine if character is currently in animation crossfading
+				//If she is, we'd have to manually start the kissing animation and set the back-to-idle animation to the currently active one
 				if (female.animBody.GetNextAnimatorClipInfoCount(0) > 0)
 				{
 					switch (touchOrder.LastOrDefault(x => x != null))
@@ -521,15 +528,18 @@ namespace Bero.CyuVR
 			else
 				threshold = CyuLoaderVR.KissDistance.Value;
 
-			if (nonAibuOrg)
+
+			//If currently in orgasm, stop kissing immediately without disengaging transition to prevent interferring with orgasm animation or voice
+			if (isInOrgasm)
 			{
-				//Stop kissing immediately without disengaging transition to prevent interferring with orgasm animation or voice
 				Kiss(false, immediateStop: true);
 			}
 			else if (curDistance < threshold)
 			{
 				if (flags.mode != HFlag.EMode.aibu || (!kissing && !IsSiruActive()) )
 					Kiss(true);
+				//Continue kissing if currently transitioning into kiss, or if within distance threshold
+				//The distance threshold is larger when groping to allow some eye candy
 				else if (curDistance < (isAibuTouching ? (ExitKissDistance + 0.04f) : ExitKissDistance) || kissPhase == Phase.Engaging)
 					Kiss(true);
 				else
@@ -540,7 +550,9 @@ namespace Bero.CyuVR
 				Kiss(false);
 			}
 
-			if (!nonAibuOrg && (kissing || IsSiruActive()))
+			//Stop girl from speaking lines and manually proc breath/moan sounds 
+			//when she is not in orgasm and is still kissing or saliva string still visible
+			if (!isInOrgasm && (kissing || IsSiruActive()))
 			{
 				voiceCtrl.isPrcoStop = true;
 				breathProcDelegate.Invoke(voiceCtrl, female.animBody.GetCurrentAnimatorStateInfo(0), female, 0);
@@ -569,9 +581,10 @@ namespace Bero.CyuVR
 						flags.SpeedUpClickAibu(flags.rateDragSpeedUp, CyuLoaderVR.KissMotionSpeed.Value, true);
 				}
 
+				//While kissing, assigns HFlag.finish to none to prevent orgasm, while storing the finish flag in origFinishFlag to be assigned back to the game after kissing
 				if (flags.finish != HFlag.FinishKind.none)
 				{
-					oldFinish = flags.finish;
+					origFinishFlag = flags.finish;
 					flags.finish = HFlag.FinishKind.none;
 				}
 
@@ -579,10 +592,11 @@ namespace Bero.CyuVR
 			}
 			else
 			{
-				if (oldFinish != HFlag.FinishKind.none)
+				//Outside of kissing, restore finish flag from origFinishFlag to resume orgasm
+				if (origFinishFlag != HFlag.FinishKind.none)
 				{
-					flags.finish = oldFinish;
-					oldFinish = HFlag.FinishKind.none;
+					flags.finish = origFinishFlag;
+					origFinishFlag = HFlag.FinishKind.none;
 				}
 
 				female.ChangeEyesBlinkFlag(true);
@@ -646,9 +660,7 @@ namespace Bero.CyuVR
 		public void LateUpdateHook()
 		{
 			if (!kissing)
-			{
 				return;
-			}
 
 			//Animate mouth and tongue if
 			// - tongueMovement config is set to ForceOn, or
@@ -661,19 +673,19 @@ namespace Bero.CyuVR
 				tangRenderer.bones[0].transform.localRotation = initTangBoneRot * Quaternion.Euler(tangBoneRot.x, tangBoneRot.y, tangBoneRot.z);
 			}
 
+			//Keep neck elevated except during kiss disengagement to prevent girl from looking down on user as she exits kiss
 			if (IsKiss)
 			{
 				female.ChangeLookNeckPtn(1, 1f);
 				female.neckLookCtrl.target = kissNeckTarget.transform;
 			}
 			
+			//Move eyes around only in the middle of kissing, to prevent ahegao eyes during engagement and disengagement
 			if (kissPhase == Phase.InAction)
 			{
 				female.ChangeLookEyesPtn(1);
 				female.eyeLookCtrl.target = kissEyeTarget.transform;
-			}
-			
-			
+			}		
 		}
 
 		/// <summary>
