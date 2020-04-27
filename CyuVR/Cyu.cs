@@ -14,14 +14,12 @@ namespace Bero.CyuVR
 		private const float ExitKissDistance = 0.16f;
 
 		private float tangSpeed = 35f;
-		private Rect rectWin = new Rect(0.0f, 0.0f, 0.0f, 0.0f);
 		private float curMouthValue = 100f;
 		private float toMouthValue = 95f;
 		private float toEyeValue = CyuLoaderVR.EyesMovement.Value;
 		private float toKissValue = 75f;
 		private List<Cyu.BlendValue> bvs = new List<Cyu.BlendValue>();
 		private List<Cyu.BlendValue> bvsShow = new List<Cyu.BlendValue>();
-		private string filterText = "";
 		public float eyesOpenValue = 100f;
 		private float mouthSpeed = 1f;
 		private float npWeight = 0.33f;
@@ -50,13 +48,7 @@ namespace Bero.CyuVR
 		private HVoiceCtrl voiceCtrl;
 		private float curEyeValue;
 		private float curKissValue;
-		private bool moveAuto;
 		private ChaControl female;
-		public bool gui;
-		public float hohoAka;
-		public int tearLv;
-		public int clothState;
-		internal int clothesState;
 		public bool kissing;
 		internal bool isAibuTouching;
 		internal Phase kissPhase = Phase.None;
@@ -73,7 +65,6 @@ namespace Bero.CyuVR
 		private float eyeLookX;
 		private float eyeLookY;
 		private float eyeLookChangeTimer;
-		private CameraControl_Ver2 cameraControl;
 		private Vector3 initTangBonePos;
 		private Quaternion initTangBoneRot;
 		private float npWeightSpeed;
@@ -91,7 +82,6 @@ namespace Bero.CyuVR
 
 		private void Awake()
 		{
-			cameraControl = FindObjectOfType<CameraControl_Ver2>();
 			female = GetComponent<ChaControl>();
 			ReloadBlendValues();
 			Transform transform = female.GetComponentsInChildren<Transform>().ToList<Transform>().Where<Transform>(x => x.name == "o_tang").FirstOrDefault<Transform>();
@@ -441,66 +431,6 @@ namespace Bero.CyuVR
 			StartCoroutine(BeroKiss());
 		}
 
-		private void OnGUI()
-		{
-			if (!gui)
-			{
-				return;
-			}
-
-			float width = 400f;
-			if (rectWin.width < 1f)
-			{
-				rectWin.Set(Screen.width - width, 0.0f, width, Screen.height);
-			}
-
-			rectWin = GUI.Window(832, rectWin, new GUI.WindowFunction(WinFunc), "Control Face");
-			Event current = Event.current;
-			if (current.button == 0 && current.isMouse && current.type == EventType.MouseDrag)
-			{
-				cameraControl.enabled = false;
-			}
-			else
-			{
-				cameraControl.enabled = true;
-			}
-		}
-
-		private void WinFunc(int id)
-		{
-			float num = 5f;
-			GUILayout.BeginArea(new Rect(0.0f + num, 0.0f + num, rectWin.width - 2f * num, rectWin.height - 2f * num));
-			filterText = GUILayout.TextField(filterText);
-			GUILayout.Label("HohoAka");
-			hohoAka = GUILayout.HorizontalSlider(hohoAka, 0.0f, 100f);
-			GUILayout.Label("Tear");
-			tearLv = GUILayout.Toolbar(tearLv, new string[5]
-			{
-				"0",
-				"1",
-				"2",
-				"3",
-				"4"
-			});
-			bvsShow.Clear();
-			foreach (Cyu.BlendValue bv in bvs)
-			{
-				if (filterText.Length <= 0 || bv.name.IndexOf(filterText) != -1)
-				{
-					bv.active = GUILayout.Toggle(bv.active, bv.name);
-					bv.value = GUILayout.HorizontalSlider(bv.value, 0.0f, 100f, null);
-					bvsShow.Add(bv);
-				}
-			}
-			if (GUI.changed)
-			{
-				moveAuto = false;
-			}
-
-			moveAuto = GUILayout.Toggle(moveAuto, "Move auto");
-			GUILayout.EndArea();
-			GUI.DragWindow();
-		}
 
 		private void Update()
 		{
@@ -712,17 +642,6 @@ namespace Bero.CyuVR
 			kissEyeTarget.transform.RotateAround(kissEyeTarget.transform.parent.position, female.objHead.transform.up, eyeLookX * Time.deltaTime * 0.2f);
 			kissEyeTarget.transform.RotateAround(kissEyeTarget.transform.parent.position, female.objHead.transform.right, eyeLookY * Time.deltaTime * 0.2f);
 			
-		}
-
-		internal void ToggleClothesStateAll()
-		{
-			++clothesState;
-			if (clothesState > 2)
-			{
-				clothesState = 0;
-			}
-
-			female.SetClothesStateAll((byte)clothesState);
 		}
 
 		private class BlendValue
