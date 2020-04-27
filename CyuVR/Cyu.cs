@@ -211,11 +211,64 @@ namespace Bero.CyuVR
 			{
 				IsKiss = true;
 				if (kissing)
-				{
 					return;
-				}	
 
-				DoKiss();
+				//Stop kissing is girl is speaking
+				if (voiceCtrl.nowVoices[0].state == HVoiceCtrl.VoiceKind.voice)
+				{
+					IsKiss = false;
+					return;
+				}
+				//No kissing if girl doesn't allow
+				if (!flags.lstHeroine[0].isKiss && !flags.lstHeroine[0].denial.kiss)
+				{
+					flags.AddNotKiss();
+
+					if (flags.mode == HFlag.EMode.aibu)
+						flags.voice.playVoices[0] = 103;
+
+					IsKiss = false;
+					return;
+				}
+
+				if (flags.mode == HFlag.EMode.aibu)
+				{
+					//This is to determine if character is currently in animation crossfading
+					//If she is, we'd have to manually start the kissing animation and set the back-to-idle animation to the currently active one
+					if (female.animBody.GetNextAnimatorClipInfoCount(0) > 0)
+					{
+						switch (touchOrder.LastOrDefault(x => x != null))
+						{
+							case HFlag.ClickKind.muneL:
+							case HFlag.ClickKind.muneR:
+								Traverse.Create(aibu).Field("backIdle").SetValue(1);
+								break;
+
+							case HFlag.ClickKind.kokan:
+								Traverse.Create(aibu).Field("backIdle").SetValue(2);
+								break;
+
+							case HFlag.ClickKind.siriL:
+							case HFlag.ClickKind.siriR:
+							case HFlag.ClickKind.anal:
+								Traverse.Create(aibu).Field("backIdle").SetValue(3);
+								break;
+
+							default:
+								Traverse.Create(aibu).Field("backIdle").SetValue(0);
+								break;
+						}
+
+						aibu.SetPlay("K_Touch");
+					}
+					else
+					{
+						flags.click = HFlag.ClickKind.mouth;
+					}
+				}
+
+				flags.AddKiss();
+				StartCoroutine(BeroKiss());
 			}
 		}
 
@@ -369,66 +422,6 @@ namespace Bero.CyuVR
 		{
 			IsKiss = false;
 			kissing = false;
-		}
-
-		public void DoKiss()
-		{
-			//Stop kissing is girl is speaking
-			if (voiceCtrl.nowVoices[0].state == HVoiceCtrl.VoiceKind.voice)
-			{
-				IsKiss = false;
-				return;
-			}
-			//No kissing if girl doesn't allow
-			if (!flags.lstHeroine[0].isKiss && !flags.lstHeroine[0].denial.kiss)
-			{
-				flags.AddNotKiss();
-
-				if (flags.mode == HFlag.EMode.aibu)
-					flags.voice.playVoices[0] = 103;
-
-				IsKiss = false;
-				return;
-			}
-		
-			if (flags.mode == HFlag.EMode.aibu)
-			{		
-				//This is to determine if character is currently in animation crossfading
-				//If she is, we'd have to manually start the kissing animation and set the back-to-idle animation to the currently active one
-				if (female.animBody.GetNextAnimatorClipInfoCount(0) > 0)
-				{
-					switch (touchOrder.LastOrDefault(x => x != null))
-					{
-						case HFlag.ClickKind.muneL:
-						case HFlag.ClickKind.muneR:
-							Traverse.Create(aibu).Field("backIdle").SetValue(1);
-							break;
-
-						case HFlag.ClickKind.kokan:
-							Traverse.Create(aibu).Field("backIdle").SetValue(2);
-							break;
-
-						case HFlag.ClickKind.siriL:
-						case HFlag.ClickKind.siriR:
-						case HFlag.ClickKind.anal:
-							Traverse.Create(aibu).Field("backIdle").SetValue(3);
-							break;
-
-						default:
-							Traverse.Create(aibu).Field("backIdle").SetValue(0);
-							break;
-					}
-
-					aibu.SetPlay("K_Touch");
-				}
-				else
-				{
-					flags.click = HFlag.ClickKind.mouth;
-				}
-			}
-
-			flags.AddKiss();
-			StartCoroutine(BeroKiss());
 		}
 
 
