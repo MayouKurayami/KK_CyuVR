@@ -11,3 +11,15 @@
 ### 1.0.4  
 - Fix wrong animations when combine groping with kissing  
 - Allow user to enter kissing in the middle of other animations   
+
+### 1.1.0  
+- Fix crash caused by conflict with [FPS Counter](https://github.com/ManlyMarco/FPSCounter)
+- Lock kissing approach duration to 1 second to prevent girl from approaching too suddenly  
+- During sex, prevent orgasm to start during kiss, and prevent kiss from interrupting orgasm that has already started   
+- Make both hands able to affect kissing speed if grabbing multiple body parts while GropeOverride is enabled  
+- Fix unnatural eye movement when entering/exiting kiss  
+- Further improve behaviors when kissing while groping  
+- Fix eyes flickering when initiating kissing during transitions
+- Performance improvements  
+- Change config defaults  
+- Other various animation and bug fixes   
