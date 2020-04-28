@@ -478,7 +478,11 @@ namespace Bero.CyuVR
 			if (!isInOrgasm && (kissing || IsSiruActive()))
 			{
 				voiceCtrl.isPrcoStop = true;
-				breathProcDelegate.Invoke(voiceCtrl, female.animBody.GetCurrentAnimatorStateInfo(0), female, 0);
+
+				//Manually proc breath sound every frame causes eyes flickering when initiating kissing during transition of releasing a body part in caress mode
+				//This makes sure breath proc is not run when approaching to kiss in caress mode
+				if (flags.mode == HFlag.EMode.aibu ? kissPhase > Phase.Engaging : true)
+					breathProcDelegate.Invoke(voiceCtrl, female.animBody.GetCurrentAnimatorStateInfo(0), female, 0);
 			}
 			else
 			{
