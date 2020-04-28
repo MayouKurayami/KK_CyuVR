@@ -26,7 +26,7 @@ Also recommended is the [**KoikatuVRAssistPlugin**](https://mega.nz/#!YQZyWRwQ!C
 Configurations are located in *config.ini* in the BepInEx root folder, under section **[bero.cyu.cyuvr]**.  
 
 ***It is recommended to adjust the configs via the in-game plugin settings page *(accessible outside of VR)* instead of directly editing the config file.***
-- **Eyes Animation Openness (EyesMovement)** - Maximum openness of eyes and eyelids during kissing. Set to 0 to keep eyes closed during kiss **(0-100, Default: 30)**  
+- **Eyes Animation Openness (EyesMovement)** - Maximum openness of eyes and eyelids during kissing. Set to 0 to keep eyes closed during kiss **(0-100, Default: 50)**  
 
 - **Girl Neck Elevation (KissNeckAngle)** - Head elevation of the female character during kissing. **(Default: 0.2)**   
 
@@ -34,7 +34,7 @@ Configurations are located in *config.ini* in the BepInEx root folder, under sec
 
 - **Kiss Activation Distance (KissDistance)** - Distance within which to start kissing when not in caress mode. Unit in meters approximately **(Default: 0.18)**  
 
-- **Kiss Activation Distance in Caress Mode (KissDistanceAibu)** - Distance within which to start kissing in caress mode. Unit in meters approximately **(Default: 0.35)**  
+- **Kiss Activation Distance in Caress Mode (KissDistanceAibu)** - Distance within which to start kissing in caress mode. Unit in meters approximately **(Default: 0.28)**  
 
 - **Kiss Intensity in Caress Mode (KissMotionSpeed)** - Default speed of kissing motion in caress mode. **(0.1-1.5, Default: 0.1)**  
 
