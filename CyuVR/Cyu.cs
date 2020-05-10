@@ -452,6 +452,9 @@ namespace Bero.CyuVR
 				threshold = CyuLoaderVR.KissDistance.Value;
 
 
+			if (flags.click == HFlag.ClickKind.inside || flags.click == HFlag.ClickKind.outside)
+				isInOrgasm = true;
+
 			//If currently in orgasm, stop kissing immediately without disengaging transition to prevent interferring with orgasm animation or voice
 			if (isInOrgasm)
 			{

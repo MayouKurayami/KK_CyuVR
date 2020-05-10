@@ -324,7 +324,9 @@ namespace Bero.CyuVR
 		[HarmonyPrefix]
 		public static void SetPlayPre(string _nextAnimation)
 		{
-			if (OrgAnims.Any(str => _nextAnimation.Contains(str)))
+			//Set flag to prevent entering kiss when entering orgasm animation, 
+			//or when entering precum loop with valid finish flag, which indicates the intent to enter orgasm instead of staying in precum loop
+			if (OrgAnims.Any(str => _nextAnimation.Contains(str)) || (_nextAnimation.Contains("OLoop") && CyuLoaderVR.hFlag?.finish != HFlag.FinishKind.none))
 			{
 				Cyu.isInOrgasm = true;
 			}		
