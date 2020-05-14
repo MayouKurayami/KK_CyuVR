@@ -420,8 +420,23 @@ namespace Bero.CyuVR
 
 		public void OnDisable()
 		{
-			IsKiss = false;
-			kissing = false;
+			if (IsKiss || kissing)
+			{
+				Kiss(false, immediateStop: true);
+
+				if (bvs.Count() == 0)
+					ReloadBlendValues();
+
+				voiceCtrl.isPrcoStop = false;
+
+				if (origFinishFlag != HFlag.FinishKind.none)
+				{
+					flags.finish = origFinishFlag;
+					origFinishFlag = HFlag.FinishKind.none;
+				}
+
+				female.ChangeEyesBlinkFlag(true);
+			}					
 		}
 
 

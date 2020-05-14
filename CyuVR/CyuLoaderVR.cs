@@ -54,6 +54,14 @@ namespace Bero.CyuVR
 		[Description("Override kissing motion speed in caress mode by groping")]
 		public static ConfigWrapper<bool> GropeOverride { get; private set; }
 
+		///
+		//////////////////// Keyboard Shortcuts /////////////////////////// 
+		///
+
+		[DisplayName("Enable/Disable CyuVR")]
+		[Description("Press this key to enable/disable the plugin")]
+		public static SavedKeyboardShortcut PluginToggleKey { get; private set; }
+
 
 		private void HandleLog(string condition, string stackTrace, LogType type)
 		{
@@ -72,6 +80,8 @@ namespace Bero.CyuVR
 			KissNeckAngle = new ConfigWrapper<float>("KissNeckAngle", this, 0.2f);
 			KissMotionSpeed = new ConfigWrapper<float>("KissMotionSpeed", this, 0.1f);
 			GropeOverride = new ConfigWrapper<bool>("GropeOverride", this, true);
+
+			PluginToggleKey = new SavedKeyboardShortcut(nameof(PluginToggleKey), this, new KeyboardShortcut(KeyCode.None));
 
 			if (!(dataPathVR = Application.dataPath.EndsWith("KoikatuVR_Data")))
 				return;
@@ -92,6 +102,12 @@ namespace Bero.CyuVR
 
 			if (animationName != hFlag.nowAnimationInfo.nameAnimation)
 				InitCyu(hFlag);
+
+			if (Input.GetKeyDown(PluginToggleKey.Value.MainKey) && PluginToggleKey.Value.Modifiers.All(x => Input.GetKey(x)))
+			{
+				foreach (ChaControl female in lstFemale)
+					female.GetComponent<Cyu>().enabled = !female.GetComponent<Cyu>().enabled;
+			}
 		}
 
 		internal static void InitCyu(HFlag flags)
