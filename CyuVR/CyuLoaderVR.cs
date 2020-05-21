@@ -100,9 +100,6 @@ namespace Bero.CyuVR
 			if (!dataPathVR || hFlag == null)
 				return;
 
-			if (animationName != hFlag.nowAnimationInfo.nameAnimation)
-				InitCyu(hFlag);
-
 			if (Input.GetKeyDown(PluginToggleKey.Value.MainKey) && PluginToggleKey.Value.Modifiers.All(x => Input.GetKey(x)))
 			{
 				foreach (ChaControl female in lstFemale)
