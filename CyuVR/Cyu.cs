@@ -166,39 +166,6 @@ namespace Bero.CyuVR
 			}
 		}
 
-		public void ChangeMouthExpression(int index)
-		{
-			if (index >= Singleton<CustomBase>.Instance.lstMouth.Count)
-			{
-				return;
-			}
-
-			female.ChangeMouthPtn(index, true);
-			Console.WriteLine("Mouth:{0} {1}", index, Singleton<CustomBase>.Instance.lstMouth[index].list[1]);
-		}
-
-		public void ChangeEyesExpression(int index)
-		{
-			if (index >= Singleton<CustomBase>.Instance.lstEye.Count)
-			{
-				return;
-			}
-
-			female.ChangeEyesPtn(index, true);
-			Console.WriteLine("Eyes:{0} {1}", index, Singleton<CustomBase>.Instance.lstEye[index].list[1]);
-		}
-
-		public void ChangeEyeBlowExpression(int index)
-		{
-			if (index >= Singleton<CustomBase>.Instance.lstEyebrow.Count)
-			{
-				return;
-			}
-
-			female.ChangeEyebrowPtn(index, true);
-			Console.WriteLine("Eye Blow:{0} {1}", index, Singleton<CustomBase>.Instance.lstEyebrow[index].list[1]);
-		}
-
 		public void Kiss(bool active, bool immediateStop = false)
 		{
 			if (!active)
