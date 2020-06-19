@@ -187,7 +187,7 @@ namespace Bero.CyuVR
 					return;
 				}
 				//No kissing if girl doesn't allow
-				if (!flags.lstHeroine[0].isKiss && !flags.lstHeroine[0].denial.kiss)
+				if (!CyuLoaderVR.ForceKiss.Value && !flags.lstHeroine[0].isKiss && !flags.lstHeroine[0].denial.kiss)
 				{
 					flags.AddNotKiss();
 

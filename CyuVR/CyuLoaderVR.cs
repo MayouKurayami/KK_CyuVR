@@ -54,6 +54,10 @@ namespace Bero.CyuVR
 		[Description("Override kissing motion speed in caress mode by groping")]
 		public static ConfigWrapper<bool> GropeOverride { get; private set; }
 
+		[DisplayName("Force Allow Kiss")]
+		[Description("Allow kissing even if the girl is set to refuse kiss")]
+		public static ConfigWrapper<bool> ForceKiss { get; private set; }
+
 		///
 		//////////////////// Keyboard Shortcuts /////////////////////////// 
 		///
@@ -80,6 +84,7 @@ namespace Bero.CyuVR
 			KissNeckAngle = new ConfigWrapper<float>("KissNeckAngle", this, 0.2f);
 			KissMotionSpeed = new ConfigWrapper<float>("KissMotionSpeed", this, 0.1f);
 			GropeOverride = new ConfigWrapper<bool>("GropeOverride", this, true);
+			ForceKiss = new ConfigWrapper<bool>("ForceKiss", this, false);
 
 			PluginToggleKey = new SavedKeyboardShortcut(nameof(PluginToggleKey), this, new KeyboardShortcut(KeyCode.None));
 
