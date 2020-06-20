@@ -32,14 +32,6 @@ namespace Bero.CyuVR
 		public float siruAmount;
 		internal Cyu cyu;
 
-		private void OnDestroy()
-		{
-			Destroy(particleSystem.gameObject);
-			Destroy(head.gameObject);
-			Destroy(tail.gameObject);
-			Destroy(top.gameObject);
-			Destroy(ito.gameObject);
-		}
 
 		private void Start()
 		{
