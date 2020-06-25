@@ -13,7 +13,7 @@ namespace Bero.CyuVR
 	{
 		public const string PluginName = "CyuVR";
 		public const string AssembName = "KK_CyuVR";
-		public const string Version = "1.1.0";
+		public const string Version = "1.1.2";
 		public static List<ChaControl> lstFemale = new List<ChaControl>();
 		private static string animationName = "";
 		internal static HFlag hFlag;
@@ -64,7 +64,7 @@ namespace Bero.CyuVR
 		///
 
 		[DisplayName("Enable/Disable CyuVR")]
-		[Description("Press this key to enable/disable the plugin")]
+		[Description("Press this key to temporarily enable/disable the plugin. \nPlugin will always re-enable after changing position.")]
 		public static SavedKeyboardShortcut PluginToggleKey { get; private set; }
 
 
