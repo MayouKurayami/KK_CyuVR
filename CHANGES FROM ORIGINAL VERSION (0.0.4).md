@@ -23,3 +23,10 @@
 - Performance improvements  
 - Change config defaults  
 - Other various animation and bug fixes   
+
+### 1.1.2
+- Add keyboard shortcut to temporarily disable kissing  
+- Add option to force kissing even if girl is set to deny kiss  
+- Change config defaults  
+- Interrupt kissing when manually entering orgasm
+- Fix exceptions when exiting H scene  

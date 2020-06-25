@@ -1,5 +1,5 @@
 **DISCLAIMER**: This project is an effort to decompile and improve an existing plugin that was not written by me.  
-The original plugin can be found here: https://vr-erogamer.com/archives/454
+The original plugin can be found here: https://vr-erogamer.com/archives/332
 
 # KK_CyuVR
 > Adds kissing functionality in Koikatsu official VR  
@@ -25,8 +25,14 @@ Also recommended is the [**KoikatuVRAssistPlugin**](https://mega.nz/#!YQZyWRwQ!C
 ## Configurations
 Configurations are located in *config.ini* in the BepInEx root folder, under section **[bero.cyu.cyuvr]**.  
 
-***It is recommended to adjust the configs via the in-game plugin settings page *(accessible outside of VR)* instead of directly editing the config file.***
+**It is recommended to adjust the configs via the in-game plugin settings page instead of directly editing the config file.  
+Press *F1* when not in VR to access the plugin settings at the upper right of the screen.**  
+![](https://github.com/MayouKurayami/KK_CyuVR/blob/master/images/CyuVR_settings.png)  
+
+
 - **Eyes Animation Openness (EyesMovement)** - Maximum openness of eyes and eyelids during kissing. Set to 0 to keep eyes closed during kiss **(0-100, Default: 50)**  
+
+- **Force Allow Kiss (ForceKiss)** - Allow kissing even if the girl is set to refuse kiss **(Default: False)**
 
 - **Girl Neck Elevation (KissNeckAngle)** - Head elevation of the female character during kissing. **(Default: 0.2)**   
 
@@ -36,17 +42,26 @@ Configurations are located in *config.ini* in the BepInEx root folder, under sec
 
 - **Kiss Activation Distance in Caress Mode (KissDistanceAibu)** - Distance within which to start kissing in caress mode. Unit in meters approximately **(Default: 0.28)**  
 
-- **Kiss Intensity in Caress Mode (KissMotionSpeed)** - Default speed of kissing motion in caress mode. **(0.1-1.5, Default: 0.1)**  
+- **Kiss Intensity in Caress Mode (KissMotionSpeed)** - Default speed of kissing motion in caress mode.
 
 - **Mode of Tongue and Mouth Movement (MouthMovement)** - Set when to enable/disable tongue and mouth movement (french kiss) in kissing. **Auto** will enable tongue and mouth movement when character is in "lewd" state OR when female character's excitement gauge is above 70 (climax threshold). **ForceOn** will enable tongue and mouth movement at all times, and **ForceOff** will disable it completely. **(Default: Auto)**  
 
 - **Player Mouth Offset (MouthOffset)** - *Negative* vertical offset to player's mouth (increase this value to make your own mouth lower). Affects calculation of the kiss activation distances and attachment point of saliva string. **(Default: 0.12)**  
 
+### Keyboard Shortcuts  
+
+ - **Enable/Disable CyuVR (PluginToggleKey)** - Press this key to enable/disable the plugin. Plugin will always re-enable after changing position. **(Default: None)**
+
 
 ## Notes and Limitations
 - Unknown compatibility with Koikatsu Party (Steam release)  
-- Currently does not work in the unofficial VR mod for main game.
+
+- Unknown compatibility with kPlug.
+
+- Currently does not work in the unofficial VR mod for main game.  
+
 - In **caress mode**, the girl will lean forward to initialize kissing. Approach the girl slowly to avoid ~~bumping~~ clipping into her head.  
+
 - This plugin will only properly work in situations where it's possible to kiss as in the non-VR version of the game. Therefore, it would not work well in 3P, Darkness mode...etc.  
 
 ## Credits
