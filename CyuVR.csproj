@@ -59,13 +59,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="VR.cs" />
     <Compile Include="CyuVR\CyuLoaderVR.cs" />
     <Compile Include="CyuVR\Hooks.cs" />
     <Compile Include="CyuVR\DragMove.cs" />
     <Compile Include="CyuVR\Siru.cs" />
     <Compile Include="CyuVR\Cyu.cs" />
-    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="CyuVR\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
