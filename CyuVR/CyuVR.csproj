@@ -38,33 +38,33 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
-      <HintPath>lib\0Harmony.dll</HintPath>
+      <HintPath>..\lib\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>lib\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\lib\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="BepInEx">
-      <HintPath>lib\BepInEx.dll</HintPath>
+      <HintPath>..\lib\BepInEx.dll</HintPath>
     </Reference>
     <Reference Include="ConfigurationManager">
-      <HintPath>lib\ConfigurationManager.dll</HintPath>
+      <HintPath>..\lib\ConfigurationManager.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="UnityEngine">
-      <HintPath>lib\UnityEngine.dll</HintPath>
+      <HintPath>..\lib\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>lib\UnityEngine.UI.dll</HintPath>
+      <HintPath>..\lib\UnityEngine.UI.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CyuVR\CyuLoaderVR.cs" />
-    <Compile Include="CyuVR\Hooks.cs" />
-    <Compile Include="CyuVR\DragMove.cs" />
-    <Compile Include="CyuVR\Siru.cs" />
-    <Compile Include="CyuVR\Cyu.cs" />
-    <Compile Include="CyuVR\AssemblyInfo.cs" />
+    <Compile Include="CyuLoaderVR.cs" />
+    <Compile Include="Hooks.cs" />
+    <Compile Include="DragMove.cs" />
+    <Compile Include="Siru.cs" />
+    <Compile Include="Cyu.cs" />
+    <Compile Include="AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
