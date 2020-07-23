@@ -8,15 +8,16 @@ The original plugin can be found here: https://vr-erogamer.com/archives/332
 ## Prerequisites  
 - Afterschool DLC  
 - [Koikatsu Official VR Patch 0531](http://www.illusion.jp/preview/koikatu/download/vr.php)  
-- BepInEx 4 and above  
+- BepInEx 4 and above (to run it with BepInEx 5 you'd need [BepInEx 4 Patcher](https://github.com/BepInEx/BepInEx.BepInEx4Upgrader), included within HF Patch)  
 - (optional, strongly recommended): [CrossFader](https://github.com/MayouKurayami/KK_CrossFader/releases) plugin
 - (optional, recommended): [KoikatuVRAssistPlugin](https://mega.nz/#!YQZyWRwQ!C2FX0Iwp-X7F5z55ytTlQGkjfqH6kQP-wcDPfNBvT0s) plugin
 
 
 
 ## Installation
-Place **KK_CyuVR.dll** in BepInEx root folder.  
-This is a BepInEx 4 plugin, to run it with BepInEx 5 you'd need [BepInEx 4 Patcher](https://github.com/BepInEx/BepInEx.BepInEx4Upgrader). (Included within HF Patch)
+[Download **KK_CyuVR zip** from the latest release](https://github.com/MayouKurayami/KK_CyuVR/releases) then extract it into your game directory (where the game exe and BepInEx folder are located).  
+Replace old files if asked.  
+*KK_CyuVR.dll* should end up in the BepInEx root directory.  
 
 Installation of the [**CrossFader.dll**](https://github.com/MayouKurayami/KK_CrossFader/releases) plugin is strongly recommended to ensure smooth animation in and out of kissing.   
 
