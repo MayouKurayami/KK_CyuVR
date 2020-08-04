@@ -9,6 +9,10 @@ using System.ComponentModel;
 namespace Bero.CyuVR
 {
 	[BepInPlugin("bero.cyu.cyuvr", PluginName, Version)]
+	[BepInProcess("Koikatu")]
+	[BepInProcess("KoikatuVR")]
+	[BepInProcess("Koikatsu Party")]
+	[BepInProcess("Koikatsu Party VR")]
 	public class CyuLoaderVR : BaseUnityPlugin
 	{
 		public const string PluginName = "CyuVR";
