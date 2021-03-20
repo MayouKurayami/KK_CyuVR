@@ -1,10 +1,11 @@
 ﻿using BepInEx;
-using Harmony;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using System.ComponentModel;
+using Harmony;
+using BepInEx4;
 
 namespace Bero.CyuVR
 {
@@ -62,6 +63,10 @@ namespace Bero.CyuVR
 		[DisplayName("Player Mouth Offset")]
 		[Description("Negative vertical offset to player's mouth (increase this value to make your own mouth lower)")]
 		public static ConfigWrapper<float> MouthOffset { get; private set; }	
+
+		[DisplayName("Sustain Orgasm After Kiss")]
+		[Description("If enabled, the girl will remain in orgasm after kissing. Groping the girl will end her orgasm.")]
+		public static ConfigWrapper<bool> OrgasmAfterKiss { get; private set; }
 	
 		///
 		//////////////////// Keyboard Shortcuts /////////////////////////// 
@@ -91,6 +96,7 @@ namespace Bero.CyuVR
 			KissMotionSpeed = new ConfigWrapper<float>(nameof(KissMotionSpeed), this, 0.1f);
 			MouthMovement = new ConfigWrapper<Cyu.FrenchMode>(nameof(MouthMovement), this, Cyu.FrenchMode.Auto);
 			MouthOffset = new ConfigWrapper<float>(nameof(MouthOffset), this, 0.12f);
+			OrgasmAfterKiss = new ConfigWrapper<bool>(nameof(OrgasmAfterKiss), this, false);
 			
 			PluginToggleKey = new SavedKeyboardShortcut(nameof(PluginToggleKey), this, new KeyboardShortcut(KeyCode.None));
 

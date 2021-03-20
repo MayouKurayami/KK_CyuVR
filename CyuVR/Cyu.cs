@@ -77,6 +77,7 @@ namespace Bero.CyuVR
 		internal static bool isInOrgasm;
 		internal static HFlag.FinishKind origFinishFlag;
 		private string prevAnimation;
+		internal bool preventPrevAnimationSwap;
 
 		public bool IsKiss { get; private set; }
 
@@ -200,7 +201,11 @@ namespace Bero.CyuVR
 
 				// Save the current animation so that we can return to it after kissing is over.
 				// This allows us to retain facial expressions after going back to idle, e.g., post-orgasm expressions.
-				prevAnimation = flags.nowAnimStateName;
+				if (CyuLoaderVR.OrgasmAfterKiss.Value)
+				{
+					prevAnimation = flags.nowAnimStateName;
+					preventPrevAnimationSwap = false;
+				}
 
 				if (flags.mode == HFlag.EMode.aibu)
 				{
@@ -365,7 +370,8 @@ namespace Bero.CyuVR
 			}
 
 			// Return to the previous animation after the player finishes kissing.
-			aibu.SetPlay(prevAnimation);
+			if(CyuLoaderVR.OrgasmAfterKiss.Value && !preventPrevAnimationSwap)
+				aibu.SetPlay(prevAnimation);
 
 			kissPhase = Phase.Disengaging;
 			for (; ; )
