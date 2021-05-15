@@ -21,7 +21,7 @@ namespace Bero.CyuVR
 		public static List<ChaControl> lstFemale = new List<ChaControl>();
 		private static string animationName = "";
 		internal static HFlag hFlag;
-		private bool dataPathVR;
+		private bool isVR;
 		internal static Cyu mainCyu;
 
 
@@ -94,7 +94,7 @@ namespace Bero.CyuVR
 			
 			PluginToggleKey = new SavedKeyboardShortcut(nameof(PluginToggleKey), this, new KeyboardShortcut(KeyCode.None));
 
-			if (!(dataPathVR = Application.dataPath.EndsWith("KoikatuVR_Data")))
+			if (!(isVR = Type.GetType("VRHScene, Assembly-CSharp") != null))
 				return;
 			try
 			{
@@ -108,7 +108,7 @@ namespace Bero.CyuVR
 
 		private void Update()
 		{
-			if (!dataPathVR || hFlag == null)
+			if (!isVR || hFlag == null)
 				return;
 
 			if (animationName != hFlag.nowAnimationInfo.nameAnimation)
