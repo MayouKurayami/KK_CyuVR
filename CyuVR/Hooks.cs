@@ -232,6 +232,11 @@ namespace Bero.CyuVR
 			if (!cyu || cyu.flags.mode != HFlag.EMode.aibu)
 				return;
 
+			// If OrgasmAfterKiss is enabled, then we need to ensure that we do not revert back to an incorrect animation state if the girl
+			// is being groped while kissing (see https://github.com/MayouKurayami/KK_CyuVR/pull/1#issuecomment-790853354).
+			if(CyuLoaderVR.OrgasmAfterKiss.Value)
+				CyuLoaderVR.mainCyu.preventPrevAnimationSwap = true;
+
 			//If the last position in the array is filled, move it back one position and fill the last position with the current action
 			//This ensures the last touched body part is always tracked in the last position of the array, 
 			//while the first position tracks any other body part that is being touched concurrently 

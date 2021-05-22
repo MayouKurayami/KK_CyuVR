@@ -1,11 +1,10 @@
-using ChaCustom;
-using Harmony;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
 using UnityEngine;
+using Harmony;
 
 namespace Bero.CyuVR
 {
@@ -77,6 +76,8 @@ namespace Bero.CyuVR
 		internal object[] touchOrder = new object[2];
 		internal static bool isInOrgasm;
 		internal static HFlag.FinishKind origFinishFlag;
+		private string prevAnimation;
+		internal bool preventPrevAnimationSwap;
 
 		public bool IsKiss { get; private set; }
 
@@ -196,6 +197,14 @@ namespace Bero.CyuVR
 
 					IsKiss = false;
 					return;
+				}
+
+				// Save the current animation so that we can return to it after kissing is over.
+				// This allows us to retain facial expressions after going back to idle, e.g., post-orgasm expressions.
+				if (CyuLoaderVR.OrgasmAfterKiss.Value)
+				{
+					prevAnimation = flags.nowAnimStateName;
+					preventPrevAnimationSwap = false;
 				}
 
 				if (flags.mode == HFlag.EMode.aibu)
@@ -360,6 +369,10 @@ namespace Bero.CyuVR
 
 			}
 
+			// Return to the previous animation after the player finishes kissing.
+			if(CyuLoaderVR.OrgasmAfterKiss.Value && !preventPrevAnimationSwap)
+				aibu.SetPlay(prevAnimation);
+
 			kissPhase = Phase.Disengaging;
 			for (; ; )
 			{
@@ -382,6 +395,7 @@ namespace Bero.CyuVR
 			yield return null;
 			kissPhase = Phase.None;
 			kissing = false;
+
 			yield break;
 		}
 
